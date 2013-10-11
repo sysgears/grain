@@ -1,0 +1,63 @@
+apply plugin: 'maven'
+apply plugin: 'groovy'
+apply plugin: 'idea'
+version = '1.0'
+defaultTasks 'preview'
+
+def compatibilityVersion = 1.5
+sourceCompatibility = compatibilityVersion
+targetCompatibility = compatibilityVersion
+
+clean.doLast { ant.delete(dir: ".cache"); ant.delete(dir: "target") }
+
+project.ext {
+    grainHome = System.getenv('GRAIN_HOME')
+    if (!grainHome) {
+        throw new RuntimeException('Please set GRAIN_HOME environment variable')
+    }
+    grainJar = "${grainHome}/build/libs/grain-1.0.jar"
+
+}
+
+dependencies {
+    compile files("${project.grainJar}")
+}
+
+repositories {
+    mavenCentral()
+}
+
+task(preview) << {
+    println "Launching ${project.grainJar} preview"
+    javaexec { main="-jar"; args "${project.grainJar}", "preview" } 
+}
+
+task(generate) << {
+    println "Launching ${project.grainJar} generate"
+    javaexec { main="-jar"; args "${project.grainJar}", "generate" } 
+}
+
+task(deploy) << {
+    println "Launching ${project.grainJar} deploy"
+    javaexec { main="-jar"; args "${project.grainJar}", "deploy" } 
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '1.4'
+}
+
+idea.project {
+    jdkName = '1.7'
+
+    ipr.withXml { provider ->
+        def node = provider.asNode()
+
+        // Use GIT
+        def vcsConfig = node.component.find { it.'@name' == 'VcsDirectoryMappings' }
+        vcsConfig.mapping[0].'@vcs' = 'Git'
+
+        // Set Gradle home
+        def gradleSettings = node.appendNode('component', [name: 'GradleSettings'])
+        gradleSettings.appendNode('option', [name: 'SDK_HOME', value: gradle.gradleHomeDir])
+    }
+}
