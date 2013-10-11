@@ -1,0 +1,8 @@
+<% if (page.categories?.size() > 0) { %>
+<div class="categories">
+  <p class="meta">Tags:</p>
+  <% page.categories.each { category -> %>
+     <a class="category" href="/categories/${category.encodeAsSlug()}/">${category.toLowerCase()}</a>
+  <% } %>
+</div>
+<% } %>

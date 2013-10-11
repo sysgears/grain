@@ -1,0 +1,35 @@
+---
+layout: default
+single: true
+---
+
+<div class="blog-index">
+<article class="hentry" role="article">
+  ${include 'article.html', [content: content]}
+  <footer>
+    <p class="meta">
+      ${include 'post/author.html'}
+      ${include 'post/date.html', [when: 'updated']}
+      ${include 'post/categories.html'}
+    </p>
+    <% if (page.sharing == true) { %>
+      ${include 'post/sharing.html'}
+    <% } %>
+    <p class="meta">
+      <% if (page.prev_post?.url) { %>
+        <a class="basic-alignment left" href="${page.prev_post.url}" title="Previous Post: ${page.prev_post.title}">&laquo; ${titlecase(page.prev_post.title)}</a>
+      <% } %>
+      <% if (page.next_post?.url) { %>
+        <a class="basic-alignment right" href="${page.next_post.url}" title="Next Post: ${page.next_post.title}">${titlecase(page.next_post.title)} &raquo;</a>
+      <% } %>
+    </p>
+  </footer>
+</article>
+<% if (site.disqus.short_name && page.comments == true) { %>
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite">${include 'post/disqus_thread.html'}</div>
+  </section>
+<% } %>
+</div>
+${include 'sidebar.html'}

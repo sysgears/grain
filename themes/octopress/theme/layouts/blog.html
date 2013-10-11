@@ -1,0 +1,36 @@
+---
+layout: default
+index: true
+sidebar: true
+---
+<div class="blog-index">
+  <article>
+    <% if (page.title) { %>
+        <h1 id="entry-title">${page.title}</h1>
+        <% if (page.tag) { %>
+        <div class="subscribe">
+          <a rel="subscribe-rss" title="Stay tuned to ${page.tag.capitalize()} category via RSS" href="${page.url}${site.subscribe_rss}">RSS</a>
+        </div>
+        <% } %>
+    <% } %>
+    <% page.posts.each { post ->
+        def brief = post.render().content.split('<!--more-->').head()
+    %>
+        ${include "article.html", post + [brief: brief]}
+    <% } %>
+  </article>
+  <div class="pagination">
+    <div class="links">
+      <% if (page.paginator?.prev_page) { %>
+        <a class="prev" href="${page.paginator.prev_page}">&larr; Newer</a>
+      <% } %>
+      <% if (page.front) { %>
+        <a class="archive" href="/archives/">Blog Archives</a>
+      <% } %>
+      <% if (page.paginator?.next_page) { %>
+        <a class="next" href="${page.paginator.next_page}">Older &rarr;</a>
+      <% } %>
+    </div>
+  </div>
+</div>
+${include 'sidebar.html'}

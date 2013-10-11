@@ -1,0 +1,29 @@
+<article>
+<% if (!page.header) { %>
+  <header>
+    <% if (page.index) { %>
+      <h1 class="entry-title"><a href="${site.url}${page.url}">${titlecase(page.title)}</a></h1>
+    <% } else { %>
+      <h1 class="entry-title">${titlecase(page.title)}</h1>
+    <% } %>
+    <% if (!page.meta) { %>
+      <p class="meta">
+        ${include 'post/date.html', [when: 'posted']}
+        <% if (site.disqus?.short_name && page.comments != false && site.disqus?.show_comment_count == true) { %>
+         | <a href="${page.index ? site.url + page.url : ''}#disqus_thread">Comments</a>
+        <% } %>
+      </p>
+    <% } %>
+  </header>
+<% } %>
+<% if (page.index) { %>
+  <div class="entry-content">${page.brief}</div>
+  <% if (page.excerpted) { %>
+    <footer>
+      <a rel="full-article" class="button" href="${site.url}${page.url}">${page.button ?: 'Read more &rarr;'}</a>
+    </footer>
+  <% } %>
+<% } else { %>
+<div class="entry-content">${page.content}</div>
+<% } %>
+</article>

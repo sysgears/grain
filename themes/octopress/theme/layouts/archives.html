@@ -1,0 +1,27 @@
+---
+layout: default
+---
+
+<div>
+    <article role="article">
+      <% if (page.title) { %>
+      <header>
+        <h1 class="entry-title">${titlecase(page.title)}</h1>
+      </header>
+      <% } %>
+      ${content}
+    </article>
+    <div class="pagination">
+      <div class="links">
+        <% if (page.paginator?.prev_page) { %>
+            <a class="prev" href="${page.paginator.prev_page}">&larr; Newer</a>
+        <% } %>
+        <% if (page.paginator?.next_page) { %>
+            <a class="next" href="${page.paginator.next_page}">Older &rarr;</a>
+        <% } %>
+      </div>
+    </div>
+</div>
+
+
+${include 'sidebar.html'}

@@ -1,0 +1,13 @@
+---
+layout: post
+title: Funny man!
+date: 2012-03-23 16:00
+author: Ezequiel Lavezzi
+comments: true
+categories: [funny, man, undead]
+published: true
+sharing: true
+---
+
+
+I don't really think this article is useful, but...

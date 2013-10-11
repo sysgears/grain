@@ -1,0 +1,19 @@
+---
+layout: archives
+title: Blog Archive
+---
+
+<div id="blog-archives">
+  <%
+    def year
+    page.posts.each { post ->
+      def yearOfPost = site.sdf.parse(post.date).format('yyyy')
+      if (year != yearOfPost) {
+        year = yearOfPost %>
+        <h2>${year}</h2>
+      <% } %>
+  <article>
+    ${include 'archive_post.html', post}
+  </article>
+  <% } %>
+</div>

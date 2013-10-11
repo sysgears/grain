@@ -1,0 +1,10 @@
+<% if (site.asides?.facebook?.user) { %>
+<section class="social ${site.asides.facebook.hidden == true ? 'social-hidden' : ''}">
+  <h1>
+    <a class='fb-icon' href="http://facebook.com/${site.asides.facebook.user}">
+      <div class="icon fb-icon"></div>
+      Facebook
+    </a>
+  </h1>
+</section>
+<% } %>

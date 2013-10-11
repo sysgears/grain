@@ -1,0 +1,14 @@
+<%
+def content = page.content
+def m = content =~ /\{"(.*)"\}/
+def cut
+if (m) {
+cut = m[0][1]
+content = content.replace('{"','').replace('"}','')
+}
+%>
+<% if (cut) { %>
+<span class="pullquote-${page.position}" data-pullquote="${cut}">
+    ${content}
+  </span>
+<% } %>

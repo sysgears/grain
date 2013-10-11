@@ -1,0 +1,11 @@
+<div class="sharing">
+  <% if (site.sharing?.twitter?.share_button?.enabled == true) { %>
+    <a href="https://twitter.com/share" class="twitter-share-button" data-url="${site.url}${page.url}" data-via="${site.asides?.twitter?.user ?: ''}" data-counturl="${site.url}${page.url}" data-lang="${site.sharing.twitter?.share_button?.lang ?: 'en'}">Tweet</a>
+  <% } %>
+  <% if (site.sharing?.googleplus_one?.share_button?.enabled == true) { %>
+    <div class="g-plusone" data-size="${site.sharing.googleplus_one.share_button?.size ?: 'medium'}"></div>
+  <% } %>
+  <% if (site.sharing?.facebook?.share_button?.enabled == true) { %>
+    <div class="fb-like" data-send="true" data-width="450" data-show-faces="false"></div>
+  <% } %>
+</div>

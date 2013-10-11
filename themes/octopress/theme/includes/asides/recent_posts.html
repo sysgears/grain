@@ -1,0 +1,12 @@
+<% if (site.asides?.recent_posts?.hidden != true) { %>
+<section>
+  <h1>Recent Posts</h1>
+  <ul id="recent_posts">
+    <% page.recent_posts.each { post -> %>
+      <li class="post">
+        <a href="${post.url}">${titlecase(post.title)}</a>
+      </li>
+    <% } %>
+  </ul>
+</section>
+<% } %>

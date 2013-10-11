@@ -1,0 +1,10 @@
+<% if (site.asides?.twitter?.user) { %>
+<section class="social ${site.asides.twitter.hidden == true ? 'social-hidden' : ''}">
+  <h1>
+    <a href="https://twitter.com/${site.asides.twitter.user}">
+      <div class="icon twitter-icon"></div>
+      Twitter
+    </a>
+  </h1>
+</section>
+<% } %>

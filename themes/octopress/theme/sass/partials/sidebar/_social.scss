@@ -1,0 +1,45 @@
+.social {
+  h1 {
+    -moz-box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+    -o-box-shadow: none !important;
+    box-shadow: none !important;
+    border-bottom: 0px none !important;
+  }
+  a {
+    text-decoration: none;
+    white-space: normal !important;
+    line-height: 32px;
+    vertical-align: top;
+    img {
+      float: left;
+      margin-right: 0.5em;
+      border: 0 none;
+    }
+    .icon {
+      width: 32px;
+      height: 32px;
+      display: inline-block;
+	    background-image: sprite-url($icons-sprites);
+      &.fb-icon {
+	      background-position: sprite-position($icons-sprites, facebook_icon_32);
+      }
+      &.insta-icon {
+	      background-position: sprite-position($icons-sprites, instagram_icon_32);
+      }
+      &.twitter-icon {
+	      background-position: sprite-position($icons-sprites, twitter_icon_32);
+      }
+      &.gplus-icon {
+	      background-position: sprite-position($icons-sprites, googleplus_icon_32);
+
+      }
+    }
+  }
+}
+
+.social-hidden {
+  position: absolute;
+  top: -1000em;
+  left: -1000em;
+}
