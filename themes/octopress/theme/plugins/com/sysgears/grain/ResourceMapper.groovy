@@ -1,6 +1,5 @@
 package com.sysgears.grain
 
-import com.sysgears.grain.taglib.GrainUtils
 import com.sysgears.grain.taglib.Site
 import com.sysgears.grain.taglib.GrainUtils
 
