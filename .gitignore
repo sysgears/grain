@@ -5,7 +5,4 @@
 .gradle
 target
 out
-misc/SimplejQueryDropdowns/
-misc/converter/source
-preload-*.png
 build
