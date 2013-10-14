@@ -86,9 +86,10 @@ class FileWatcher extends Thread {
         }
 
         Set<File> changedFiles = []
-        for (; ;) {
+        boolean exit = false
+        while (!exit) {
             try {
-                sleep(800)
+                sleep(800, { exit = true })
                 WatchKey signalledKey = watchService.poll()
                 if (signalledKey == null) {
                     if (!changedFiles.empty) {
@@ -124,7 +125,6 @@ class FileWatcher extends Thread {
                     }
                     signalledKey.reset()
                 }
-            } catch (InterruptedException ignored) {
             } catch (ClosedWatchServiceException t) {
                 t.printStackTrace()
                 System.exit(1)
