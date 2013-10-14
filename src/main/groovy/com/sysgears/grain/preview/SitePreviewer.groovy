@@ -62,6 +62,12 @@ class SitePreviewer implements Service {
      * Runs Grain web server 
      */
     public void start() {
+        def jettyPort = config.jetty_port ?: 5000
+        if (!available(jettyPort)) {
+            log.warn("Port ${jettyPort} is not available, exitting...")
+            return
+        }
+        
         fileWatcher.start()
         log.info 'Building resource registry...'
         registry.start()
@@ -71,7 +77,6 @@ class SitePreviewer implements Service {
             t.printStackTrace()
         }
     
-        def jettyPort = config.jetty_port ?: 5000
     
         def jetty = new Server(jettyPort)
     
@@ -87,10 +92,6 @@ class SitePreviewer implements Service {
         context.addServlet(GrainServlet, '/')
     
         jetty.start()
-        jetty.join()
-        
-        // Force application shutdown when jetty stopped.
-        System.exit(0)
     }
 
     /**
@@ -98,5 +99,30 @@ class SitePreviewer implements Service {
      */
     @Override
     public void stop() {
+    }
+
+    /**
+     * Checks whether server socket port is available to the application.
+     * 
+     * @param port port to listen to
+     * 
+     * @return is the port available
+     */
+    private static boolean available(int port) {
+        Socket s = null;
+        try {
+            s = new Socket("localhost", port);
+            return false;
+        } catch (IOException e) {
+            return true;
+        } finally {
+            if (s != null) {
+                try {
+                    s.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
     }
 }
