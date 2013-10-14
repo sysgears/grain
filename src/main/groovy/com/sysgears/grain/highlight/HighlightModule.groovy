@@ -19,6 +19,7 @@ package com.sysgears.grain.highlight
 import com.google.inject.AbstractModule
 import com.google.inject.Provides
 import com.sysgears.grain.annotations.Uncached
+import com.sysgears.grain.config.Config
 import com.sysgears.grain.highlight.pygments.AutoPygments
 import com.sysgears.grain.highlight.pygments.FakePygments
 import com.sysgears.grain.highlight.pygments.JythonPygments
@@ -26,7 +27,6 @@ import com.sysgears.grain.highlight.pygments.Pygments
 import com.sysgears.grain.highlight.pygments.PythonPygments
 import com.sysgears.grain.highlight.pygments.ShellPygments
 import com.sysgears.grain.config.ImplBinder
-import com.sysgears.grain.taglib.Site
 
 /**
  * Package-specific IoC config 
@@ -34,26 +34,26 @@ import com.sysgears.grain.taglib.Site
 class HighlightModule extends AbstractModule {
 
     @Provides @javax.inject.Singleton
-    public Pygments providePygments(Site site,
+    public Pygments providePygments(Config config,
             PythonPygments python, JythonPygments jython,
             ShellPygments shell, AutoPygments auto, FakePygments fake) {
-        new ImplBinder<Pygments>(Pygments.class, site, 'features.pygments', 
+        new ImplBinder<Pygments>(Pygments.class, config, 'features.pygments', 
                 [python: python, jython: jython,
                  shell: shell, default: auto, none: fake]).proxy
     }
 
     @Provides @javax.inject.Singleton @Uncached
-    public Highlighter provideUncachedHighlighter(Site site,
+    public Highlighter provideUncachedHighlighter(Config config,
             Pygments pygments, FakeHighlighter fake) {
-        new ImplBinder<Highlighter>(Highlighter.class, site, 'features.highlight',
+        new ImplBinder<Highlighter>(Highlighter.class, config, 'features.highlight',
                 [pygments: pygments, default: fake]).proxy
     }
 
     @Provides @javax.inject.Singleton
-    public Highlighter provideHighlighter(Site site,
+    public Highlighter provideHighlighter(Config config,
             @Uncached Highlighter uncachedHighlighter,
             CachedHighlighter cachedHighlighter) {
-        new ImplBinder<Highlighter>(Highlighter.class, site, 'features.cache_highlight',
+        new ImplBinder<Highlighter>(Highlighter.class, config, 'features.cache_highlight',
                 [default: cachedHighlighter, false: uncachedHighlighter]).proxy
     }
 

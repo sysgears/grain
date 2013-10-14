@@ -18,8 +18,8 @@ package com.sysgears.grain.compass
 
 import com.google.inject.AbstractModule
 import com.google.inject.Provides
+import com.sysgears.grain.config.Config
 import com.sysgears.grain.config.ImplBinder
-import com.sysgears.grain.taglib.Site
 
 /**
  * Package-specific IoC config 
@@ -27,10 +27,10 @@ import com.sysgears.grain.taglib.Site
 class CompassModule extends AbstractModule {
 
     @Provides @javax.inject.Singleton
-    public Compass provideCompass(Site site,
+    public Compass provideCompass(Config config,
             FakeCompass fake, AutoCompass auto,
             RubyCompass ruby, JRubyCompass jruby, ShellCompass shell) {
-        new ImplBinder<Compass>(Compass.class, site, 'features.compass',
+        new ImplBinder<Compass>(Compass.class, config, 'features.compass',
                 [default: fake, auto: auto, ruby: ruby, jruby: jruby, shell: shell]).proxy
     }
 

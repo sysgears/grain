@@ -17,10 +17,11 @@
 package com.sysgears.grain.compass
 
 import com.sysgears.grain.CmdlineOptions
-import com.sysgears.grain.taglib.Site
+import com.sysgears.grain.config.Config
 import groovy.util.logging.Slf4j
 
 import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * Base implementation of Compass integration.
@@ -28,11 +29,14 @@ import javax.inject.Inject
 @Slf4j
 abstract class AbstractCompass implements Compass {
     
-    /** Site instance */
-    @Inject private Site site
+    /** Site config */
+    @Inject private Config config
     
     /** Command line options */
     @Inject private CmdlineOptions opts
+
+    /** Rendering mutex */
+    @Inject @Named("renderMutex") private Object mutex
 
     /**
      * Configures and launches Compass process
@@ -40,12 +44,17 @@ abstract class AbstractCompass implements Compass {
      * @param mode compass mode
      */
     public void configureAndLaunch(String mode) {
-        def compassConfig = [location: '/config.rb'].render().full
+        def compassConfig
 
-        def configFile = new File(site.cache_dir as String, 'config.rb')
-        if (!configFile.exists() || configFile.text != compassConfig) {
-            configFile.write(compassConfig)
+        synchronized (mutex) {
+            compassConfig = [location: '/config.rb'].render().full
+
+            def configFile = new File(config.cache_dir as String, 'config.rb')
+            if (!configFile.exists() || configFile.text != compassConfig) {
+                configFile.write(compassConfig)
+            }
         }
+
 
         launchCompass(mode)
     }

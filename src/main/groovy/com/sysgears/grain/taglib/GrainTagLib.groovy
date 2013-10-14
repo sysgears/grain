@@ -16,7 +16,6 @@
 
 package com.sysgears.grain.taglib
 
-import com.sysgears.grain.config.Config
 import com.sysgears.grain.registry.URLRegistry
 import com.sysgears.grain.render.ResourceView
 import groovy.util.logging.Slf4j
@@ -44,7 +43,7 @@ class GrainTagLib {
      * Creates and initializes an instance of resource tag lib.
      */
     @Inject
-    public GrainTagLib(Site site, Config config) {
+    public GrainTagLib(Site site) {
         this.site = site
     }
 

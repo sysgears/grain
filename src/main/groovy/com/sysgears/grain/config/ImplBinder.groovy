@@ -51,12 +51,12 @@ class ImplBinder<T extends ConfigChangeListener> {
      * Creates an instance of implementation binder.
      *  
      * @param ifc an interface that should be implemented by concrete classes
-     * @param site site instance
+     * @param config site config
      * @param propertyName the property in SiteConfig.groovy which should be monitored
      * @param implMap a map of [property value -> concrete implementation class],
      *                the value of 'default' is used for fallback concrete implementation
      */
-    public ImplBinder(Class<T> ifc, Site site, String propertyName,
+    public ImplBinder(Class<T> ifc, Config config, String propertyName,
                       Map<String, Object> implMap) {
         def map = [:]
         
@@ -67,7 +67,7 @@ class ImplBinder<T extends ConfigChangeListener> {
         }
 
         map."configChanged" = { Object[] args ->
-            def propertyValue = propertyName.split(/\./).inject(site)
+            def propertyValue = propertyName.split(/\./).inject(config)
                     { parent, property -> parent?."$property" }
             T impl = implMap.find { it.key == propertyValue }?.value as T
             if (impl == null) {
