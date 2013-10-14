@@ -62,6 +62,14 @@ dependencies {
      groovy 'org.codehaus.groovy:groovy:2.1.2'
 }
 
+sourceSets {
+    main {
+        groovy {
+            srcDirs = ['src/main/groovy', 'themes/octopress/theme/plugins']
+        }
+    }
+}
+
 jar {
     manifest {
         attributes 'Implementation-Title': 'Grain Static Website Generator',
@@ -178,21 +186,5 @@ if(hasProperty('nexusUsername') && hasProperty('nexusPassword')) {
 
             pom.project pomConfiguration
         }
-    }
-}
-
-idea.project {
-    jdkName = '1.7'
-
-    ipr.withXml { provider ->
-        def node = provider.asNode()
-
-        // Use GIT
-        def vcsConfig = node.component.find { it.'@name' == 'VcsDirectoryMappings' }
-        vcsConfig.mapping[0].'@vcs' = 'Git'
-
-        // Set Gradle home
-        def gradleSettings = node.appendNode('component', [name: 'GradleSettings'])
-        gradleSettings.appendNode('option', [name: 'SDK_HOME', value: gradle.gradleHomeDir])
     }
 }
