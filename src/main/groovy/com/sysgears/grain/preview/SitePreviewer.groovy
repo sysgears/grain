@@ -87,6 +87,10 @@ class SitePreviewer implements Service {
         context.addServlet(GrainServlet, '/')
     
         jetty.start()
+        jetty.join()
+        
+        // Force application shutdown when jetty stopped.
+        System.exit(0)
     }
 
     /**
