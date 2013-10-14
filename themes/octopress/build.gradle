@@ -23,6 +23,14 @@ dependencies {
     compile files("${project.grainJar}")
 }
 
+sourceSets {
+  main {
+    groovy {
+      srcDirs = ['theme/plugins']
+    }
+  }
+}
+
 repositories {
     mavenCentral()
 }
@@ -44,20 +52,4 @@ task(deploy) << {
 
 task wrapper(type: Wrapper) {
     gradleVersion = '1.4'
-}
-
-idea.project {
-    jdkName = '1.7'
-
-    ipr.withXml { provider ->
-        def node = provider.asNode()
-
-        // Use GIT
-        def vcsConfig = node.component.find { it.'@name' == 'VcsDirectoryMappings' }
-        vcsConfig.mapping[0].'@vcs' = 'Git'
-
-        // Set Gradle home
-        def gradleSettings = node.appendNode('component', [name: 'GradleSettings'])
-        gradleSettings.appendNode('option', [name: 'SDK_HOME', value: gradle.gradleHomeDir])
-    }
 }
