@@ -64,8 +64,8 @@ class SitePreviewer implements Service {
     public void start() {
         def jettyPort = config.jetty_port ?: 5000
         if (!available(jettyPort)) {
-            log.warn("Port ${jettyPort} is not available, exitting...")
-            return
+            log.error("Port ${jettyPort} is not available, exitting...")
+            System.exit(1)
         }
         
         fileWatcher.start()
