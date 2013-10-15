@@ -125,6 +125,8 @@ asides {
 
 features {
     highlight = "pygments"
+    cache_highlight = "true"
+    pygments = "auto"
     compass = "auto"
 }
 

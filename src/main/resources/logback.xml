@@ -6,6 +6,8 @@
     </encoder>
   </appender>
 
+  <!-- logger name="com.sysgears.grain.highlight.pygments" level="DEBUG"/ -->
+
   <root level="INFO">
     <appender-ref ref="STDOUT" />
   </root>
