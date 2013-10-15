@@ -112,5 +112,21 @@ class Application {
                 break
         }
         log.info "Total time: ${System.currentTimeMillis() - startTime}"
+        if (options.command == 'preview') {
+            Thread.startDaemon {
+                log.info "Press 'q' and ENTER or CTRL-C to terminate Grain"
+                boolean exit = false
+                while (!exit) {
+                    while (System.in.available()) {
+                        int ch = System.in.read()
+                        if (ch == 'q' || ch == 'Q') {
+                            log.info "Terminating Grain"
+                            System.exit(0)
+                        }
+                    }
+                    sleep(100, { exit = true })
+                }
+            }
+        }
     }
 }
