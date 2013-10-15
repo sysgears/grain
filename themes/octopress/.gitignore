@@ -1,0 +1,13 @@
+.idea
+*.iml
+.DS_Store
+.cache
+.gradle
+.nb-gradle
+.classpath
+.project
+.settings
+bin
+build
+out
+target
