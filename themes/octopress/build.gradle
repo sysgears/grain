@@ -2,12 +2,14 @@ apply plugin: 'maven'
 apply plugin: 'groovy'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
+apply plugin: 'application'
 version = '1.0'
 defaultTasks 'preview'
 
 def compatibilityVersion = 1.5
 sourceCompatibility = compatibilityVersion
 targetCompatibility = compatibilityVersion
+mainClassName = 'com.sysgears.grain.Launcher'
 
 clean.doLast { ant.delete(dir: ".cache"); ant.delete(dir: "target") }
 
@@ -22,6 +24,8 @@ project.ext {
 
 dependencies {
     compile files("${project.grainJar}")
+
+    compile 'org.codehaus.groovy:groovy:2.1.2'
 }
 
 sourceSets {
@@ -52,5 +56,11 @@ task(deploy) << {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.4'
+    gradleVersion = '1.8'
+}
+
+idea {
+    module {
+        excludeDirs = [".cache", ".idea", ".gradle", ".nb-gradle", ".settings", "bin", "out", "target"].collect { file(it) }
+    }
 }
