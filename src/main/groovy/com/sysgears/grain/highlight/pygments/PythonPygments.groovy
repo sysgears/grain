@@ -164,6 +164,10 @@ class PythonPygments extends Pygments {
             latch.countDown()
             streamLogger = streamLoggerFactory.create(process.err)
             streamLogger.start()
+            Thread.startDaemon {
+                process.waitFor()
+                streamLogger.interrupt()
+            }
             streamLogger.join()
             process.destroy()
             bos.close()

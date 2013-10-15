@@ -64,6 +64,10 @@ class ShellCompass extends AbstractCompass {
             streamLogger = streamLoggerFactory.create(process.in, process.err)
             streamLogger.start()
             latch.countDown()
+            Thread.startDaemon {
+                process.waitFor()
+                streamLogger.interrupt()
+            }
             streamLogger.join()
             process.destroy()
             log.info 'Shell compass process finished.'

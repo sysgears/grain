@@ -79,10 +79,14 @@ class RubyCompass extends AbstractCompass {
             def cmdline = ['ruby'] + gemIncludes +
                     [new File(compassDir, 'bin/compass').canonicalPath, mode] as List<String>
             
-            def process = cmdline.execute([], new File(site.cache_dir.toString())) 
+            def process = cmdline.execute([], new File(site.cache_dir.toString()))
             streamLogger = streamLoggerFactory.create(process.in, process.err)
             streamLogger.start()
             latch.countDown()
+            Thread.startDaemon {
+                process.waitFor()
+                streamLogger.interrupt()
+            }
             streamLogger.join()
             process.destroy()
             log.info 'Ruby compass process finished.'
