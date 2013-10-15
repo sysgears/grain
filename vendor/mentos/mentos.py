@@ -5,7 +5,7 @@ import sys, re, os, signal
 import traceback
 
 if 'VENDOR_PYGMENTS' in os.environ:
-    sys.path.append(os.environ['VENDOR_PYGMENTS'])
+    sys.path.insert(1, os.environ['VENDOR_PYGMENTS'])
 sys.path.append(os.environ['VENDOR_SIMPLEJSON'])
 
 import pygments
