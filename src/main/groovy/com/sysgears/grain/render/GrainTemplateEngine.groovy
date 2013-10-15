@@ -17,8 +17,10 @@
 package com.sysgears.grain.render
 
 import com.github.rjeschke.txtmark.Processor
+import com.sysgears.grain.GrainConstants
 import com.sysgears.grain.PerfMetrics
 import com.sysgears.grain.config.Config
+import com.sysgears.grain.exceptions.RenderExceptionFactory
 import com.sysgears.grain.highlight.PageHighlighter
 import com.sysgears.grain.registry.HeaderParser
 import com.sysgears.grain.registry.ResourceLocator
@@ -68,6 +70,9 @@ class GrainTemplateEngine implements TemplateEngine, SiteChangeListener {
 
     /** Groovy script-based template factory */
     @Inject private GroovyTemplateFactory groovyTemplateFactory
+
+    /** Render exception factory (instantiates RenderException instances with detailed information about exception) */
+    @Inject private RenderExceptionFactory renderExceptionFactory
 
     /**
      * Clears Groovy Shell cache on site change event to prevent out of memory. 
@@ -126,7 +131,7 @@ class GrainTemplateEngine implements TemplateEngine, SiteChangeListener {
         
         long startScriptParse = System.currentTimeMillis()
         perf.docParseTime += (startScriptParse - startDocParse)
-        def scriptName = "GrainScript${counter++}.groovy"
+        def scriptName = "${GrainConstants.SCRIPT_NAME}${counter++}.groovy"
         
         def template
         if (isScript) {
@@ -140,16 +145,12 @@ class GrainTemplateEngine implements TemplateEngine, SiteChangeListener {
             } catch (RenderException gr) {
                 throw gr
             } catch (t) {
-                def sw = new StringWriter()
-                t.printStackTrace(new PrintWriter(sw))
-                def src = new StringWriter()
-                source.readLines().eachWithIndex { String line, int i -> src.append("${i+1}: ${line}\n")}
-                throw new RenderException("Failed to parse ${file} script: " + sw.toString() + "\nScript source:\n${src}")
+                throw renderExceptionFactory.create("Failed to parse ${file}", t, file)
             }
         } else {
             template = textTemplateFactory.create(text, fragments, pageConfig.layout)
         }
-        
+
         template
     }
 }

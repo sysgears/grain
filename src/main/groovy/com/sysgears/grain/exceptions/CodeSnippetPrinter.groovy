@@ -14,25 +14,17 @@
  * limitations under the License.
  */
 
-package com.sysgears.grain.expando
 
-import javax.inject.Inject
-import javax.inject.Named
+package com.sysgears.grain.exceptions
 
-/**
- * Grain extension methods to standard Groovy classes registrar.  
- */
-@Named
-@javax.inject.Singleton
-public class GrainDynamicMethods {
 
-    /** Map extension methods */
-    @Inject private MapDynamicMethods mapDynamicMethods
+
+interface CodeSnippetPrinter {
 
     /**
-     * Registers all the Grain extension methods to standard Groovy classes.
+     * Method for printing code snippet which has errors.
+     * @param e Throwable
+     * @return pretty formatted String with code snippet where exception occurred.
      */
-    public void register() {
-        mapDynamicMethods.register()
-    }
+    String printCodeSnippet(Throwable e)
 }

@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package com.sysgears.grain.expando
 
-import javax.inject.Inject
-import javax.inject.Named
+package com.sysgears.grain.exceptions
+
+
 
 /**
- * Grain extension methods to standard Groovy classes registrar.  
+ * Interface that tells that class is source aware.
  */
-@Named
-@javax.inject.Singleton
-public class GrainDynamicMethods {
-
-    /** Map extension methods */
-    @Inject private MapDynamicMethods mapDynamicMethods
+public interface SourceCodeAware {
 
     /**
-     * Registers all the Grain extension methods to standard Groovy classes.
+     * Get file where exception occurred
+     * @return
      */
-    public void register() {
-        mapDynamicMethods.register()
-    }
+    File getFile()
+
+    /**
+     * Get line number where exception occurred
+     * @return
+     */
+    int getLineNumber()
 }

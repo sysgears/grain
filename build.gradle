@@ -43,13 +43,13 @@ dependencies {
          exclude group: 'org.slf4j'
      }
      compile 'org.slf4j:jcl-over-slf4j:1.7.5'
-    
+
      compile 'oauth.signpost:signpost-core:1.2.1.2'
      compile 'oauth.signpost:signpost-commonshttp4:1.2.1.2'
-     
+
      compile "com.google.inject:guice:4.0-beta"
      compile "com.google.inject.extensions:guice-assistedinject:4.0-beta"
-    
+
      compile "javax.inject:javax.inject:1"
 
      testCompile("org.spockframework:spock-core:0.7-groovy-2.0") {
@@ -81,13 +81,17 @@ jar {
     }
 }
 
-task uberJar(type: Jar,dependsOn:[':compileJava',':compileGroovy']) {
+task uberJar(type: Jar, dependsOn: [':compileJava', ':compileGroovy']) {
     from files(sourceSets.main.output.classesDir)
     from files(sourceSets.main.output.resourcesDir)
+    from("META-INF/services") {
+        filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [version: version])
+    }
     from(configurations.runtime.asFileTree.files.collect { zipTree(it) }) {
         exclude "META-INF/*.SF"
         exclude "META-INF/*.DSA"
         exclude "META-INF/*.RSA"
+        exclude "META-INF/services/org.codehaus.groovy.runtime.ExtensionModule"
     }
     manifest {
         attributes 'Implementation-Title': 'Grain Static Website Generator',
@@ -147,7 +151,7 @@ install {
     }
 }
 
-if(hasProperty('nexusUsername') && hasProperty('nexusPassword')) {
+if (hasProperty('nexusUsername') && hasProperty('nexusPassword')) {
     apply plugin: 'signing'
 
     signing {

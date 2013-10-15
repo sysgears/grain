@@ -14,25 +14,16 @@
  * limitations under the License.
  */
 
-package com.sysgears.grain.expando
 
-import javax.inject.Inject
-import javax.inject.Named
+package com.sysgears.grain.exceptions
 
-/**
- * Grain extension methods to standard Groovy classes registrar.  
- */
-@Named
-@javax.inject.Singleton
-public class GrainDynamicMethods {
 
-    /** Map extension methods */
-    @Inject private MapDynamicMethods mapDynamicMethods
+public interface StackTracePrinter {
 
     /**
-     * Registers all the Grain extension methods to standard Groovy classes.
+     * Method for pretty printing stack trace.
+     * @param e Throwable
+     * @return pretty formatted String with modified stack trace elements.
      */
-    public void register() {
-        mapDynamicMethods.register()
-    }
+    String printStackTrace(Throwable e)
 }
