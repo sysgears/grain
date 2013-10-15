@@ -3,6 +3,11 @@
 .DS_Store
 .cache
 .gradle
-target
-out
+.nb-gradle
+.classpath
+.project
+.settings
+bin
 build
+out
+target

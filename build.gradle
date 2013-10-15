@@ -59,7 +59,7 @@ dependencies {
          exclude module: 'groovy-all'
      }
     
-     groovy 'org.codehaus.groovy:groovy:2.1.2'
+     compile 'org.codehaus.groovy:groovy:2.1.2'
 }
 
 sourceSets {
@@ -105,23 +105,7 @@ task createAllDeliverables(dependsOn: [uberJar]) {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.4'
-}
-
-task "install-theme" << {
-	description = 'Copies theme files from themes directory (site name and theme name are required)'
-	if (!site || !theme) {
-		println "Example usage: gradlew install-theme -Psite=example.com -Ptheme=classic"
-	} else {
-		println "Copying theme files to $rootDir/$site directory..."
-		ant.copy(todir: "$rootDir/$site/sass", overwrite: true) {
-			fileset(dir: "$rootDir/.themes/$theme/sass")
-		}
-		ant.copy(todir: "$rootDir/$site", overwrite: true) {
-			fileset(dir: "$rootDir/.themes/$theme/source")
-		}
-		println "Successfully installed theme: $theme"
-	}
+    gradleVersion = '1.8'
 }
 
 artifacts {
@@ -186,5 +170,12 @@ if(hasProperty('nexusUsername') && hasProperty('nexusPassword')) {
 
             pom.project pomConfiguration
         }
+    }
+}
+
+idea {
+    module {
+        excludeDirs = [".cache", ".idea", ".gradle", ".nb-gradle", ".settings", "bin", "out", "target"].
+                collect { [file(it), file("themes/octopress/${it}")] }.flatten()
     }
 }
