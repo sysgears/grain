@@ -72,7 +72,9 @@ class SitePreviewer implements Service {
         log.info 'Building resource registry...'
         registry.start()
         try {
-            siteChangeBroadcaster.siteChanged()
+            synchronized (mutex) {
+                siteChangeBroadcaster.siteChanged()
+            }
         } catch (t) {
             t.printStackTrace()
         }
