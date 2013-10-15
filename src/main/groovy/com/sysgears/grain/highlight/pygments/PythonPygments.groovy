@@ -93,7 +93,7 @@ class PythonPygments extends Pygments {
             // Encode source code
             def sourceBytes = "${id}  ${code}  ${id}".bytes
             // Pass various options to highlight pygments method
-            def kwargs = [id: id, bytes: sourceBytes.length, options: [outencoding: 'utf-8']]
+            def kwargs = [id: id, bytes: sourceBytes.length, options: [outencoding: 'utf-8'], lexer: language]
             // Create header for Mentos
             def hdrBytes = JSONObject.fromObject([method: 'highlight', args: null, kwargs: kwargs]).toString().bytes
             // Format size of the header as binary string
@@ -104,6 +104,10 @@ class PythonPygments extends Pygments {
             bos.write(hdrBytes)
             bos.write(sourceBytes)
             bos.flush()
+            
+            if (log.debugEnabled) {
+                log.debug(new String(sizeBytes) + new String(hdrBytes) + new String(sourceBytes))
+            }
 
             // Parse response from Mentos
 
