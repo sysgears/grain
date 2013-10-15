@@ -9,7 +9,7 @@
 %>
 
 <% if (when == 'posted') {
-    Date postedDate = site.sdf.parse(postedOn) %>
+    Date postedDate = Date.parse(site.dateTimeFormat, postedOn) %>
     <time datetime="${toXmlTime(postedDate)}" pubdate ${ updatedOn != postedOn ? 'data-updated=true' : '' }>
       <span class="month">${postedDate.format(monthFormat)}</span>
       <span class="day">${postedDate.format(dayFormat)}</span>,
@@ -18,7 +18,7 @@
   <% } %>
 
 <% if (when == 'updated' && updatedOn) {
-     Date updatedDate = site.sdf.parse(updatedOn) %>
+     Date updatedDate = Date.parse(site.dateTimeFormat, updatedOn) %>
      <time datetime="${toXmlTime(updatedDate)}" class="updated">
        Updated
        <span class="month">${updatedDate.format(monthFormat)}</span>

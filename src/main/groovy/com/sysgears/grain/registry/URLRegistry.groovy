@@ -87,7 +87,7 @@ class URLRegistry implements SiteChangeListener {
         log.info 'Rebuilding url->resource map'
 
         urlMap = registry.resources.
-                sort { -config.sdf.parse(it.date as String).time }.
+                sort { -Date.parse(config.dateTimeFormat, it.date as String).time }.
                 collectEntries { resource ->
                     [resource.defaultUrl ?: resource.location, resource]
                 } as Map< String, Map<String, Object> >

@@ -1,5 +1,5 @@
 <%
-  def date = site.sdf.parse(page.date)
+  def date = Date.parse(site.dateTimeFormat, page.date)
   def day = date.format('dd')
   def month = date.format('MMM')
 %>

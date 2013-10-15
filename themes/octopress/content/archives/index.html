@@ -7,7 +7,7 @@ title: Blog Archive
   <%
     def year
     page.posts.each { post ->
-      def yearOfPost = site.sdf.parse(post.date).format('yyyy')
+      def yearOfPost = Date.parse(site.dateTimeFormat, post.date).format('yyyy')
       if (year != yearOfPost) {
         year = yearOfPost %>
         <h2>${year}</h2>

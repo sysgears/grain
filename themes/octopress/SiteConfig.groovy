@@ -1,11 +1,9 @@
 import com.sysgears.grain.ResourceMapper
 import com.sysgears.grain.OctopressTagLib
 
-import java.text.SimpleDateFormat
-
 Locale.setDefault(Locale.US)
 
-sdf = new SimpleDateFormat('yyyy-MM-dd HH:mm')
+dateTimeFormat = 'yyyy-MM-dd HH:mm'
 excludes = ["/sass/.*", "/images/icons/.*", "/plugins/.*", "/target/.*"]
 
 environments {
@@ -132,7 +130,7 @@ features {
 
 
 title = "My Grain Blog"
-subtitle = "A blogging framework for hackers."
+subtitle = "A static web site building framework"
 author = "Your name"
 about = "A little something about me."
 email = "info@sysgears.com"
@@ -170,7 +168,7 @@ new_post: { String postTitle ->
     file.exists() || file.write("""---
 layout: post
 title: "${postTitle}"
-date: "${site.sdf.format(date)}"
+date: "${dateTimeFormat.format(date)}"
 author:
 comments: true
 categories: [article]
