@@ -32,12 +32,12 @@ class StreamLogger {
     /** Read buffer size  */
     private static final int BUFFER_SIZE = 4096
     
-    /** Stream to log */
+    /** Streams to log */
     private List<InputStream> streams
     
     /** Stream logging threads */
     private List<Thread> threads
-
+    
     /**
      * Creates an instance of the class
      * 
@@ -68,10 +68,10 @@ class StreamLogger {
                         }
                         sb.append(new String(buffer, 0, bytes))
 
-                        int idx = sb.lastIndexOf('\n')
-                        if (idx != -1) {
+                        int idx
+                        while ((idx = sb.lastIndexOf('\n')) != -1) {
                             log.info sb.substring(0, idx)
-                            sb = sb.delete(0, idx)
+                            sb = sb.delete(0, idx + 1)
                         }
                     }
                     sleep(1000L, { exit = true })
