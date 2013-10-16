@@ -18,8 +18,6 @@ package com.sysgears.grain.preview
 
 import com.sysgears.grain.compress.ResourceCompressor
 import com.sysgears.grain.registry.URLRegistry
-import com.sysgears.grain.exceptions.DefaultErrorsPrinter
-import com.sysgears.grain.render.RenderException
 
 import javax.servlet.ServletConfig
 import javax.servlet.ServletContext
@@ -45,12 +43,6 @@ class GrainServlet extends HttpServlet {
     /** Render mutex */
     private Object mutex
 
-    /** Console errors printer (prints render exceptions) */
-    private DefaultErrorsPrinter errorsPrinter
-
-    /** Page URL for displaying error screen */
-    private static final ERROR_PAGE_URI = '/error.html'
-
     /**
      * Initializes Grain servlet from Servlet container context.
      * 
@@ -65,8 +57,8 @@ class GrainServlet extends HttpServlet {
         this.compressor = (ResourceCompressor) context.getAttribute('compressor')
         this.mutex = (Object) context.getAttribute('renderMutex')
         this.servletContext = context
-        this.errorsPrinter = new DefaultErrorsPrinter()
-        log("GrainServlet initialized")
+
+        log 'GrainServlet initialized'
     }
 
     /**
@@ -96,29 +88,18 @@ class GrainServlet extends HttpServlet {
                     response.sendError(HttpServletResponse.SC_NOT_FOUND)
                 }
             } else {
+                try {
                     def mimeType = servletContext.getMimeType(uri) ?: (uri.endsWith('/') ? 'text/html' : 'text/plain')
                     response.setContentType("$mimeType; charset=utf-8")
                     if (compressor.gzipEnabled) {
                         response.addHeader("Content-Encoding", "gzip")
                     }
-                try {
-                    response.getOutputStream().write(compressor.compress(resource.location, resource.render().bytes))
                     response.setStatus(HttpServletResponse.SC_OK)
-                } catch (RenderException t) {
-                    log(errorsPrinter.printStackTrace(t))
-                    log(errorsPrinter.printCodeSnippet(t))
-                    resource = urlRegistry.getResource(ERROR_PAGE_URI)
-                    if (resource) {
-                        // write an error page response
-                        response.getOutputStream().write(
-                                compressor.compress(resource.location, (resource + [exception: t]).render().bytes))
-                    } else {
-                        response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR)
-                    }
-                } catch(Throwable t) {
-                    log("Failed to render resource", t)
+                    response.getOutputStream().write(compressor.compress(resource.location, resource.render().bytes))
+                    response.flushBuffer()
+                } catch (t) {
+                    t.printStackTrace()
                 }
-                response.flushBuffer()
             }
         }
     }

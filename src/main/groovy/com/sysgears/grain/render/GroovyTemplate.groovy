@@ -18,9 +18,7 @@ package com.sysgears.grain.render
 
 import com.google.inject.assistedinject.Assisted
 import com.sysgears.grain.PerfMetrics
-import com.sysgears.grain.exceptions.RenderExceptionFactory
 import com.sysgears.grain.registry.ResourceLocator
-import groovy.util.logging.Slf4j
 import org.codehaus.groovy.runtime.InvokerHelper
 
 import javax.annotation.Nullable
@@ -42,9 +40,6 @@ class GroovyTemplate implements ResourceTemplate {
 
     /** Template engine */
     @Inject private TemplateEngine engine
-
-    /** Render Exception factory instance */
-    @Inject private RenderExceptionFactory renderExceptionFactory
 
     /** Source file */
     private final File file
@@ -85,7 +80,12 @@ class GroovyTemplate implements ResourceTemplate {
      * @return rendered view of this template
      */
     public ResourceView render(final Map bindings) {
-        Binding binding = bindings == null ? new Binding() : new Binding(bindings)
+        Binding binding
+        if (bindings == null)
+            binding = new Binding()
+        else
+            binding = new Binding(bindings)
+
         try {
             ResourceView view
 
@@ -113,11 +113,14 @@ class GroovyTemplate implements ResourceTemplate {
             }
 
             view
-        } catch (RenderException re) {
-            throw re
+        } catch (RenderException gr) {
+            throw gr
         } catch (t) {
-            throw renderExceptionFactory.create("Failed to parse ${file}",
-                    t, file)
+            def sw = new StringWriter()
+            t.printStackTrace(new PrintWriter(sw))
+            def src = new StringWriter()
+            source.readLines().eachWithIndex { String line, int i -> src.append("${i+1}: ${line}\n")}
+            throw new RenderException("Failed to parse ${file} script: " + sw.toString() + "\nScript source:\n${src}")
         }
     }
 

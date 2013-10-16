@@ -16,10 +16,7 @@
 
 package com.sysgears.grain.taglib
 
-import com.sysgears.grain.config.Config
-import com.sysgears.grain.exceptions.ViewErrorsPrinter
 import com.sysgears.grain.registry.URLRegistry
-import com.sysgears.grain.render.RenderException
 import com.sysgears.grain.render.ResourceView
 import groovy.util.logging.Slf4j
 
@@ -36,9 +33,6 @@ class GrainTagLib {
     /** Resource locator */
     @Inject private URLRegistry urlRegistry
 
-    /** Code snippet and stack traces printer */
-    @Inject private ViewErrorsPrinter viewErrorsPrinter
-
     /** Site instance exposed to the resource code */
     Site site
 
@@ -49,7 +43,7 @@ class GrainTagLib {
      * Creates and initializes an instance of resource tag lib.
      */
     @Inject
-    public GrainTagLib(Site site, Config config) {
+    public GrainTagLib(Site site) {
         this.site = site
     }
 
@@ -106,17 +100,5 @@ class GrainTagLib {
             def msg = "Resource not found: ${templatePath}"
             new ResourceView(content: msg, full: msg, bytes: msg.bytes)
         }
-    }
-
-    /**
-     * Renders exception information
-     */
-    def renderException = { RenderException e ->
-        StringBuilder sb = new StringBuilder()
-        sb << viewErrorsPrinter.printExceptionMessage(e)
-        sb << viewErrorsPrinter.printMessageSnippet(e)
-        sb << viewErrorsPrinter.printCodeSnippet(e)
-        sb << viewErrorsPrinter.printStackTrace(e)
-        sb.toString()
     }
 }

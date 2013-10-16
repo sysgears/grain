@@ -32,64 +32,57 @@ public class ScriptTranslator {
     /** ScriptWriter factory */
     @Inject private Provider<ScriptWriter> scriptPrototype
 
-    /** Source blocks regex */
-    public static final SOURCE_REGEX = /```|\$\{|<%=|<%/
-
     /**
      * Translates Grain script code into Groovy source code.
-     *
+     * 
      * @param scriptSource Grain script source code
-     * @param insertions list of text chunks, each chunk should be placed instead of ```,
+     * @param insertions list of text chunks, each chunk should be placed instead of ```, 
      *                   without translation
-     *
+     * 
      * @return Groovy source code 
      */
     public String translate(String scriptSource, List insertions = []) {
         def codeIdx = 0
         def script = scriptPrototype.get()
         while (scriptSource.length() > 0) {
-            def m = scriptSource =~ SOURCE_REGEX
+            def m = scriptSource =~ /```|\$\{|<%=|<%/
+
             def found = m.find()
+
             script.write(scriptSource.substring(0, found ? m.start() : scriptSource.length())
                     .replaceAll('\r', '').replaceAll(/([\$"\\])/, '\\\\$1'))
+
             scriptSource = found ? scriptSource.substring(m.end()) : ""
+
             if (found) {
                 def op = m[0]
-                switch (op) {
-                    case '```':
-                        def code = insertions[codeIdx++] as String
-                        script.write(code.replaceAll("\\\\", "\\\\\\\\").replaceAll("'", "\\\\'"),
-                                StatementType.STRING_WRITE)
-                        break
-                    case '<%':
-                        def m2 = scriptSource =~ /%>/
-                        if (m2.find()) {
-                            script.write("${scriptSource.substring(0, m2.start())};", StatementType.PLAIN_CODE)
-                            scriptSource = scriptSource.substring(m2.end())
-                        }
-                        break
-                    case '<%=':
-                        def m2 = scriptSource =~ /%>/
-                        if (m2.find()) {
-                            script.write("\${->${scriptSource.substring(0, m2.start())}}")
-                            scriptSource = scriptSource.substring(m2.end())
-                        }
-                        break
-                    case '${':
-                        int idx = 0
-                        int open = 1
-                        while (open > 0 || idx == scriptSource.length() - 1) {
-                            def m2 = scriptSource.substring(idx) =~ /\{|\}/
-                            if (m2[0] == '{') open++
-                            else if (m2[0] == '}') open--
-                            idx += m2.end()
-                        }
-                        script.write("\${->${scriptSource.substring(0, idx - 1)}}")
-                        scriptSource = scriptSource.substring(idx)
-                        break
+
+                if (op == '```') {
+                    def code = insertions[codeIdx++] as String
+                    script.write(code.replaceAll("\\\\", "\\\\\\\\").replaceAll("'", "\\\\'"), StatementType.STRING_WRITE)
+                } else if (op == '<%') {
+                    def m2 = scriptSource =~ /%>/
+                    if (m2.find()) {
+                        script.write(scriptSource.substring(0, m2.start()).trim() + ";\n", StatementType.PLAIN_CODE)
+                        scriptSource = scriptSource.substring(m2.end())
+                    }
+                } else if (op == '<%=') {
+                    def m2 = scriptSource =~ /%>/
+                    if (m2.find()) {
+                        script.write('${' + scriptSource.substring(0, m2.start()).trim() + '}')
+                        scriptSource = scriptSource.substring(m2.end())
+                    }
+                } else if (op == '${') {
+                    def m2 = scriptSource =~ /}/
+                    if (m2.find()) {
+                        script.write('${' + scriptSource.substring(0, m2.start())
+                                .replaceAll('[\r\n]', '').trim() + '}')
+                        scriptSource = scriptSource.substring(m2.end())
+                    }
                 }
             }
         }
         script.toString()
     }
+    
 }

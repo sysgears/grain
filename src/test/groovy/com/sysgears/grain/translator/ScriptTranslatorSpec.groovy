@@ -13,29 +13,29 @@ class ScriptTranslatorSpec extends Specification {
 
     def 'check $ block translation'() {
         expect: '$ block should be translated unmodified'
-        translator.translate('abc${2 + 3}def') == 'out.write("""abc${->2 + 3}def""");'
+        translator.translate('abc${2 + 3}def').trim() == 'out.write("""abc${2 + 3}def""");' 
     }
 
     def 'check <%= block translation'() {
         expect: '<%= block should be translated unmodified'
-        translator.translate('klm<%= 2 + 3 %>nop') == 'out.write("""klm${-> 2 + 3 }nop""");'
+        translator.translate('klm<%= 2 + 3 %>nop').trim() == 'out.write("""klm${2 + 3}nop""");'
     }
 
     def 'check <% block translation'() {
         expect: '<% block should be translated to groovy code block'
-        translator.translate('abc<% def a = 1 %>def') == 'out.write("""abc"""); def a = 1 ;out.write("""def""");'
+        translator.translate('abc<% def a = 1 %>def').trim() == 'out.write("""abc""");\ndef a = 1;\nout.write("""def""");'
     }
 
     def 'check highlighted block translation'() {
         expect: 'highlighted block should be translated into statements that disallow groovy expressions'
-        translator.translate('abc```def', ['$xyz']) ==
-                'out.write("""abc""");out.write(\'\'\'$xyz\'\'\');out.write("""def""");'
+        translator.translate('abc```def', ['$xyz']).trim() ==
+                'out.write("""abc""");\nout.write(\'\'\'$xyz\'\'\');\nout.write("""def""");'
     }
     
     def 'check long lines truncation'() {
         def stLen = 'out.write("""""");'.length()
         expect: 'very long line should be automatically truncated'
-        translator.translate('a' * 30000) ==
-                'out.write("""' + ('a' * (30000 - stLen)) + '""");' + 'out.write("""' + ('a' * stLen) + '""");'
+        translator.translate('a' * 30000).trim() ==
+                'out.write("""' + ('a' * (30000 - stLen)) + '""");\n' + 'out.write("""' + ('a' * stLen) + '""");'
     }
 }

@@ -1,4 +1,0 @@
-moduleName=grozy-extensions
-moduleVersion=@version@
-extensionClasses=com.sysgears.grain.extensions.GrainStringExtension, \
-  com.sysgears.grain.extensions.GrainFileExtension, org.codehaus.groovy.runtime.XmlGroovyMethods

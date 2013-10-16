@@ -26,13 +26,21 @@ import javax.inject.Named
 @javax.inject.Singleton
 public class GrainDynamicMethods {
 
+    /** File extension methods */
+    @Inject private FileDynamicMethods fileDynamicMethods
+
     /** Map extension methods */
     @Inject private MapDynamicMethods mapDynamicMethods
+
+    /** String extension methods */
+    @Inject private StringDynamicMethods stringDynamicMethods
 
     /**
      * Registers all the Grain extension methods to standard Groovy classes.
      */
     public void register() {
+        stringDynamicMethods.register()
+        fileDynamicMethods.register()
         mapDynamicMethods.register()
     }
 }

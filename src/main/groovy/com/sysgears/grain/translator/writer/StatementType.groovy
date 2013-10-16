@@ -48,7 +48,11 @@ enum StatementType {
      * @return statement open expression 
      */
     public String getOpenStr() {
-        quoteChars ? "out.write(${quoteChars}".toString() : ''
+        if (quoteChars) {
+            "out.write(" + quoteChars
+        } else {
+            ""
+        }
     }
 
     /**
@@ -57,6 +61,10 @@ enum StatementType {
      * @return statement close expression 
      */
     public String getCloseStr() {
-        quoteChars ? "${quoteChars});".toString() : ''
+        if (quoteChars) {
+            quoteChars + ");\n"
+        } else {
+            ""
+        }
     }
 }

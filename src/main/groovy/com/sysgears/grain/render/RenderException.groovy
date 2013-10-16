@@ -16,31 +16,8 @@
 
 package com.sysgears.grain.render
 
-import com.sysgears.grain.exceptions.SourceCodeAware
-
-/** Render exception is a wrapper for exceptions thrown from GrainScript. */
-class RenderException extends RuntimeException implements SourceCodeAware {
-
-    private File file
-    private int lineNumber
-
-    RenderException(String message, Throwable cause, File file, Integer lineNumber) {
-        super(message, cause)
-        this.file = file
-        this.lineNumber = lineNumber
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    File getFile() {
-        file
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    int getLineNumber() {
-        lineNumber
+class RenderException extends GroovyRuntimeException {
+    RenderException(String message) {
+        super(message)
     }
 }
