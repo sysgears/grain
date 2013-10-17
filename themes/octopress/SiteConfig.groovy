@@ -1,5 +1,5 @@
-import com.sysgears.grain.ResourceMapper
-import com.sysgears.grain.OctopressTagLib
+import com.example.grain.ResourceMapper
+import com.example.grain.OctopressTagLib
 
 Locale.setDefault(Locale.US)
 
@@ -20,7 +20,7 @@ environments {
     }
     prod {
         log.info "Production environment is used"
-        jetty_port = 4002
+        jetty_port = 4000
         features {
             compress_xml = true
             compress_html = true
@@ -135,13 +135,13 @@ title = "My Grain Blog"
 subtitle = "A static web site building framework"
 author = "Your name"
 about = "A little something about me."
-email = "info@sysgears.com"
+email = "info@example.com"
 simple_search = "http://google.com/search"
 subscribe_rss = "atom.xml"
 subscribe_email = "username@gmail.com"
 // google_analytics_tracking_id = "UA-XXXXXXXX-X"
 api_key = "kwJiszKArE6455wVlPt8zQrTrwIRUubnC63F8kiwj00lCcfzNkk5RIBDPpwmbDJQ"
-forum_name = "sysgears"
+forum_name = "example"
 posts_per_page = 5
 archives_per_page = 10
 rss_post_count = 20
@@ -179,10 +179,10 @@ categories: [article]
         }]
 
 deploy = "s3"
-s3_bucket = "www1.sysgears.com"
+s3_bucket = "www.example.com"
 s3_deploy_cmd = "s3cmd sync --acl-public --reduced-redundancy ${destination_dir}/ s3://${s3_bucket}/"
 
-rsync_ssh_user = "sysgvla4@sysgears.com"
+rsync_ssh_user = "user@example.com"
 rsync_ssh_port = "22"
 rsync_document_root = "~/public_html/"
 rsync_deploy_cmd = "rsync -avze 'ssh -p ${rsync_ssh_port}' --delete ${destination_dir} ${rsync_ssh_user}:${rsync_document_root}"

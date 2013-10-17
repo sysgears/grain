@@ -1,4 +1,4 @@
-package com.sysgears.grain
+package com.example.grain
 
 import com.sysgears.grain.taglib.GrainTagLib
 
