@@ -1,18 +1,17 @@
 ---
 layout: post
-title: Groovy godness!
+title: Groovy goodness!
 date: 2013-03-23 17:30
-author: Aleksey Lisikh
+author: John
 comments: true
 categories: [java, energy, groovy]
 published: false
 sharing: true
 ---
 
+###Have you ever heard about Groovy?
 
-###Have you ever heard about groovy?
-
-let's talk about it ;)
+Let's talk about it ;)
 
 <!--more-->
 
@@ -25,9 +24,9 @@ class CarFactory {
 }
 ```
 
+Here is some sample video, for you to check out!
 
-${ video src: 'http://s3.imathis.com/video/zero-to-fancy-buttons.mp4', width: 640, height: 320, poster: 'http://s3.imathis.com/video/zero-to-fancy-buttons.png'}
-
-This sample code was stolen from Yura's article.
+${ video src: 'http://s3.imathis.com/video/zero-to-fancy-buttons.mp4', width: 640, height: 320,
+  poster: 'http://s3.imathis.com/video/zero-to-fancy-buttons.png'}
 
 Bye, bye!

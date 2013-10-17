@@ -2,7 +2,7 @@
 layout: post
 title: Great embedded Gists are coming
 date: 2012-03-23 16:00
-author: Aleksey Lisikh
+author: John
 comments: true
 categories: [java, energy, groovy]
 published: false
@@ -10,9 +10,9 @@ sharing: true
 ---
 
 
-###Have you ever heard about groovy?
+###Have you ever heard about Groovy?
 
-Hey, checkout my latest gist!
+Hey, checkout this latest gist!
 
 <!--more-->
 

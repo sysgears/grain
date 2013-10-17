@@ -1,21 +1,20 @@
 ---
 layout: post
-title: Not sure this is useful...
+title: Sample post with some code
 date: 2013-03-21 17:33
 updated: 2013-04-08 09:53
-author: yura
+author: joe
 comments: true
-categories: [java, tech, headache]
+categories: [groovy, tech]
 published: true
 sharing: true
 button: Let's go ;)
 asides: [asides/recent_posts.html, asides/twitter.html]
 ---
 
+Hi there!
 
-Hello dudes! Let's talk about groovy!
-
-Here's a sample code! Have fun!
+Here's a sample Groovy code!
 
 <!--more-->
 
@@ -28,6 +27,5 @@ class CarFactory {
 }
 ```
 
-Best Regards,  
-Yura Ivanov  
-SysGears
+Regards,  
+Joe
