@@ -71,7 +71,9 @@ class ResourceMapper {
                     break
                 case '/authors/':
                     postsByAuthor.each { String author, List items ->
-                        applyPagination(items, site.posts_per_page, "${page.url}${author.encodeAsSlug()}/", [author: author])
+                        if (author) {
+                            applyPagination(items, site.posts_per_page, "${page.url}${author.encodeAsSlug()}/", [author: author])
+                        }
                     }
                     break
                 case '/categories/':
