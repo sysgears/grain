@@ -166,11 +166,11 @@ new_post: { String postTitle ->
     def date = new Date()
     def fileDate = date.format("yyyy-MM-dd")
     def filename = fileDate + "-" + postTitle.encodeAsSlug() + ".markdown"
-    def file = new File(content_dir + "/_posts/" + filename)
+    def file = new File(content_dir + "/articles/" + filename)
     file.exists() || file.write("""---
 layout: post
 title: "${postTitle}"
-date: "${dateTimeFormat.format(date)}"
+date: "${date.format(dateTimeFormat)}"
 author:
 comments: true
 categories: [article]
