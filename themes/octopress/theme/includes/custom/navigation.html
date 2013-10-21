@@ -1,4 +1,5 @@
 <ul class="main-navigation">
-  <li><a href="/">Blog</a></li>
-  <li><a href="/archives/">Archives</a></li>
+  <% page.siteMenu.each { url, title -> %>
+    <li><a href="${url}">${title}</a></li>
+  <% } %>
 </ul>

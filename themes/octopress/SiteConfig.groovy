@@ -175,8 +175,22 @@ author:
 comments: true
 categories: [article]
 ---
-""")
-        }]
+""")},
+new_page: { String location, String pageTitle ->
+        def ext = new File(location).extension
+        def file
+        if (!ext) {
+            file = new File(content_dir + location, 'index.markdown')
+        } else {
+            file = new File(content_dir, location)
+        }
+        file.parentFile.mkdirs()
+        file.exists() || file.write("""---
+layout: page
+title: "${pageTitle}"
+navigate: true
+---
+""")}]
 
 deploy = "s3"
 s3_bucket = "www.example.com"

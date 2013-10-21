@@ -22,7 +22,7 @@ class ResourceMapper {
      */
     def map = { resources ->
         def publishedResources = resources.findAll { it.published != false || site.show_unpublished }
-        customizeModels << customizeAsides << customizeUrls << publishedResources
+        customizeModels << addSiteMenu << customizeAsides << customizeUrls << publishedResources
     }
 
     /**
@@ -48,6 +48,22 @@ class ResourceMapper {
             resource + [url: customUrl]
         }
     }
+
+    /**
+     * Builds site menu and adds it to all pages
+     */    
+    private def addSiteMenu = { List resources ->
+        def siteMenu = resources.findResults { it.navigate ? [it.url, it.menu_title ?: it.title] : null }.sort { it[0] }
+        
+        resources.collect { Map resource ->
+            if (resource.type == 'page') {
+                resource + [siteMenu: siteMenu]
+            } else {
+                resource
+            }
+        }
+    }
+    
 
     /**
      * Customizes pages models, applies pagination (creates new pages)
