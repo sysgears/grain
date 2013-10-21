@@ -114,12 +114,17 @@ class FileWatcher extends Thread {
                             if (f.isDirectory() && !keys.containsKey(Paths.get(f.absolutePath))) {
                                 log.debug "Registering new dir to watch: ${f.absolutePath}"
                                 watchRecursive(watchService, f)
-                            }
-                            // Exclude from consideration generated files by IntelliJ IDEA (yyy.___jb_bak___, zzz.__jb_old___)
-                            // and Mac OS x (._yyy.zzz)
-                            if (!f.name.endsWith("___jb_bak___") && !f.name.endsWith("___jb_old___")
-                                    && !f.name.startsWith("._")) {
-                                changedFiles << f
+                                f.eachFileRecurse {
+                                    if (!isIgnored(it)) {
+                                        changedFiles << it
+                                    }
+                                }
+                            } else {
+                                // Exclude from consideration generated files by IntelliJ IDEA (yyy.___jb_bak___, zzz.__jb_old___)
+                                // and Mac OS x (._yyy.zzz)
+                                if (!isIgnored(f)) {
+                                    changedFiles << f
+                                }
                             }
                         }
                     }
@@ -133,6 +138,18 @@ class FileWatcher extends Thread {
                 t.printStackTrace()
             }
         }
+    }
+
+    /**
+     * Checks whether file changes should be ignored. E.g. is it a some form of backup file
+     * 
+     * @param file file to check
+     * 
+     * @return whether file changes should be ignored
+     */
+    private static boolean isIgnored(final File f) {
+        f.isDirectory() || f.name.endsWith("___jb_bak___") || f.name.endsWith("___jb_old___") ||
+        f.name.startsWith("._")
     }
 
     /**
