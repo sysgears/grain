@@ -50,7 +50,7 @@ public class PageHighlighter {
         text.findAll(/(?s)```(.*?)```/, {
             def info = markupParser.parse(it[1] as String)
             defaultLang = info.lang ?: defaultLang
-            defaultLineNumbers = info.linenos ?: defaultLineNumbers
+            defaultLineNumbers = info.linenos ==  null ? defaultLineNumbers : info.linenos
             
             def highlightedCode = highlighter.highlight(info.code, defaultLang)
             def result = formatter.formatHighlightedHtml(

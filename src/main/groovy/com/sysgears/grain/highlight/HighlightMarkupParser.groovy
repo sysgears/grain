@@ -38,10 +38,12 @@ class HighlightMarkupParser {
             def idx = highlightBlock.indexOf('\n') 
             def firstLine = highlightBlock.substring(0, idx)  
             def m = firstLine =~ /(?s)[ \t]*([^\s]+)?[ \t]*([^\s]+)?(.*)/
-            def langDef = (m[0][1] as String).split(':') 
-            info.lang = langDef[0]  
+            def langDef = (m[0][1] as String)?.split(':')
+            if (langDef) {
+                info.lang = langDef?.getAt(0)
+                info.linenos = !(langDef.length > 1 && langDef[1] == 'nl')
+            }
             info.caption = m[0][2]
-            info.linenos = !(langDef.length > 1 && langDef[1] == 'nl')    
             info.code = highlightBlock.substring(idx + 1)
         } else {
             info.code = highlightBlock

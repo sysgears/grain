@@ -31,5 +31,5 @@ class HighlightInfo {
     String code
     
     /** Whether line numbers should be included */
-    boolean linenos
+    Boolean linenos
 }
