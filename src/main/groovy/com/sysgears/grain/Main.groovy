@@ -48,7 +48,7 @@ public class Main {
                 new CompassModule(),
                 new RegistryModule(),
                 new RenderModule(),
-                options.command in ['preview', 'generate'] ?
+                options.command in ['preview', 'generate', 'gendeploy'] ?
                     new PreviewModule() : new DisabledPreviewModule())
         
         // Run main application
