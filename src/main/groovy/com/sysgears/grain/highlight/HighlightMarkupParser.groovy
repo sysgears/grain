@@ -35,10 +35,14 @@ class HighlightMarkupParser {
         def info = new HighlightInfo()
         
         if (highlightBlock.contains("\n")) {
-            def m = highlightBlock =~ /(?s)[ \t]*([^\s]+)?[ \t]*([^\s]+)?(.*)/
-            info.lang = m[0][1]
+            def idx = highlightBlock.indexOf('\n') 
+            def firstLine = highlightBlock.substring(0, idx)  
+            def m = firstLine =~ /(?s)[ \t]*([^\s]+)?[ \t]*([^\s]+)?(.*)/
+            def langDef = (m[0][1] as String).split(':') 
+            info.lang = langDef[0]  
             info.caption = m[0][2]
-            info.code = highlightBlock.substring(highlightBlock.indexOf('\n') + 1)
+            info.linenos = !(langDef.length > 1 && langDef[1] == 'nl')    
+            info.code = highlightBlock.substring(idx + 1)
         } else {
             info.code = highlightBlock
         }

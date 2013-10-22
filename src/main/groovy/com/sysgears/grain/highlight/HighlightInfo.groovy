@@ -29,4 +29,7 @@ class HighlightInfo {
     
     /** The code to highlight */
     String code
+    
+    /** Whether line numbers should be included */
+    boolean linenos
 }

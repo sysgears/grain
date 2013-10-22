@@ -33,20 +33,29 @@ class HighlightingFormatter {
      * @param highlightedCode highlighted code HTML
      * @param lang highlighted code language
      * @param caption table caption
+     * @param linenos whether include line numbers
      * 
      * @return HTML table
      */
-    public String formatHighlightedHtml(String highlightedCode, String lang, String caption) {
+    public String formatHighlightedHtml(String highlightedCode, String lang, String caption, boolean linenos) {
         def html = (highlightedCode =~ /(?s)<pre>(.*)<\/pre>/)[0][1].replaceAll(/ *$/, '')
         caption = caption ? "<figcaption><span>${caption}</span></figcaption>" : ""
         def table = new StringBuilder()
-        table.append('<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers">')
+        table.append('<div class="highlight"><table><tr>')
         def code = new StringBuilder()
-        html.readLines().eachWithIndex { String line, int index ->
-            table.append("<span class='line-number'>${index + 1}</span>\n")
-            code.append("<span class='line'>${line}\n</span>")
+        if (linenos) {
+            table.append('<td class="gutter"><pre class="line-numbers">')
+            html.readLines().eachWithIndex { String line, int index ->
+                table.append("<span class='line-number'>${index + 1}</span>\n")
+                code.append("<span class='line'>${line}\n</span>")
+            }
+            table.append('</pre></td>')
+        } else {
+            html.readLines().each { line ->
+                code.append("<span class='line'>${line}\n</span>")
+            }
         }
-        table += "</pre></td><td class='code'><pre><code class='${lang}'>${code}</code></pre></td></tr></table></div>"
+        table += "<td class='code'><pre><code class='${lang}'>${code}</code></pre></td></tr></table></div>"
         
          "<figure class='code'>${caption}${table}</figure>"
     }

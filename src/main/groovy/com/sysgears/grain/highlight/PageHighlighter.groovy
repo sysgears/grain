@@ -44,15 +44,17 @@ public class PageHighlighter {
      */
     public List<String> highlight(String text) {
         def defaultLang = 'html'
+        def defaultLineNumbers = true
         def fragments = [] as List<String>
         
         text.findAll(/(?s)```(.*?)```/, {
             def info = markupParser.parse(it[1] as String)
             defaultLang = info.lang ?: defaultLang
+            defaultLineNumbers = info.linenos ?: defaultLineNumbers
             
             def highlightedCode = highlighter.highlight(info.code, defaultLang)
             def result = formatter.formatHighlightedHtml(
-                    highlightedCode, defaultLang, info.caption)
+                    highlightedCode, defaultLang, info.caption, defaultLineNumbers)
 
             fragments += result
         })
