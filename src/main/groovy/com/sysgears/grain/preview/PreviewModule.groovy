@@ -62,3 +62,4 @@ class PreviewModule extends AbstractModule {
         bind(Object.class).annotatedWith(Names.named("renderMutex")).toInstance(new Object())
     }
 }
+

@@ -19,6 +19,7 @@ package com.sysgears.grain
 import com.google.inject.Guice
 import com.sysgears.grain.compass.CompassModule
 import com.sysgears.grain.highlight.HighlightModule
+import com.sysgears.grain.preview.DisabledPreviewModule
 import com.sysgears.grain.registry.RegistryModule
 import com.sysgears.grain.preview.PreviewModule
 import com.sysgears.grain.render.RenderModule
@@ -47,7 +48,8 @@ public class Main {
                 new CompassModule(),
                 new RegistryModule(),
                 new RenderModule(),
-                new PreviewModule())
+                options.command in ['preview', 'generate'] ?
+                    new PreviewModule() : new DisabledPreviewModule())
         
         // Run main application
         def app = injector.getInstance(Application.class)
