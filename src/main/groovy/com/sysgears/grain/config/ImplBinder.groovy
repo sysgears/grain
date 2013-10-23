@@ -69,7 +69,7 @@ class ImplBinder<T extends ConfigChangeListener> {
         map."configChanged" = { Object[] args ->
             def propertyValue = propertyName.split(/\./).inject(config)
                     { parent, property -> parent?."$property" }
-            T impl = implMap.find { it.key == propertyValue }?.value as T
+            T impl = implMap.find { it.key.toString() == propertyValue.toString() }?.value as T
             if (impl == null) {
                 impl = implMap['default'] as T
             }
