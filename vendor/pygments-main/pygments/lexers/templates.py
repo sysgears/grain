@@ -15,7 +15,8 @@ from pygments.lexers.web import \
      PhpLexer, HtmlLexer, XmlLexer, JavascriptLexer, CssLexer, LassoLexer
 from pygments.lexers.agile import PythonLexer, PerlLexer
 from pygments.lexers.compiled import JavaLexer
-from pygments.lexers.jvm import TeaLangLexer
+from pygments.lexers.jvm import TeaLangLexer, GroovyLexer
+from pygments.lexers.text import YamlLexer
 from pygments.lexer import Lexer, DelegatingLexer, RegexLexer, bygroups, \
      include, using, this
 from pygments.token import Error, Punctuation, \
@@ -33,7 +34,7 @@ __all__ = ['HtmlPhpLexer', 'XmlPhpLexer', 'CssPhpLexer',
            'MyghtyLexer', 'MyghtyHtmlLexer', 'MyghtyXmlLexer',
            'MyghtyCssLexer', 'MyghtyJavascriptLexer', 'MasonLexer', 'MakoLexer',
            'MakoHtmlLexer', 'MakoXmlLexer', 'MakoJavascriptLexer',
-           'MakoCssLexer', 'JspLexer', 'CheetahLexer', 'CheetahHtmlLexer',
+           'MakoCssLexer', 'JspLexer', 'GrainLexer', 'CheetahLexer', 'CheetahHtmlLexer',
            'CheetahXmlLexer', 'CheetahJavascriptLexer', 'EvoqueLexer',
            'EvoqueHtmlLexer', 'EvoqueXmlLexer', 'ColdfusionLexer',
            'ColdfusionHtmlLexer', 'VelocityLexer', 'VelocityHtmlLexer',
@@ -1377,6 +1378,68 @@ class JspLexer(DelegatingLexer):
 
     def analyse_text(text):
         rv = JavaLexer.analyse_text(text) - 0.01
+        if looks_like_xml(text):
+            rv += 0.4
+        if '<%' in text and '%>' in text:
+            rv += 0.1
+        return rv
+
+
+class GrainRootLexer(RegexLexer):
+    """
+    Base for the `GrainLexer`. Yields `Token.Other` for area outside of
+    Grain tags.
+
+    *New in Pygments 1.6.*
+    """
+
+    tokens = {
+        'root': [
+            (r'<%\S?', Keyword, 'sec'),
+            (r'<%=\S?', Keyword, 'sec'),
+            (r'\${', Keyword, 'exp'),
+            (r'---\S?', Keyword, 'hdr'),
+            (r'[^<]+', Other),
+            (r'<', Other),
+        ],
+        'sec': [
+            (r'%>', Keyword, '#pop'),
+            # note: '\w\W' != '.' without DOTALL.
+            (r'(site|page|content)\b',
+             Keyword),
+            (r'\s+', Text),
+            (r'[\w\W]+?(?=%>|\Z)', using(GroovyLexer)),
+        ],
+        'exp': [
+            (r'}', Keyword, '#pop'),
+            # note: '\w\W' != '.' without DOTALL.
+            (r'(site|page|content|include)',
+             Keyword),
+            (r'[\w\W]+?(?=}|\Z)', using(GroovyLexer)),
+        ],
+        'hdr': [
+            (r'---', Keyword, '#pop'),
+            (r'[\w\W]+?(?=---|\Z)', using(YamlLexer)),
+        ],
+    }
+
+
+class GrainLexer(DelegatingLexer):
+    """
+    Lexer for Grain Pages.
+
+    *New in Pygments 1.6.*
+    """
+    name = 'Grain Page'
+    aliases = ['grain']
+    filenames = ['*.html']
+    mimetypes = ['application/x-grain']
+
+    def __init__(self, **options):
+        super(GrainLexer, self).__init__(XmlLexer, GrainRootLexer, **options)
+
+    def analyse_text(text):
+        rv = GroovyLexer.analyse_text(text) - 0.01
         if looks_like_xml(text):
             rv += 0.4
         if '<%' in text and '%>' in text:
