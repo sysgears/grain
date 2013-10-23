@@ -118,7 +118,7 @@ class Mentos(object):
 
         # Make sure we sucessfuly got a lexer
         if lexer:
-            formatter = pygments.formatters.get_formatter_by_name(str.lower(_format_name), **kwargs)
+            formatter = pygments.formatters.get_formatter_by_name(str.lower(_format_name))
 
             # Do the damn thing.
             res = pygments.highlight(code, lexer, formatter)
