@@ -38,7 +38,8 @@ class HighlightingFormatter {
      * @return HTML table
      */
     public String formatHighlightedHtml(String highlightedCode, String lang, String caption, boolean linenos) {
-        def html = (highlightedCode =~ /(?s)<pre>(.*)<\/pre>/)[0][1].replaceAll(/ *$/, '')
+        def m = highlightedCode =~ /(?s)<pre>(.*)<\/pre>/
+        def html = m.find() ? m[0][1].replaceAll(/ *$/, '') : highlightedCode
         caption = caption ? "<figcaption><span>${caption}</span></figcaption>" : ""
         def table = new StringBuilder()
         table.append('<div class="highlight"><table><tr>')
