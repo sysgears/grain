@@ -54,7 +54,7 @@ class HighlightModule extends AbstractModule {
             @Uncached Highlighter uncachedHighlighter,
             CachedHighlighter cachedHighlighter) {
         new ImplBinder<Highlighter>(Highlighter.class, config, 'features.cache_highlight',
-                [default: cachedHighlighter, false: uncachedHighlighter]).proxy
+                [default: cachedHighlighter, true: cachedHighlighter, false: uncachedHighlighter]).proxy
     }
 
     @Override
