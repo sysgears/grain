@@ -69,10 +69,10 @@ class SitePreviewer implements Service {
         }
         
         fileWatcher.start()
-        log.info 'Building resource registry...'
-        registry.start()
         try {
             synchronized (mutex) {
+                log.info 'Building resource registry...'
+                registry.start()
                 siteChangeBroadcaster.siteChanged()
             }
         } catch (t) {
@@ -111,18 +111,18 @@ class SitePreviewer implements Service {
      * @return is the port available
      */
     private static boolean available(int port) {
-        Socket s = null;
+        Socket s = null
         try {
-            s = new Socket("localhost", port);
-            return false;
+            s = new Socket("localhost", port)
+            return false
         } catch (IOException e) {
-            return true;
+            return true
         } finally {
             if (s != null) {
                 try {
-                    s.close();
+                    s.close()
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    throw new RuntimeException(e)
                 }
             }
         }
