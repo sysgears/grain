@@ -1,6 +1,6 @@
----
+/*-
 script: true
----
+-*/
 <%
   def toCanonicalPath = { String baseDir, String relativePath ->
     new File(baseDir, relativePath).canonicalPath.replace("\\", "/")

@@ -1,4 +1,4 @@
-package com.example.grain
+package com.example.grain.mapping
 
 class Paginator {
 

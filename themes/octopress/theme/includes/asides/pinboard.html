@@ -1,11 +1,11 @@
 <% if (site.asides?.pinboard?.user && site.asides.pinboard.hidden != true) { %>
 <section>
   <h1>My Pinboard</h1>
-  <% if (site.asides.pinboard.bookmarks?.enabled == true) { %>
+  <% if (site.asides.pinboard.bookmarks?.hidden != true) { %>
   <ul id="pinboard_linkroll">Fetching linkroll...</ul>
   <% } %>
   <p><a href="http://pinboard.in/u:${site.asides.pinboard.user}">My Pinboard Bookmarks &raquo;</a></p>
-  <% if (site.asides.pinboard.bookmarks?.enabled == true) { %>
+  <% if (site.asides.pinboard.bookmarks?.hidden != true) { %>
   <script type="text/javascript">
     var linkroll = 'pinboard_linkroll'; //id target for pinboard list
     var pinboard_user = "${site.asides.pinboard.user}"; //id target for pinboard list

@@ -91,7 +91,6 @@ article {
       margin-bottom: .8em;
       font-size: .85em;
       clear: both;
-      overflow: hidden;
     }
     .byline + time:before, time +time:before, .comments:before, .byline ~ .categories:before {
       @extend .separator;

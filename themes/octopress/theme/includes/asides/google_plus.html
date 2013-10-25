@@ -1,7 +1,7 @@
-<% if (site.asides?.googleplus_one?.user) { %>
-<section class="social ${site.asides.googleplus_one.hidden == true ? 'social-hidden' : ''}">
+<% if (site.asides?.google_plus?.user && site.asides.google_plus.hidden != true) { %>
+<section class="social">
   <h1>
-    <a href="https://plus.google.com/${site.asides.googleplus_one.user}?rel=author">
+    <a href="https://plus.google.com/${site.asides.google_plus.user}?rel=author">
       <div class="icon gplus-icon"></div>
       Google+
     </a>

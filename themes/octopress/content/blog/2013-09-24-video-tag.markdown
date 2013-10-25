@@ -1,0 +1,16 @@
+---
+layout: post
+title: HTML5 Video tag
+date: 2013-09-24 11:33
+author: SysGears
+categories: [grain, groovy]
+comments: true
+published: true
+---
+
+<!--more-->
+
+<%=
+    video url: 'http://s3.imathis.com/video/zero-to-fancy-buttons.mp4',
+        poster: 'http://s3.imathis.com/video/zero-to-fancy-buttons.png'
+%>

@@ -1,5 +1,5 @@
-<% if (site.asides?.instagram?.user) { %>
-<section class="social ${site.asides.instagram.hidden == true ? 'social-hidden' : ''}">
+<% if (site.asides?.instagram?.user && site.asides.instagram.hidden != true) { %>
+<section class="social">
   <h1>
     <a href="https://instagram.com/${site.asides.instagram.user}">
       <div class="icon insta-icon"></div>

@@ -1,3 +1,8 @@
-<video width="${page.width}" height="${page.height}" preload="none" controls="" poster="${page.poster}">
-  <source src="${page.src}" type="video/mp4; codecs=&quot;avc1.42E01E, mp4a.40.2&quot;">
+<% def video = page.video %>
+
+<video <%= video.width && video.height ? "width=\"${video.width}\" height=\"${video.height}\"" : '' %>
+       <%= video.poster ? " poster=\"${video.poster}\" preload=\"none\"" : '' %>
+       controls="">
+  <source src="${video.url}" type="${video.type}">
 </video>
+
