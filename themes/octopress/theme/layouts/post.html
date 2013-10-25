@@ -12,7 +12,7 @@ single: true
       ${include 'post/date.html', [when: 'updated']}
       ${include 'post/categories.html'}
     </p>
-    <% if (page.sharing == true) { %>
+    <% if (page.sharing != null ? page.sharing : true) { %>
       ${include 'post/sharing.html'}
     <% } %>
     <p class="meta">

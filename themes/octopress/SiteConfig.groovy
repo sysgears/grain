@@ -1,5 +1,5 @@
 import com.example.grain.ResourceMapper
-import com.example.grain.OctopressTagLib
+import com.example.grain.taglib.OctopressTagLib
 
 Locale.setDefault(Locale.US)
 
@@ -12,11 +12,6 @@ environments {
         jetty_port = 4000
         url = "http://localhost:${jetty_port}"
         show_unpublished = true
-        javascripts = ['/javascripts/libs/jquery.min.js',
-            '/javascripts/modernizr-2.0.js',
-            '/javascripts/octopress.js',
-            '/javascripts/twitter.js',
-            '/javascripts/github.js']
     }
     prod {
         log.info "Production environment is used"
@@ -28,7 +23,6 @@ environments {
             compress_css = false
         }
         url = "http://localhost:${jetty_port}"
-        javascripts = ['/javascripts/site.js']
         show_unpublished = false
     }
     cmd {
@@ -40,87 +34,82 @@ environments {
 }
 
 sharing {
-  twitter {
-    share_button {
-      enabled = true
-      lang = 'en'
+    twitter {
+        share_button {
+            enabled = true
+            lang = 'en'
+        }
     }
-  }
-  facebook {
-    share_button {
-      enabled = true
-      lang = 'en_US' // locale code e.g. 'en_US', 'ru_RU', etc.
+    facebook {
+        share_button {
+            enabled = true
+            lang = 'en_US' // locale code e.g. 'en_US', 'ru_RU', etc.
+        }
     }
-  }
-  googleplus_one {
-    share_button {
-      enabled = true
-      size = 'medium' // one of 'small', 'medium', 'standard', 'tall'
+    googleplus_one {
+        share_button {
+            enabled = true
+            size = 'medium' // one of 'small', 'medium', 'standard', 'tall'
+        }
     }
-  }
 }
 
 disqus {
-  show_comment_count = true
-  short_name = 'grain'
+    show_comment_count = true
+    short_name = 'grain'
 }
 
 asides {
-  recent_posts {
-      count = 5
-      hidden = false
-  }
-  googleplus_one {
-      user = 'username'
-      hidden = false
-  }
-  twitter {
-      user = 'grailsplugins'
-      hidden = false
-      tweets {
-        enabled = true
+    recent_posts {
         count = 5
-        replies = false
-      }
-      follow_button {
-        enabled = true
-        count = false // false or true refer to facebook documentation.
-        size = 'large'
-        show_count = false
-        lang = 'en'
-      }
-  }
-  delicious {
-      user = 'steve'
-      bookmarks {
-        enabled = true
-        count = 5
-      }
-      hidden = false
-  }
-  instagram {
-      user = 'johny'
-      hidden = false
-  }
-  facebook {
-      user = 'johny'
-      hidden = false
-  }
-  github {
-      user = 'johny'
-      show_profile_link = true
-      skip_forks = true
-      repo_count = 10
-      hidden = false
-  }
-  pinboard {
-      user = 'Serge'
-      hidden = false
-      bookmarks {
-        enabled = true
-        count = 5
-      }
-  }
+        // The 'hidden = true' statement can be used to hide asides and subsections.
+        //hidden = true // uncomment to hide recent posts section
+    }
+    google_plus {
+        user = '109746189379932479469'
+    }
+    twitter {
+        user = 'sysgears'
+    }
+    tweets {
+        user = 'sysgears'
+        count = 2
+        /*consumer_key = 'consumer_key'
+        consumer_secret = 'consumer_secret'
+        access_token = 'access_token'
+        secret_token = 'secret_token'*/
+        follow_button {
+            size = 'large' // "large" or "medium"
+            show_name = true
+            show_count = true
+            lang = 'en' // one of English (en), French (fr), German (de), Italian (it), Spanish (es), Korean (ko) and Japanese (ja)
+        }
+    }
+    delicious {
+        //user = 'user'
+        bookmarks {
+            count = 5
+        }
+    }
+    instagram {
+        //user = 'user'
+    }
+    facebook {
+        user = 'sysgears'
+    }
+    github {
+        user = 'sysgears'
+        show_profile_link = true
+        skip_forks = true
+        repo_count = 10
+        hidden = false
+    }
+    pinboard {
+        //user = 'Serge'
+        bookmarks {
+            count = 5
+        }
+    }
 }
 
 features {
@@ -146,7 +135,7 @@ posts_per_page = 5
 archives_per_page = 10
 rss_post_count = 20
 debug = false
-default_asides = ['asides/recent_posts.html', 'asides/tweets.html', 'asides/github.html', 'asides/delicious.html',
+default_asides = ['asides/recent_posts.html', 'asides/github.html', 'asides/tweets.html',  'asides/delicious.html',
         'asides/pinboard.html', 'custom/asides/about.html', 'asides/facebook.html', 'asides/twitter.html',
         'asides/instagram.html', 'asides/google_plus.html']
 
@@ -155,7 +144,7 @@ tag_libs = [OctopressTagLib]
 
 cache_dir = "${base_dir}/.cache"
 content_dir = "${base_dir}/content"
-theme_dir = "${base_dir}/theme" 
+theme_dir = "${base_dir}/theme"
 source_dir = [content_dir, theme_dir, "${cache_dir}/compass"]
 include_dir = "${theme_dir}/includes"
 layout_dir = "${theme_dir}/layouts"
@@ -166,14 +155,15 @@ new_post: { String postTitle ->
     def date = new Date()
     def fileDate = date.format("yyyy-MM-dd")
     def filename = fileDate + "-" + postTitle.encodeAsSlug() + ".markdown"
-    def file = new File(content_dir + "/articles/" + filename)
+    def file = new File(content_dir + "/blog/" + filename)
     file.exists() || file.write("""---
 layout: post
 title: "${postTitle}"
 date: "${date.format(dateTimeFormat)}"
 author:
+categories: []
 comments: true
-categories: [article]
+published: false
 ---
 """)},
 new_page: { String location, String pageTitle ->

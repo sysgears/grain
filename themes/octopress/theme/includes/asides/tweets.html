@@ -1,26 +1,31 @@
-<% if (site.asides?.twitter?.tweets?.enabled == true) { %>
+<% if (site.asides?.tweets?.user && site.asides?.tweets?.hidden != true) { %>
 <section>
-  <h1>My Tweets</h1>
-  <ul id="tweets">
-    <li class="loading">Loading tweets...</li>
-  </ul>
-  <script type="text/javascript">
-    $(function(){
-      getTwitterFeed("${site.asides.twitter.user}",
-          "${site.asides.twitter.tweets.count ?: 5}",
-          "${site.asides.twitter.tweets.replies ?: true}");
-    });
-  </script>
-  <% if (site.asides.twitter.follow_button?.enabled == true) { %>
-  <a href="https://twitter.com/${site.asides.twitter.user}" class="twitter-follow-button"
-     data-show-count="${site.asides.twitter.follow_button.show_count ?: false}" data-lang="${site.asides.twitter.follow_button.lang ?: 'en'}"
-     data-size="${site.asides.twitter.follow_button.size}">
-    Read @${site.asides.twitter.user}
-  </a>
-  <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){
-    js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}
-  }(document,"script","twitter-wjs");
-  </script>
-  <% } %>
+    <!-- Latest Tweets -->
+    <h1>My Tweets</h1>
+
+    <div class="tweet query footer"><!-- Tweets Code --></div>
+
+    <!-- Twitter Follow Button which allows users to follow a Twitter account -->
+    <% if (site.asides.tweets.follow_button?.hidden != true) { %>
+    <a href="https://twitter.com/${site.asides.tweets.user}"
+       class="twitter-follow-button"
+       data-show-screen-name="${site.asides.tweets.follow_button.show_name ?: false}"
+       data-show-count="${site.asides.tweets.follow_button.show_count ?: false}"
+       data-lang="${site.asides.tweets.follow_button.lang ?: 'en'}"
+       data-size="${site.asides.tweets.follow_button.size ?: 'medium'}">
+        Follow @${site.asides.tweets.user}
+    </a>
+    <script>!function (d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (!d.getElementById(id)) {
+            js = d.createElement(s);
+            js.id = id;
+            js.src = "//platform.twitter.com/widgets.js";
+            fjs.parentNode.insertBefore(js, fjs);
+        }
+    }(document, "script", "twitter-wjs");
+    </script>
+    <% } %>
+
 </section>
 <% } %>

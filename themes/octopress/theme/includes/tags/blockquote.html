@@ -1,8 +1,19 @@
+<% def quote = page.quote %>
+
 <blockquote>
-  <p>${page.content}</p>
-  <footer><strong>${page.author}</strong>
-    <cite><a
-        href="${page.src}">${page.title}</a>
-    </cite>
-  </footer>
+    <p>${quote.content}</p>
+    <footer>
+        <% if (quote.author) { %>
+            <strong>${quote.author}</strong>
+        <% } %>
+        <% if (quote.sourceLink || quote.sourceTitle) { %>
+            <cite>
+                <% if (quote.sourceLink) { %>
+                    <a href="${quote.sourceLink}" target="_blank">${quote.sourceTitle?: quote.sourceLink}</a>
+                <% } else { %>
+                    ${quote.sourceTitle}
+                <% } %>
+            </cite>
+        <% } %>
+    </footer>
 </blockquote>
