@@ -46,7 +46,7 @@ class ResourceMapper {
             def location = resource.location
             def customUrl = resource.url
             switch (location) {
-                case ~/\/(images|javascripts|stylesheets)\/(?!icons).*/:
+                case ~/\/(images|javascripts|stylesheets)\/.*/:
                     if (location == '/javascripts/jquery.tweet.js') {
                         resource += [tweets: tweets.toString().replace('\\', '\\\\')]
                     }

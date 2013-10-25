@@ -14,11 +14,11 @@ body > nav {
     margin: 0;
     padding: 0;
     .search {
-	    padding: 8px 4px 2px 30px;
-	    font-size: .85em;
+      padding: .3em .5em 0;
+      font-size: .85em;
       font-family: $sans;
       line-height: 1.1em;
-      width: 86%;
+      width: 95%;
       @include border-radius(.5em);
       @include background-clip(padding-box);
       @include box-shadow(lighten($nav-bg, 2) 0 1px);
@@ -122,11 +122,12 @@ body > nav {
 
 .placeholder {
   body > nav .search {
-	  background: lighten($nav-bg, 15) sprite-url($icons-sprites) sprite-position($icons-sprites, search, 10px, 9px) no-repeat;
+    background: lighten($nav-bg, 15) url("${r '/images/search.png'}") .3em .25em no-repeat;
+    text-indent: 1.3em;
   }
 }
 
-@mixin mask-subscription-nav($feed, $position, $width: 25px, $height: 25px) {
+@mixin mask-subscription-nav($feed: 'rss.png') {
   position: relative;
   top: 0px;
   text-indent: -999999em;
@@ -134,7 +135,7 @@ body > nav {
   border: 0;
   padding: 0;
   &, &:after {
-    @include mask-image($feed, $position, $width, $height);
+    @include mask-image($feed);
   }
   &:after {
     content: "";
@@ -170,10 +171,10 @@ body > nav {
     }
   }
   a[rel=subscribe-rss] {
-    @include mask-subscription-nav($feed: sprite-url($icons-sprites), $position: sprite-position($icons-sprites, rss));
+    @include mask-subscription-nav('rss.png');
   }
   a[rel=subscribe-email] {
-    @include mask-subscription-nav($feed: sprite-url($icons-sprites), $position: sprite-position($icons-sprites, email), $width: 30px, $height: 30px);
+    @include mask-subscription-nav('email.png');
   }
 }
 
