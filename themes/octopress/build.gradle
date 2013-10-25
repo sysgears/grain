@@ -9,23 +9,23 @@ defaultTasks 'preview'
 def compatibilityVersion = 1.5
 sourceCompatibility = compatibilityVersion
 targetCompatibility = compatibilityVersion
-mainClassName = 'com.sysgears.grain.Launcher'
+mainClassName = 'com.example.grain.Launcher'
 
 clean.doLast { ant.delete(dir: ".cache"); ant.delete(dir: "target") }
 
-project.ext {
-    grainHome = System.getenv('GRAIN_HOME')
-    if (!grainHome) {
-        throw new RuntimeException('Please set GRAIN_HOME environment variable')
-    }
-    grainJar = "${grainHome}/build/libs/grain-1.0.jar"
-
+repositories {
+    mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
-    compile files("${project.grainJar}")
+    compile 'com.sysgears.grain:grain:1.0'
 
     compile 'org.codehaus.groovy:groovy:2.1.2'
+}
+
+project.ext {
+    grainJar = project.configurations.compile.find { it.name.startsWith("grain-") }
 }
 
 sourceSets {
@@ -34,10 +34,6 @@ sourceSets {
       srcDirs = ['theme/plugins']
     }
   }
-}
-
-repositories {
-    mavenCentral()
 }
 
 task(preview) << {
