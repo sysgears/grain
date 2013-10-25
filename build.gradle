@@ -1,3 +1,7 @@
+import org.eclipse.jgit.api.*
+import org.eclipse.jgit.revwalk.*
+import org.eclipse.jgit.lib.*
+
 apply plugin: 'maven'
 apply plugin: 'groovy'
 apply plugin: 'idea'
@@ -9,6 +13,11 @@ def mainClassName = 'com.sysgears.grain.Main'
 def compatibilityVersion = 1.5
 sourceCompatibility = compatibilityVersion
 targetCompatibility = compatibilityVersion
+
+buildscript {
+  repositories { mavenCentral() }
+  dependencies { classpath 'org.eclipse.jgit:org.eclipse.jgit:3.1.0.201310021548-r' }
+}
 
 configurations.all {
     exclude group: 'commons-logging'
@@ -43,13 +52,13 @@ dependencies {
          exclude group: 'org.slf4j'
      }
      compile 'org.slf4j:jcl-over-slf4j:1.7.5'
-    
+
      compile 'oauth.signpost:signpost-core:1.2.1.2'
      compile 'oauth.signpost:signpost-commonshttp4:1.2.1.2'
-     
+
      compile "com.google.inject:guice:4.0-beta"
      compile "com.google.inject.extensions:guice-assistedinject:4.0-beta"
-    
+
      compile "javax.inject:javax.inject:1"
 
      testCompile("org.spockframework:spock-core:0.7-groovy-2.0") {
@@ -58,7 +67,7 @@ dependencies {
      testCompile("org.spockframework:spock-guice:0.7-groovy-2.0") {
          exclude module: 'groovy-all'
      }
-    
+
      compile 'org.codehaus.groovy:groovy:2.1.2'
 }
 
@@ -70,18 +79,17 @@ sourceSets {
     }
 }
 
-jar {
-    manifest {
-        attributes 'Implementation-Title': 'Grain Static Website Generator',
-                'Implementation-Version': version,
-                'Built-By': System.getProperty('user.name'),
-                'Built-Date': new Date(),
-                'Built-JDK': System.getProperty('java.version'),
-                'Main-Class': mainClassName
-    }
+task getGitRev {
+    def git = Git.open(project.file(project.rootProject.projectDir))
+    def repo = git.repository
+    def ref = repo.getRef(repo.fullBranch)
+    def walk = new RevWalk(repo)
+    def rev = walk.parseCommit(ref.objectId)
+    def id = ObjectId.toString(rev.id)
+    project.ext.revId = id.toString()[0..6]
 }
 
-task uberJar(type: Jar,dependsOn:[':compileJava',':compileGroovy']) {
+task uberJar(type: Jar, dependsOn:[':compileJava',':compileGroovy', getGitRev]) {
     from files(sourceSets.main.output.classesDir)
     from files(sourceSets.main.output.resourcesDir)
     from(configurations.runtime.asFileTree.files.collect { zipTree(it) }) {
@@ -93,11 +101,11 @@ task uberJar(type: Jar,dependsOn:[':compileJava',':compileGroovy']) {
         attributes 'Implementation-Title': 'Grain Static Website Generator',
                 'Implementation-Version': version,
                 'Built-By': System.getProperty('user.name'),
+                'Built-Rev': project.ext.revId,
                 'Built-Date': new Date(),
                 'Built-JDK': System.getProperty('java.version'),
                 'Main-Class': mainClassName
     }
-
 }
 
 task createAllDeliverables(dependsOn: [uberJar]) {
