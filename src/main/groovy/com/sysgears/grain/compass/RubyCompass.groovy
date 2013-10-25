@@ -63,34 +63,39 @@ class RubyCompass extends AbstractCompass {
     public void launchCompass(String mode) {
         latch = new CountDownLatch(1)
         thread = Thread.start {
-            log.info "Launching Ruby compass process in ${mode} mode..."
-            File gemDir = new File(opts.grainHome, 'vendor/compass/gems') 
-            File compassDir                                                                            
-            def gemIncludes = [] as List<String>
-            
-            gemDir.eachFileMatch(~'compass.*') { f ->
-                compassDir = f
+            try {
+                log.info "Launching Ruby compass process in ${mode} mode..."
+                File gemDir = new File(opts.vendorHome, 'compass/gems')
+                File compassDir
+                def gemIncludes = [] as List<String>
+
+                gemDir.eachFileMatch(~'compass.*') { f ->
+                    compassDir = f
+                }
+
+                gemDir.eachFile(FileType.DIRECTORIES) {
+                    gemIncludes += ['-I', new File(it, 'lib').canonicalPath]
+                }
+
+                def cmdline = ['ruby'] + gemIncludes +
+                        [new File(compassDir, 'bin/compass').canonicalPath, mode] as List<String>
+
+                def process = cmdline.execute([], new File(site.cache_dir.toString()))
+                streamLogger = streamLoggerFactory.create(process.in, process.err)
+                streamLogger.start()
+                latch.countDown()
+                def watcher = Thread.startDaemon {
+                    process.waitFor()
+                    streamLogger.interrupt()
+                }
+                streamLogger.join()
+                process.destroy()
+                watcher.join()
+                log.info 'Ruby compass process finished.'
+            } catch (t) {
+                log.error("Error launching Compass", t)
+                latch.countDown()
             }
-            
-            gemDir.eachFile(FileType.DIRECTORIES) {
-                gemIncludes += ['-I', new File(it, 'lib').canonicalPath]
-            }
-            
-            def cmdline = ['ruby'] + gemIncludes +
-                    [new File(compassDir, 'bin/compass').canonicalPath, mode] as List<String>
-            
-            def process = cmdline.execute([], new File(site.cache_dir.toString()))
-            streamLogger = streamLoggerFactory.create(process.in, process.err)
-            streamLogger.start()
-            latch.countDown()
-            def watcher = Thread.startDaemon {
-                process.waitFor()
-                streamLogger.interrupt()
-            }
-            streamLogger.join()
-            process.destroy()
-            watcher.join()
-            log.info 'Ruby compass process finished.'
         }
     }
 
@@ -113,7 +118,7 @@ class RubyCompass extends AbstractCompass {
     public void stop() {
         if (latch) {
             latch.await()
-            streamLogger.interrupt()
+            streamLogger?.interrupt()
             thread.join()
             latch = null
         }

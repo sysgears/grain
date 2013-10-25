@@ -155,29 +155,34 @@ class PythonPygments extends Pygments {
     public void launchPygments() {
         latch = new CountDownLatch(1)
         thread = Thread.startDaemon {
-            log.info 'Launching python pygments process...'
-            def env = ["VENDOR_SIMPLEJSON=${new File(opts.grainHome, 'vendor/simplejson').canonicalPath}"]
-            if (vendorPygments) {
-                env += ["VENDOR_PYGMENTS=${new File(opts.grainHome, 'vendor/pygments-main').canonicalPath}"]
+            try {
+                log.info 'Launching python pygments process...'
+                def env = ["VENDOR_SIMPLEJSON=${new File(opts.vendorHome, 'simplejson').canonicalPath}"]
+                if (vendorPygments) {
+                    env += ["VENDOR_PYGMENTS=${new File(opts.vendorHome, 'pygments-main').canonicalPath}"]
+                }
+                def process = Runtime.runtime.exec(["python", "mentos.py"] as String[],
+                        env as String[],
+                        new File(opts.vendorHome, 'mentos'))
+                bos = new BufferedOutputStream(process.out)
+                dis = new DataInputStream(process.in)
+                latch.countDown()
+                streamLogger = streamLoggerFactory.create(process.err)
+                streamLogger.start()
+                def watcher = Thread.startDaemon {
+                    process.waitFor()
+                    streamLogger.interrupt()
+                }
+                streamLogger.join()
+                process.destroy()
+                watcher.join()
+                bos.close()
+                dis.close()
+                log.info 'Python pygments process finished.'
+            } catch (t) {
+                log.error("Error launching Pygments", t)
+                latch.countDown()
             }
-            def process = Runtime.runtime.exec(["python", "mentos.py"] as String[],
-                    env as String[],
-                    new File(opts.grainHome, 'vendor/mentos'))
-            bos = new BufferedOutputStream(process.out)
-            dis = new DataInputStream(process.in)
-            latch.countDown()
-            streamLogger = streamLoggerFactory.create(process.err)
-            streamLogger.start()
-            def watcher = Thread.startDaemon {
-                process.waitFor()
-                streamLogger.interrupt()
-            }
-            streamLogger.join()
-            process.destroy()
-            watcher.join()
-            bos.close()
-            dis.close()
-            log.info 'Python pygments process finished.'
         }
     }
 
@@ -195,7 +200,7 @@ class PythonPygments extends Pygments {
     public void stop() {
         if (latch) {
             latch.await()
-            streamLogger.interrupt()
+            streamLogger?.interrupt()
             thread.join()
             latch = null
         }

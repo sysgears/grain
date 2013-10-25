@@ -57,30 +57,35 @@ class JRubyCompass extends AbstractCompass {
     public void launchCompass(String mode) {
         latch = new CountDownLatch(1)
         thread = Thread.startDaemon {
-            System.setProperty('jruby.compile.fastest', 'true')
-            
-            def config = new RubyInstanceConfig()
-            config.processArguments("-S compass ${mode} ${site.cache_dir}".split(' '))
-            config.setOutput(new PrintStream(new LoggingOutputStream()))
-            
-            ruby = Ruby.newInstance(config)
-            
-            def inp = config.getScriptSource();
-            config.processArguments(config.parseShebangOptions(inp));
-            def filename = config.displayedFileName();
-
-            log.info 'Launching bundled compass via JRuby...'
             try {
-                latch.countDown()
-                ruby.runFromMain(inp, filename)
-            } catch (RaiseException re) {
-                if (re.exception.toString() != "exit") {
-                    log.error("Error while running compass", re)
+                System.setProperty('jruby.compile.fastest', 'true')
+                
+                def config = new RubyInstanceConfig()
+                config.processArguments("-S compass ${mode} ${site.cache_dir}".split(' '))
+                config.setOutput(new PrintStream(new LoggingOutputStream()))
+                
+                ruby = Ruby.newInstance(config)
+                
+                def inp = config.getScriptSource();
+                config.processArguments(config.parseShebangOptions(inp));
+                def filename = config.displayedFileName();
+    
+                log.info 'Launching bundled compass via JRuby...'
+                try {
+                    latch.countDown()
+                    ruby.runFromMain(inp, filename)
+                } catch (RaiseException re) {
+                    if (re.exception.toString() != "exit") {
+                        log.error("Error while running compass", re)
+                    }
+                } catch (t) {
+                    log.error("Error while running compass", t)
                 }
+                log.info 'Bundled compass is finished...'
             } catch (t) {
-                log.error("Error while running compass", t)
+                log.error("Error launching Compass", t)
+                latch.countDown()
             }
-            log.info 'Bundled compass is finished...'
         }
     }
 
@@ -104,7 +109,7 @@ class JRubyCompass extends AbstractCompass {
     public void stop() {
         if (latch) {
             latch.await()
-            ruby.threadService.mainThread.internalRaise(ruby.interrupt)
+            ruby?.threadService?.mainThread?.internalRaise(ruby?.interrupt)
             thread.join()
             latch = null
         }
