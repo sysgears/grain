@@ -16,6 +16,9 @@
 
 package com.sysgears.grain
 
+import java.util.jar.Attributes
+import java.util.jar.Manifest
+
 /**
  * Command line arguments parser and validator.
  * <p>
@@ -87,25 +90,51 @@ Options:
                     break
             }
         }
+        
+        opts.vendorHome = getVendorHome()
 
-        def grainHomeProperty = System.getProperty('grain.home')
-        if (grainHomeProperty) {
-            opts.grainHome = new File(grainHomeProperty).canonicalFile
-        } else {
-            def cl = ClassLoader.getSystemClassLoader() as URLClassLoader
-
-            for (URL url : cl.getURLs()) {
-                if (url.getFile().endsWith('/out/production/grain/')) {
-                    opts.grainHome = new File(url.getFile().toString() - '/out/production/grain/')
-                } else if (url.getFile().endsWith('/build/libs/grain-1.0.jar')) {
-                    opts.grainHome = new File(url.getFile().toString() - '/build/libs/grain-1.0.jar')
-                }
-            }
-
-            if (!opts.grainHome)
-                throw new RuntimeException('Unable to guess Grain home, please set grain.home system property')
-        }
         opts.args = commands
         opts
+    }
+
+    /**
+     * Detects vendor home directory 
+     * 
+     * @return Grain vendor home directory
+     */
+    private static File getVendorHome() {
+        def vendorHome = null
+
+        def vendorHomeProperty = System.getProperty('vendor.home')
+        if (vendorHomeProperty) {
+            vendorHome = new File(vendorHomeProperty).canonicalFile
+        } else {
+            def className = CmdlineParser.getSimpleName() + ".class"
+            String classPath = CmdlineParser.getResource(className).toString()
+            
+            if (!classPath.startsWith("jar")) {
+                def cl = ClassLoader.getSystemClassLoader() as URLClassLoader
+
+                for (URL url : cl.getURLs()) {
+                    if (url.getFile().endsWith('/out/production/grain/')) {
+                        vendorHome = new File(url.getFile().toString(), "../../../vendor").canonicalFile
+                    }
+                }
+
+                if (!vendorHome) {
+                    throw new RuntimeException('Unable to guess Grain vendor home, please set vendor.home system property')
+                }
+            } else {
+                def manifestPath = classPath.substring(0, classPath.lastIndexOf("!") + 1) +
+                        "/META-INF/MANIFEST.MF"
+                def manifest = new Manifest(new URL(manifestPath).openStream())
+                def attr = manifest.getMainAttributes()
+                def rev = attr.getValue("Built-Rev")
+                
+                vendorHome = new File(System.getProperty('user.home'), ".grain/vendor/${rev}")
+            }
+        }
+        
+        vendorHome
     }
 }

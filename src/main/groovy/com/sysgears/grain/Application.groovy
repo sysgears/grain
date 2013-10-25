@@ -24,9 +24,12 @@ import com.sysgears.grain.preview.SitePreviewer
 import com.sysgears.grain.preview.ConfigChangeBroadcaster
 import com.sysgears.grain.util.FileUtils
 import groovy.util.logging.Slf4j
+import org.apache.commons.io.IOUtils
 
 import javax.inject.Inject
 import javax.inject.Named
+import java.util.jar.JarEntry
+import java.util.jar.JarFile
 
 /**
  * Top level logic of the Grain application.
@@ -56,12 +59,57 @@ class Application {
 
     /** Grain dynamic methods registrar */
     @Inject private GrainDynamicMethods grainDynamicMethods
+    
+    private void extractTools() {
+        def className = CmdlineParser.getSimpleName() + ".class"
+        String classPath = CmdlineParser.getResource(className).toString()
+
+        if (!classPath.startsWith("jar")) {
+            throw new RuntimeException("Vendor tools directory does not exist " + 
+                    "and not running Grain from a JAR, please specify vendor.home")
+        }
+        
+        println classPath
+        
+        String jarPath = classPath.substring(9, classPath.indexOf("!"))
+        JarFile jar = new JarFile(URLDecoder.decode(jarPath, "UTF-8"))
+        if (!options.vendorHome.mkdirs()) {
+            throw new RuntimeException("Unable to create dir: ${options.vendorHome}")
+        }
+        def entries = jar.entries()
+        while (entries.hasMoreElements()) {
+            def file = (JarEntry) entries.nextElement()
+            if (file.name.startsWith('vendor/') && !file.isDirectory()) {
+                def targetFile = new File(options.vendorHome, file.name.replace('vendor/', ''))
+                def targetDir = targetFile.parentFile 
+                if (!targetDir.exists() && !targetDir.mkdirs()) {
+                    throw new RuntimeException("Unable to create dir: ${targetDir}")
+                }
+
+                def is = jar.getInputStream(file)
+                def out = new FileOutputStream(targetFile)
+                try {
+                    IOUtils.copy(new BufferedInputStream(is), new BufferedOutputStream(out))
+                } finally {
+                    is.close()
+                    out.close()
+                }
+            }
+        }
+    }
 
     /**
      * Prepares Grain engine to launch a command: binds additional methods
      * to standard Groovy classes, creates site cache directories.
      */
     private void prepare() {        
+        if (!options.vendorHome.exists()) {
+            log.info("Unpacking bundled tools to ${options.vendorHome}")
+            extractTools()
+        } else {
+            log.info "Using vendor home: ${options.vendorHome}"
+        }
+
         // Register Grain extension methods to Groovy classes
         grainDynamicMethods.register()
         
@@ -72,6 +120,8 @@ class Application {
         } catch (t) {
             t.printStackTrace()
         }
+        
+        
 
         // Create cache directories
         def cacheDir = new File(config.cache_dir.toString())

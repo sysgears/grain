@@ -28,7 +28,7 @@ class CmdlineOptions {
     File globalConfigFile
     
     /** Location of directory with vendor files */ 
-    File grainHome
+    File vendorHome
 
     /** Environment of the site (dev, prod, ..) */
     String env

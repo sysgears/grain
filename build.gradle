@@ -92,6 +92,9 @@ task getGitRev {
 task uberJar(type: Jar, dependsOn:[':compileJava',':compileGroovy', getGitRev]) {
     from files(sourceSets.main.output.classesDir)
     from files(sourceSets.main.output.resourcesDir)
+    from(project.rootProject.projectDir) {
+        include "vendor/**"
+    }
     from(configurations.runtime.asFileTree.files.collect { zipTree(it) }) {
         exclude "META-INF/*.SF"
         exclude "META-INF/*.DSA"

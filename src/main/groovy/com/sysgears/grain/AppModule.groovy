@@ -54,7 +54,7 @@ class AppModule extends AbstractModule {
     @Provides @javax.inject.Singleton
     public GroovyScriptEngine provideGroovyScriptEngine() {
         ClassLoader classLoader = this.class.classLoader
-        classLoader.addURL(new File(options.grainHome, 'vendor/compass/').toURI().toURL())
+        classLoader.addURL(new File(options.vendorHome, 'compass/').toURI().toURL())
         String siteDir = options.configFile.parentFile.canonicalPath
         String globalConfDir = options.globalConfigFile.parentFile.canonicalPath
         String[] gseRoots = ["${siteDir}/theme/plugins/", siteDir, globalConfDir]        
