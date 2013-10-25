@@ -56,16 +56,21 @@ class JythonPygments extends Pygments {
     public void start() {
         latch = new CountDownLatch(1)
         Thread.startDaemon {
-            log.info 'Intitializing highlighter'
-            python = new PythonInterpreter()
-            python.exec('import sys')
-            python.exec("sys.path.append('${new File(opts.grainHome, 'vendor/pygments-main').absolutePath}')")
-            python.exec("from pygments import highlight")
-            python.exec('from pygments.lexers import get_lexer_by_name')
-            python.exec('from pygments.formatters import HtmlFormatter')
-            formatter = python.eval('HtmlFormatter(encoding=\'utf-8\')')
-            log.info 'Highlighter initialized.'
-            latch.countDown()
+            try {
+                log.info 'Intitializing highlighter'
+                python = new PythonInterpreter()
+                python.exec('import sys')
+                python.exec("sys.path.append('${new File(opts.vendorHome, 'pygments-main').absolutePath}')")
+                python.exec("from pygments import highlight")
+                python.exec('from pygments.lexers import get_lexer_by_name')
+                python.exec('from pygments.formatters import HtmlFormatter')
+                formatter = python.eval('HtmlFormatter(encoding=\'utf-8\')')
+                log.info 'Highlighter initialized.'
+                latch.countDown()
+            } catch (t) {
+                log.error("Error launching Pygments", t)
+                latch.countDown()
+            }
         }
     }
 
@@ -76,7 +81,7 @@ class JythonPygments extends Pygments {
     public void stop() {
         if (latch) {
             latch.await()
-            python.cleanup()
+            python?.cleanup()
             python = null
             latch = null
         }

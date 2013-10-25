@@ -58,20 +58,25 @@ class ShellCompass extends AbstractCompass {
     public void launchCompass(String mode) {
         latch = new CountDownLatch(1)
         thread = Thread.startDaemon {
-            log.info 'Launching shell compass process...'
-            def process = ['compass', mode].execute([],
-                    new File(site.cache_dir.toString()))
-            streamLogger = streamLoggerFactory.create(process.in, process.err)
-            streamLogger.start()
-            latch.countDown()
-            def watcher = Thread.startDaemon {
-                process.waitFor()
-                streamLogger.interrupt()
+            try {
+                log.info 'Launching shell compass process...'
+                def process = ['compass', mode].execute([],
+                        new File(site.cache_dir.toString()))
+                streamLogger = streamLoggerFactory.create(process.in, process.err)
+                streamLogger.start()
+                latch.countDown()
+                def watcher = Thread.startDaemon {
+                    process.waitFor()
+                    streamLogger.interrupt()
+                }
+                streamLogger.join()
+                process.destroy()
+                watcher.join()
+                log.info 'Shell compass process finished.'
+            } catch (t) {
+                log.error("Error launching Compass", t)
+                latch.countDown()
             }
-            streamLogger.join()
-            process.destroy()
-            watcher.join()
-            log.info 'Shell compass process finished.'
         }
     }
 
