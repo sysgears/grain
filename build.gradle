@@ -101,7 +101,7 @@ task uberJar(type: Jar, dependsOn:[':compileJava',':compileGroovy', getGitRev]) 
         exclude "META-INF/*.RSA"
     }
     manifest {
-        attributes 'Implementation-Title': 'Grain Static Website Generator',
+        attributes 'Implementation-Title': 'Grain Static Website Building Framework',
                 'Implementation-Version': version,
                 'Built-By': System.getProperty('user.name'),
                 'Built-Rev': project.ext.revId,
@@ -111,7 +111,7 @@ task uberJar(type: Jar, dependsOn:[':compileJava',':compileGroovy', getGitRev]) 
     }
 }
 
-task createAllDeliverables(dependsOn: [uberJar]) {
+task createAllDeliverables(dependsOn: [uberJar, install]) {
     description = 'Creates all deliverables.'
 }
 
@@ -124,14 +124,14 @@ artifacts {
 }
 
 ext.pomConfiguration = {
-    name 'Grain Static Website Generator'
-    description 'Static Website Generator that allows to use Groovy as scripting language.'
+    name 'Grain Static Website Building Framework'
+    description 'Grain is a static web site building framework for Groovy that makes demanding static web site implementation an intuitive and enjoyable task to do.'
     url 'http://sysgears.com/products/grain'
     inceptionYear '2013'
 
     scm {
         url 'https://github.com/sysgears/grain'
-        connection 'scm:https://vlasenko@github.com/sysgears/grain.git'
+        connection 'scm:https://github.com/sysgears/grain.git'
         developerConnection 'scm:git://github.com/sysgears/grain.git'
     }
 
@@ -146,7 +146,7 @@ ext.pomConfiguration = {
     developers {
         developer {
             id 'sysgears'
-            name 'SysGears company'
+            name 'SysGears LLC'
             email 'info@sysgears.com'
         }
     }
@@ -155,32 +155,6 @@ ext.pomConfiguration = {
 install {
     repositories.mavenInstaller {
         pom.project pomConfiguration
-    }
-}
-
-if(hasProperty('nexusUsername') && hasProperty('nexusPassword')) {
-    apply plugin: 'signing'
-
-    signing {
-        required { gradle.taskGraph.hasTask(uploadArchives) && !version.endsWith('SNAPSHOT') }
-        sign configurations.archives
-    }
-
-    uploadArchives {
-        repositories.mavenDeployer {
-            beforeDeployment { deployment ->
-                signing.signPom(deployment)
-            }
-
-            name = 'mavenCentralReleaseDeployer'
-
-            repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
-                authentication(userName: nexusUsername, password: nexusPassword)
-                releases(updatePolicy: 'always')
-            }
-
-            pom.project pomConfiguration
-        }
     }
 }
 
