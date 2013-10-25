@@ -59,7 +59,10 @@ class Application {
 
     /** Grain dynamic methods registrar */
     @Inject private GrainDynamicMethods grainDynamicMethods
-    
+
+    /**
+     * Extract bundled tool sources to .grain/vendor/git-rev directory for reusing them with external processes.
+     */
     private void extractTools() {
         def className = CmdlineParser.getSimpleName() + ".class"
         String classPath = CmdlineParser.getResource(className).toString()
@@ -89,10 +92,10 @@ class Application {
                 def is = jar.getInputStream(file)
                 def out = new FileOutputStream(targetFile)
                 try {
-                    IOUtils.copy(new BufferedInputStream(is), new BufferedOutputStream(out))
+                    IOUtils.copy(is, out)
                 } finally {
-                    is.close()
                     out.close()
+                    is.close()
                 }
             }
         }
