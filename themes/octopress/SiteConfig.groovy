@@ -4,7 +4,7 @@ import com.example.grain.taglib.OctopressTagLib
 Locale.setDefault(Locale.US)
 
 dateTimeFormat = 'yyyy-MM-dd HH:mm'
-excludes = ["/sass/.*", "/images/icons/.*", "/plugins/.*", "/target/.*"]
+excludes = ["/sass/.*", "/plugins/.*", "/target/.*"]
 
 environments {
     dev {
