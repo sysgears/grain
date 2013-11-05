@@ -48,16 +48,6 @@ class GrainTagLib {
     }
 
     /**
-     * Generate html tag for image
-     */
-    def img = { String src, Integer width = null, Integer height = null ->
-        def widthStr = width ? " width=\"${width}\"" : ""
-        def heightStr = height ? " height=\"${height}\"" : ""
-
-        "<img${widthStr}${heightStr} src=\"${r(src)}\" alt=\"image\">"
-    }
-
-    /**
      * Looks up resource url by resource location
      */
     def r = { String location ->

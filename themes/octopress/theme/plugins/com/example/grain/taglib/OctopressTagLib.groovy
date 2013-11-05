@@ -64,6 +64,20 @@ class OctopressTagLib {
     }
 
     /**
+     * Generates html tag for an image
+     * 
+     * @attr location image location
+     * @attr width (optional) image width
+     * @attr height (optional) image height
+     */
+    def img = { String location, Integer width = null, Integer height = null ->
+        def widthStr = width ? " width=\"${width}\"" : ""
+        def heightStr = height ? " height=\"${height}\"" : ""
+
+        "<img${widthStr}${heightStr} src=\"${r(location)}\" alt=\"image\">"
+    }
+
+    /**
      * Embeds a video into the page.
      *
      * @attr url link to the video
