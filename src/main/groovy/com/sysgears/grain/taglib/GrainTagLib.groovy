@@ -49,6 +49,10 @@ class GrainTagLib {
 
     /**
      * Looks up resource url by resource location
+     * 
+     * @attr location resource location
+     * 
+     * @return resource URL
      */
     def r = { String location ->
         if (!location.startsWith("/")) {
@@ -64,6 +68,10 @@ class GrainTagLib {
 
     /**
      * Looks up multiple resource urls by their locations
+     *
+     * @attr locations list of resource locations
+     *
+     * @return resource URLs list
      */
     def rs = { List<String> locations ->
         urlRegistry.getUrls((String[]) locations.collect { location ->
@@ -78,16 +86,19 @@ class GrainTagLib {
     }
 
     /**
-     * Returns rendered resource contents with specified location 
+     * Returns rendered resource contents with specified location
+     * 
+     * @attr location template location
+     * @attr model (optional) additional model variables added to <code>page</code> map
      */
-    def include = { String templatePath, Map model = null ->
+    def include = { String location, Map model = null ->
         try {
             def page = this.page.clone() as Map
-            page.location = templatePath
+            page.location = location
             page.render(model).full
         } catch (AbsentResourceException e) {
-            log.warn "WARNING: ${page.location} tried to include absent resource: ${templatePath}"
-            def msg = "Resource not found: ${templatePath}"
+            log.warn "WARNING: ${page.location} tried to include absent resource: ${location}"
+            def msg = "Resource not found: ${location}"
             new ResourceView(content: msg, full: msg, bytes: msg.bytes)
         }
     }
