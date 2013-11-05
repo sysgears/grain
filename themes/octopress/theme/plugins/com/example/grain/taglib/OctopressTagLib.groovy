@@ -74,7 +74,7 @@ class OctopressTagLib {
         def widthStr = width ? " width=\"${width}\"" : ""
         def heightStr = height ? " height=\"${height}\"" : ""
 
-        "<img${widthStr}${heightStr} src=\"${r(location)}\" alt=\"image\">"
+        "<img${widthStr}${heightStr} src=\"${taglib.r(location)}\" alt=\"image\">"
     }
 
     /**
