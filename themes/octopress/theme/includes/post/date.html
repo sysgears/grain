@@ -1,6 +1,6 @@
 <%
-  def postedOn = page.date
-  def updatedOn = page.updated
+  def postedOn = dateCreated(page)
+  def updatedOn = lastUpdated(page)
   def when = page.when
 
   final String monthFormat = 'MMM'
@@ -8,21 +8,19 @@
   final String dayFormat = 'dd'
 %>
 
-<% if (when == 'posted') {
-    Date postedDate = Date.parse(site.dateTimeFormat, postedOn) %>
-    <time datetime="${toXmlTime(postedDate)}" pubdate ${ updatedOn != postedOn ? 'data-updated=true' : '' }>
-      <span class="month">${postedDate.format(monthFormat)}</span>
-      <span class="day">${postedDate.format(dayFormat)}</span>,
-      <span class="year">${postedDate.format(yearFormat)}</span>
+<% if (when == 'posted') { %>
+    <time datetime="${toXmlTime(postedOn)}" pubdate ${ updatedOn != postedOn ? 'data-updated=true' : '' }>
+      <span class="month">${postedOn.format(monthFormat)}</span>
+      <span class="day">${postedOn.format(dayFormat)}</span>,
+      <span class="year">${postedOn.format(yearFormat)}</span>
     </time>
   <% } %>
 
-<% if (when == 'updated' && updatedOn) {
-     Date updatedDate = Date.parse(site.dateTimeFormat, updatedOn) %>
-     <time datetime="${toXmlTime(updatedDate)}" class="updated">
+<% if (when == 'updated' && updatedOn) { %>
+     <time datetime="${toXmlTime(updatedOn)}" class="updated">
        Updated
-       <span class="month">${updatedDate.format(monthFormat)}</span>
-       <span class="day">${updatedDate.format(dayFormat)}</span>,
-       <span class="year">${updatedDate.format(yearFormat)}</span>
+       <span class="month">${updatedOn.format(monthFormat)}</span>
+       <span class="day">${updatedOn.format(dayFormat)}</span>,
+       <span class="year">${updatedOn.format(yearFormat)}</span>
      </time>
 <% } %>
