@@ -17,7 +17,7 @@
   <entry>
     <title type="html"><![CDATA[${post.title}]]></title>
     <link href="${site.url}${post.url}"/>
-    <updated>${toXmlTime(Date.parse(site.dateTimeFormat, post.updated).time)}</updated>
+    <updated>${toXmlTime(Date.parse(site.datetime_format, post.updated).time)}</updated>
     <id>${post.url}</id>
     <content type="html"><![CDATA[${post.render().content}]]></content>
   </entry>

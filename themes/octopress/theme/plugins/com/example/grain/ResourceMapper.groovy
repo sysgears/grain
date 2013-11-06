@@ -116,7 +116,7 @@ class ResourceMapper {
                     break
                 case '/atom.xml':
                     int maxRss = site.rss_post_count
-                    def lastUpdated = posts.size() > 0 ? Date.parse(site.dateTimeFormat, posts[0].updated).time : ''
+                    def lastUpdated = posts.size() > 0 ? Date.parse(site.datetime_format, posts[0].updated).time : ''
                     // default feed
                     updatedResources << (page + [posts: posts.take(maxRss), lastUpdated: lastUpdated])
 
@@ -168,7 +168,7 @@ class ResourceMapper {
      * @return formatted url to the post page
      */
     private String getPostUrl(String basePath, Map resource) {
-        def date = Date.parse(site.dateTimeFormat, resource.date).format('yyyy/MM/dd/')
+        def date = Date.parse(site.datetime_format, resource.date).format('yyyy/MM/dd/')
         def title = resource.title.encodeAsSlug()
         "$basePath$date$title/"
     }

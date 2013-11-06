@@ -1,5 +1,5 @@
 <%
-  def date = Date.parse(site.dateTimeFormat, page.date)
+  def date = Date.parse(site.datetime_format, page.date)
   def day = date.format('dd')
   def month = date.format('MMM')
 %>

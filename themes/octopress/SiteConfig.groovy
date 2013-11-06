@@ -3,7 +3,7 @@ import com.example.grain.taglib.OctopressTagLib
 
 Locale.setDefault(Locale.US)
 
-dateTimeFormat = 'yyyy-MM-dd HH:mm'
+datetime_format = 'yyyy-MM-dd HH:mm'
 excludes = ["/sass/.*", "/plugins/.*", "/target/.*"]
 
 environments {
@@ -159,7 +159,7 @@ new_post: { String postTitle ->
     file.exists() || file.write("""---
 layout: post
 title: "${postTitle}"
-date: "${date.format(dateTimeFormat)}"
+date: "${date.format(datetime_format)}"
 author:
 categories: []
 comments: true
