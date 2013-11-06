@@ -116,7 +116,9 @@ class ResourceMapper {
                     break
                 case '/atom.xml':
                     int maxRss = site.rss_post_count
-                    def lastUpdated = posts.size() > 0 ? Date.parse(site.datetime_format, posts[0].updated).time : ''
+                    def lastUpdated = posts.collect { Map post ->
+                        post.updated ? Date.parse(site.datetime_format, post.updated) : new Date(post.lastUpdated)
+                    }.max()
                     // default feed
                     updatedResources << (page + [posts: posts.take(maxRss), lastUpdated: lastUpdated])
 
