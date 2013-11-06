@@ -1,11 +1,11 @@
-<% if (site.asides?.github?.user && site.asides.github.hidden != true) { %>
+<% if (site.asides?.github?.user) { %>
 <section>
   <h1>GitHub Repos</h1>
   <ul id="gh_repos">
     <li class="loading">Status updating...</li>
   </ul>
   <% if (site.asides.github.show_profile_link == true) { %>
-  <a href="https://github.com/${site.asides.github.user}">${site.asides.github.user}</a> on GitHub
+    <a href="https://github.com/${site.asides.github.user}">${site.asides.github.user}</a> on GitHub
   <% } %>
   <script type="text/javascript">
     $(function(){
@@ -19,7 +19,7 @@
 
         github.showRepos({
             user: "${site.asides.github.user}",
-            count: "${site.asides.github.repo_count ?: 10}",
+            count: "${site.asides.github.count ?: 10}",
             skip_forks: "${site.asides.github.skip_forks == true}",
             target: '#gh_repos'
         });

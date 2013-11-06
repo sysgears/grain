@@ -1,11 +1,11 @@
-<ul class="subscription" data-subscription="rss ${site.subscribe_email ? 'email' : ''}">
-  <li><a href="${site.url}/${site.subscribe_rss}" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
-  <% if (site.subscribe_email) { %>
-    <li><a href="mailto:${site.subscribe_email}" rel="subscribe-email" title="subscribe via email">Email</a></li>
+<ul class="subscription" data-subscription="rss ${site.subscribe_url ? 'email' : ''}">
+  <li><a href="${site.rss.feed}" rel="subscribe-rss" title="subscribe via RSS">RSS</a></li>
+  <% if (site.subscribe_url) { %>
+    <li><a href="${site.subscribe_url}" rel="subscribe-email" title="subscribe via email">Email</a></li>
   <% } %>
 </ul>
-<% if (site.simple_search) { %>
-  <form action="${site.simple_search}" method="get">
+<%if (site.enable_site_search) { %>
+  <form action="http://google.com/search" method="get">
     <fieldset role="search">
       <input type="hidden" name="q" value="site:${site.url}" />
       <input class="search" type="text" name="q" results="0" placeholder="Search"/>

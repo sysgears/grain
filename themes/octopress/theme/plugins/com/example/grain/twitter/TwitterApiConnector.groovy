@@ -46,7 +46,6 @@ class TwitterApiConnector {
      * @return JSONObject with response or null if server respond with error status code
      */
     private JSONArray sendRequest(String resource, Map query) {
-        // gets OAuth credentials
         String consumerKey = site.asides.tweets.consumer_key ?: ''
         String consumerSecret = site.asides.tweets.consumer_secret ?: ''
         String accessToken = site.asides.tweets.access_token ?: ''
@@ -69,7 +68,6 @@ class TwitterApiConnector {
                 response = null
             }
         } else {
-            println "WARN: tweets won't be fetched as Twitter API credentials not set in configurations"
             response = null
         }
 

@@ -1,10 +1,35 @@
 import com.example.grain.ResourceMapper
 import com.example.grain.taglib.OctopressTagLib
 
-Locale.setDefault(Locale.US)
+/*
+ * Grain configuration.
+ */
 
+// Resource mapper and tag libs.
+resource_mapper = new ResourceMapper(site).map
+tag_libs = [OctopressTagLib]
+
+// Locale and datetime format.
+Locale.setDefault(Locale.US)
 dateTimeFormat = 'yyyy-MM-dd HH:mm'
-excludes = ["/sass/.*", "/plugins/.*", "/target/.*"]
+
+// Site directories.
+cache_dir = "${base_dir}/.cache"
+content_dir = "${base_dir}/content"
+theme_dir = "${base_dir}/theme"
+source_dir = [content_dir, theme_dir, "${cache_dir}/compass"]
+include_dir = "${theme_dir}/includes"
+layout_dir = "${theme_dir}/layouts"
+destination_dir = "${base_dir}/target"
+
+excludes = ['/sass/.*', '/plugins/.*', '/target/.*']
+
+features {
+    highlight = "pygments"
+    cache_highlight = "true"
+    pygments = "auto"
+    compass = "auto"
+}
 
 environments {
     dev {
@@ -16,14 +41,14 @@ environments {
     prod {
         log.info "Production environment is used"
         jetty_port = 4000
+        url = "http://localhost:${jetty_port}"
+        show_unpublished = false
         features {
             compress_xml = true
             compress_html = true
             compress_js = true
             compress_css = false
         }
-        url = "http://localhost:${jetty_port}"
-        show_unpublished = false
     }
     cmd {
         features {
@@ -33,122 +58,140 @@ environments {
     }
 }
 
+// Deployment settings.
+deploy = "s3"
+
+s3_bucket = "www.example.com"
+s3_deploy_cmd = "s3cmd sync --acl-public --reduced-redundancy ${destination_dir}/ s3://${s3_bucket}/"
+
+rsync_ssh_user = "user@example.com"
+rsync_ssh_port = "22"
+rsync_document_root = "~/public_html/"
+rsync_deploy_cmd = "rsync -avze 'ssh -p ${rsync_ssh_port}' --delete ${destination_dir} ${rsync_ssh_user}:${rsync_document_root}"
+
+/*
+ * Site configuration.
+ */
+
+// General settings.
+title = 'Octopress theme for Grain' // blog name for the header, title and RSS feed
+subtitle = 'Grain is a static web site building framework for Groovy' // blog brief description for the header
+author = 'SysGears'                 // author name for Copyright, Metadata and RSS feed
+meta_description = ''               // blog description for Metadata
+
+// Blog and Archive.
+posts_per_blog_page = 5             // the number of posts to display per blog page
+posts_per_archive_page = 10         // the number of posts to display per archive page
+disqus {
+    short_name = ''                 // the unique identifier assigned to a Disqus (http://disqus.com/) forum
+}
+
+// RSS feed.
+rss {
+    feed = 'atom.xml'               // url to blog RSS feed
+    email = ''                      // email address for the RSS feed
+    post_count = 20                 // the number of posts in the RSS feed
+}
+
+// Site Search.
+enable_site_search = true           // defines whether to enable site search
+
+// Subscription by email.
+subscribe_url = ''                  // url to subscribe by email (service integration required)
+
+// Google Analytics.
+google_analytics_tracking_id = ''   // google analytics tracking code, for details visit: http://www.google.com/analytics/
+
+// Sharing.
 sharing {
+    // Button for sharing of posts and pages on Twitter.
     twitter {
         share_button {
             enabled = true
             lang = 'en'
         }
     }
+    // Button for sharing of posts and pages on Facebook.
     facebook {
         share_button {
             enabled = true
-            lang = 'en_US' // locale code e.g. 'en_US', 'ru_RU', etc.
+            lang = 'en_US'          // locale code e.g. 'en_US', 'en_GB', etc.
         }
     }
+    // Button for sharing of posts and pages on Google plus one.
     googleplus_one {
         share_button {
             enabled = true
-            size = 'medium' // one of 'small', 'medium', 'standard', 'tall'
+            size = 'medium'         // one of 'small', 'medium', 'standard', 'tall'
         }
     }
 }
 
-disqus {
-    show_comment_count = true
-    short_name = 'grain'
-}
-
-asides {
-    recent_posts {
-        count = 5
-        // The 'hidden = true' statement can be used to hide asides and subsections.
-        //hidden = true // uncomment to hide recent posts section
-    }
-    google_plus {
-        user = '109746189379932479469'
-    }
-    twitter {
-        user = 'sysgears'
-    }
-    tweets {
-        user = 'sysgears'
-        count = 2
-        /*consumer_key = 'consumer_key'
-        consumer_secret = 'consumer_secret'
-        access_token = 'access_token'
-        secret_token = 'secret_token'*/
-        follow_button {
-            size = 'large' // "large" or "medium"
-            show_name = true
-            show_count = true
-            lang = 'en' // one of English (en), French (fr), German (de), Italian (it), Spanish (es), Korean (ko) and Japanese (ja)
-        }
-    }
-    delicious {
-        //user = 'user'
-        bookmarks {
-            count = 5
-        }
-    }
-    instagram {
-        //user = 'user'
-    }
-    facebook {
-        user = 'sysgears'
-    }
-    github {
-        user = 'sysgears'
-        show_profile_link = true
-        skip_forks = true
-        repo_count = 10
-        hidden = false
-    }
-    pinboard {
-        //user = 'Serge'
-        bookmarks {
-            count = 5
-        }
-    }
-}
-
-features {
-    highlight = "pygments"
-    cache_highlight = "true"
-    pygments = "auto"
-    compass = "auto"
-}
-
-
-title = "My Grain Blog"
-subtitle = "A static web site building framework"
-author = "Your name"
-about = "A little something about me."
-email = "info@example.com"
-simple_search = "http://google.com/search"
-subscribe_rss = "atom.xml"
-subscribe_email = "username@gmail.com"
-// google_analytics_tracking_id = "UA-XXXXXXXX-X"
-api_key = "kwJiszKArE6455wVlPt8zQrTrwIRUubnC63F8kiwj00lCcfzNkk5RIBDPpwmbDJQ"
-forum_name = "example"
-posts_per_page = 5
-archives_per_page = 10
-rss_post_count = 20
-debug = false
-default_asides = ['asides/recent_posts.html', 'asides/github.html', 'asides/tweets.html',  'asides/delicious.html',
-        'asides/pinboard.html', 'custom/asides/about.html', 'asides/facebook.html', 'asides/twitter.html',
+// Sidebar modules that should be included by default.
+default_asides = ['asides/recent_posts.html', 'asides/github.html', 'asides/tweets.html', 'asides/delicious.html',
+        'asides/pinboard.html', 'asides/about.html', 'asides/facebook.html', 'asides/twitter.html',
         'asides/instagram.html', 'asides/google_plus.html']
 
-resource_mapper = new ResourceMapper(site).map
-tag_libs = [OctopressTagLib]
+asides {
 
-cache_dir = "${base_dir}/.cache"
-content_dir = "${base_dir}/content"
-theme_dir = "${base_dir}/theme"
-source_dir = [content_dir, theme_dir, "${cache_dir}/compass"]
-include_dir = "${theme_dir}/includes"
-layout_dir = "${theme_dir}/layouts"
-destination_dir = "${base_dir}/target"
+    // Recent posts.
+    recent_posts {
+        count = 5
+    }
+
+    // Recent Delicious bookmarks.
+    delicious {
+        user = ''                   // Delicious (https://delicious.com/) username
+        count = 5                   // the number of bookmarks to show
+    }
+
+    // Recent Pinboard bookmarks.
+    pinboard {
+        user = ''                   // Pinboard (http://pinboard.in/) username
+        count = 5                   // the number of bookmarks to show
+    }
+
+    // GitHub repositories.
+    github {
+        user = 'sysgears'           // GitHub (https://github.com/) username
+        show_profile_link = true    // whether to show link to GitHub profile
+        skip_forks = true
+        count = 10                  // the number of repositories to show
+    }
+
+    // The latest tweets.
+    tweets {
+        user = 'sysgears'           // Tweeter (https://twitter.com/) username
+        count = 2                   // the number of tweets to display
+        //consumer_key = ''         // to get consumer key and secret go to https://dev.twitter.com/apps and create a new application
+        //consumer_secret = ''
+        //access_token = ''
+        //secret_token = ''
+        follow_button {
+            size = 'large'          // 'large' or 'medium'
+            lang = 'en'             // one of 'en', 'fr', 'de', 'it', 'es', etc.
+            show_name = true        // defines whether or not to show username
+            show_count = true       // defines whether or not to show the number of followers
+        }
+    }
+
+    // Links to social networks:
+    google_plus {
+        user = '109746189379932479469' // Google plus (https://plus.google.com/) user id
+    }
+    twitter {
+        user = 'sysgears'           // Twitter (https://twitter.com/) username
+    }
+    facebook {
+        user = 'sysgears'           // Facebook https://www.facebook.com/ username
+    }
+    instagram {
+        user = ''                   // Instagram (http://instagram.com/) username
+    }
+
+    // Blog owner description.
+    about_author = 'A brief description of blog owner.'
+}
 
 commands = [
 new_post: { String postTitle ->
@@ -181,12 +224,3 @@ title: "${pageTitle}"
 navigate: true
 ---
 """)}]
-
-deploy = "s3"
-s3_bucket = "www.example.com"
-s3_deploy_cmd = "s3cmd sync --acl-public --reduced-redundancy ${destination_dir}/ s3://${s3_bucket}/"
-
-rsync_ssh_user = "user@example.com"
-rsync_ssh_port = "22"
-rsync_document_root = "~/public_html/"
-rsync_deploy_cmd = "rsync -avze 'ssh -p ${rsync_ssh_port}' --delete ${destination_dir} ${rsync_ssh_user}:${rsync_document_root}"

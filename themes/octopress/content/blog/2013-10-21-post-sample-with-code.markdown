@@ -8,7 +8,7 @@ comments: true                    # disables/enables comments section for the po
 published: true                   # defines whether to render the post in 'generate' mode
 sharing: true                     # (optional) disables/enables sharing options for the post, 'true' is by default
 asides: [ asides/recent_posts.html, asides/github.html,
-  custom/asides/about.html]       # (optional) asides to include into the post page, all asides are included by default
+  asides/about.html]              # (optional) asides to include into the post page, all asides are included by default
 ---
 
 Here is a Groovy code sample:

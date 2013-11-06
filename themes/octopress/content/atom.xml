@@ -7,8 +7,8 @@
 <id>${site.url}/</id>
 <author>
   <name><![CDATA[${site.author}]]></name>
-  <% if (site.email) { %>
-    <email><![CDATA[${site.email}]]></email>
+  <% if (site.rss.email) { %>
+    <email><![CDATA[${site.rss.email}]]></email>
   <% } %>
 </author>
 <generator uri="http://sysgears.com/work/grain/docs/latest/">Grain</generator>

@@ -1,15 +1,12 @@
-<% if (site.asides?.pinboard?.user && site.asides.pinboard.hidden != true) { %>
+<% if (site.asides?.pinboard?.user) { %>
 <section>
   <h1>My Pinboard</h1>
-  <% if (site.asides.pinboard.bookmarks?.hidden != true) { %>
   <ul id="pinboard_linkroll">Fetching linkroll...</ul>
-  <% } %>
   <p><a href="http://pinboard.in/u:${site.asides.pinboard.user}">My Pinboard Bookmarks &raquo;</a></p>
-  <% if (site.asides.pinboard.bookmarks?.hidden != true) { %>
   <script type="text/javascript">
     var linkroll = 'pinboard_linkroll'; //id target for pinboard list
     var pinboard_user = "${site.asides.pinboard.user}"; //id target for pinboard list
-    var pinboard_count = "${site.asides.pinboard.bookmarks?.count ?: 5 }"; //id target for pinboard list
+    var pinboard_count = "${site.asides.pinboard.count ?: 5 }"; //id target for pinboard list
     (function(){
       var pinboardInit = document.createElement('script');
       pinboardInit.type = 'text/javascript';
@@ -18,6 +15,5 @@
       document.getElementsByTagName('head')[0].appendChild(pinboardInit);
     })();
   </script>
-  <% } %>
 </section>
 <% } %>

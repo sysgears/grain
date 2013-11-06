@@ -97,25 +97,25 @@ class ResourceMapper {
             }
             switch (page.url) {
                 case '/':
-                    applyPagination(posts, site.posts_per_page, page.url)
+                    applyPagination(posts, site.posts_per_blog_page, page.url)
                     break
                 case '/archives/':
-                    applyPagination(posts, site.archives_per_page, page.url)
+                    applyPagination(posts, site.posts_per_archive_page, page.url)
                     break
                 case '/authors/':
                     postsByAuthor.each { String author, List items ->
                         if (author) {
-                            applyPagination(items, site.posts_per_page, "${page.url}${author.encodeAsSlug()}/", [author: author])
+                            applyPagination(items, site.posts_per_blog_page, "${page.url}${author.encodeAsSlug()}/", [author: author])
                         }
                     }
                     break
                 case '/categories/':
                     tags.each { String tag ->
-                        applyPagination(postsByCategory(tag), site.posts_per_page, "${page.url}${tag.encodeAsSlug()}/", [tag: tag])
+                        applyPagination(postsByCategory(tag), site.posts_per_blog_page, "${page.url}${tag.encodeAsSlug()}/", [tag: tag])
                     }
                     break
                 case '/atom.xml':
-                    int maxRss = site.rss_post_count
+                    int maxRss = site.rss.post_count
                     def lastUpdated = posts.size() > 0 ? Date.parse(site.dateTimeFormat, posts[0].updated).time : ''
                     // default feed
                     updatedResources << (page + [posts: posts.take(maxRss), lastUpdated: lastUpdated])

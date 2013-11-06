@@ -1,10 +1,8 @@
-<% if (site.asides?.delicious?.user && site.asides.delicious.hidden != true) { %>
+<% if (site.asides?.delicious?.user) { %>
 <section>
   <h1>On Delicious</h1>
-  <% if (site.asides.delicious.bookmarks?.hidden != true) { %>
   <div id="delicious"></div>
-  <script type="text/javascript" src="http://feeds.delicious.com/v2/json/${site.asides.delicious.user}?count=${site.asides.delicious.bookmarks?.count ?: 5}&amp;sort=date&amp;callback=renderDeliciousLinks"></script>
-  <% } %>
+  <script type="text/javascript" src="http://feeds.delicious.com/v2/json/${site.asides.delicious.user}?count=${site.asides.delicious.count ?: 5}&amp;sort=date&amp;callback=renderDeliciousLinks"></script>
   <p><a href="http://delicious.com/${site.asides.delicious.user}">My Delicious Bookmarks &raquo;</a></p>
 </section>
 <% } %>
