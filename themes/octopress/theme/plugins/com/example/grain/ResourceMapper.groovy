@@ -2,8 +2,8 @@ package com.example.grain
 
 import com.example.grain.mapping.Paginator
 import com.example.grain.mapping.TweetsFetcher
-import com.sysgears.grain.taglib.Site
 import com.sysgears.grain.taglib.GrainUtils
+import com.sysgears.grain.taglib.Site
 
 /**
  * Change pages urls and extend models.
@@ -40,7 +40,7 @@ class ResourceMapper {
      * Customizes pages urls.
      */
     private def customizeUrls = { List resources ->
-        def tweets = tweetsFetcher.getTweets(site.asides.tweets.count)?: []
+        def tweets = tweetsFetcher.getTweets(site.asides.tweets.count) ?: []
 
         resources.collect { Map resource ->
             def location = resource.location
@@ -79,7 +79,6 @@ class ResourceMapper {
         }
     }
 
-
     /**
      * Customizes pages models, applies pagination (creates new pages)
      */
@@ -116,7 +115,10 @@ class ResourceMapper {
                     break
                 case '/atom.xml':
                     int maxRss = site.rss.post_count
-                    def lastUpdated = posts.size() > 0 ? Date.parse(site.dateTimeFormat, posts[0].updated).time : ''
+                    def lastUpdated = posts.collect { Map post ->
+                        post.updated ? Date.parse(site.datetime_format, post.updated) : new Date(post.lastUpdated)
+                    }.max()
+
                     // default feed
                     updatedResources << (page + [posts: posts.take(maxRss), lastUpdated: lastUpdated])
 
@@ -168,7 +170,7 @@ class ResourceMapper {
      * @return formatted url to the post page
      */
     private String getPostUrl(String basePath, Map resource) {
-        def date = Date.parse(site.dateTimeFormat, resource.date).format('yyyy/MM/dd/')
+        def date = Date.parse(site.datetime_format, resource.date).format('yyyy/MM/dd/')
         def title = resource.title.encodeAsSlug()
         "$basePath$date$title/"
     }

@@ -11,7 +11,7 @@ tag_libs = [OctopressTagLib]
 
 // Locale and datetime format.
 Locale.setDefault(Locale.US)
-dateTimeFormat = 'yyyy-MM-dd HH:mm'
+datetime_format = 'yyyy-MM-dd HH:mm'
 
 // Site directories.
 cache_dir = "${base_dir}/.cache"
@@ -202,7 +202,7 @@ new_post: { String postTitle ->
     file.exists() || file.write("""---
 layout: post
 title: "${postTitle}"
-date: "${date.format(dateTimeFormat)}"
+date: "${date.format(datetime_format)}"
 author:
 categories: []
 comments: true
