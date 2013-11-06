@@ -166,9 +166,9 @@ class Registry implements FileChangeListener, Service {
             resourceConfig.text = { resourceParser.content }
         }
         if (!resourceConfig.date) {
-            resourceConfig.date = new Date(resourceFile.dateCreated()).format(config.dateTimeFormat)
+            resourceConfig.date = new Date(resourceFile.dateCreated()).format(config.datetime_format)
         }
-        resourceConfig.updated =  new Date(resourceFile.lastModified()).format(config.dateTimeFormat)
+        resourceConfig.updated =  new Date(resourceFile.lastModified()).format(config.datetime_format)
         resourceConfig.defaultUrl = defaultUrl
         resourceConfig.url = defaultUrl
         resourceConfig.location = location
