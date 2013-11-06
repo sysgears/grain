@@ -134,7 +134,6 @@ forum_name = "example"
 posts_per_page = 5
 archives_per_page = 10
 rss_post_count = 20
-debug = false
 default_asides = ['asides/recent_posts.html', 'asides/github.html', 'asides/tweets.html',  'asides/delicious.html',
         'asides/pinboard.html', 'custom/asides/about.html', 'asides/facebook.html', 'asides/twitter.html',
         'asides/instagram.html', 'asides/google_plus.html']
