@@ -31,7 +31,8 @@ class ResourceMapper {
     def map = { resources ->
         // excludes resources with published property set to false,
         // unless it is allowed to show unpublished resources in SiteConfig.
-        def publishedResources = resources.findAll { it.published != false || site.show_unpublished }
+        def publishedResources = resources.findAll { it.published != false || site.show_unpublished }.
+            sort { -(it.date ? Date.parse(site.datetime_format, it.date).time : it.dateCreated) }
 
         customizeModels << addSiteMenu << customizeAsides << customizeUrls << publishedResources
     }

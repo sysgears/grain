@@ -87,7 +87,6 @@ class URLRegistry implements SiteChangeListener {
         log.info 'Rebuilding url->resource map'
 
         urlMap = registry.resources.
-                sort { -it.dateCreated }.
                 collectEntries { resource ->
                     [resource.defaultUrl ?: resource.location, resource]
                 } as Map< String, Map<String, Object> >
@@ -104,7 +103,7 @@ class URLRegistry implements SiteChangeListener {
         
         pages = urlMap.values().findAll { it.type == 'page' }
         assets = urlMap.values().findAll { it.type == 'asset' }
-
+        
         perf.resourceMapTime += (System.currentTimeMillis() - resourceMapStart)
 
         if (log.debugEnabled) {
