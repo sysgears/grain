@@ -48,16 +48,16 @@ class ResourceCompressor {
     private Compressor getFirstLevelCompressor(String extension) {
         Compressor compressor = null
         switch (extension) {
-            case { it == 'js' && site.features?.compress_js }:
+            case { it == 'js' && site.features?.minify_js }:
                 compressor = new YuiJavaScriptCompressor()
                 break
-            case { it == 'css' && site.features?.compress_css }:
+            case { it == 'css' && site.features?.minify_css }:
                 compressor = new YuiCssCompressor()
                 break
-            case { it == 'xml' && site.features?.compress_xml }:
+            case { it == 'xml' && site.features?.minify_xml }:
                 compressor = new XmlCompressor()
                 break
-            case { it == 'html' && site.features?.compress_html }:
+            case { it == 'html' && site.features?.minify_html }:
                 compressor = new HtmlCompressor()
                 break
         }
@@ -70,7 +70,7 @@ class ResourceCompressor {
      * @return whether GZIP compression enabled
      */
     public boolean isGzipEnabled() {
-        site.features?.gzip
+        site.features?.compress == 'gzip'
     }
 
 

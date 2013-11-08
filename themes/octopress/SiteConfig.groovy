@@ -44,10 +44,10 @@ environments {
         url = "http://localhost:${jetty_port}"
         show_unpublished = false
         features {
-            compress_xml = true
-            compress_html = true
-            compress_js = true
-            compress_css = false
+            minify_xml = true
+            minify_html = true
+            minify_js = true
+            minify_css = false
         }
     }
     cmd {
