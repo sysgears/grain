@@ -60,9 +60,7 @@ class ConfigUpdater implements ConfigChangeListener {
     public ConfigUpdater(Site site, CmdlineOptions opts) {
         this.opts = opts
         this.configParser = new ConfigSlurper(opts.env)
-        this.defaultConfigBindings = ["base_dir": System.getProperty('user.dir'),
-                "yaml": new Yaml(),
-                "site": site, "log": log]
+        this.defaultConfigBindings = ["site": site, "log": log]
     }
 
     /**

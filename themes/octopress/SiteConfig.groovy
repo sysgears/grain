@@ -14,6 +14,7 @@ Locale.setDefault(Locale.US)
 datetime_format = 'yyyy-MM-dd HH:mm'
 
 // Site directories.
+base_dir = System.getProperty('user.dir')
 cache_dir = "${base_dir}/.cache"
 content_dir = "${base_dir}/content"
 theme_dir = "${base_dir}/theme"

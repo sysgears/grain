@@ -17,7 +17,6 @@
 package com.sysgears.grain.config
 
 import com.sysgears.grain.preview.ConfigChangeListener
-import com.sysgears.grain.taglib.Site
 import groovy.util.logging.Slf4j
 
 /**
