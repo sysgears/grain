@@ -59,8 +59,6 @@ environments {
 }
 
 // Deployment settings.
-deploy = "s3"
-
 s3_bucket = "www.example.com"
 s3_deploy_cmd = "s3cmd sync --acl-public --reduced-redundancy ${destination_dir}/ s3://${s3_bucket}/"
 
@@ -68,6 +66,8 @@ rsync_ssh_user = "user@example.com"
 rsync_ssh_port = "22"
 rsync_document_root = "~/public_html/"
 rsync_deploy_cmd = "rsync -avze 'ssh -p ${rsync_ssh_port}' --delete ${destination_dir} ${rsync_ssh_user}:${rsync_document_root}"
+
+deploy = s3_deploy_cmd
 
 /*
  * Site configuration.

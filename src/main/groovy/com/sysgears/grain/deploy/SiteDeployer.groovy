@@ -41,7 +41,7 @@ class SiteDeployer {
      * Deploys generated website.
      */
     public void deploy() {
-        def deploy_cmd = config.deploy ? config["${config.deploy}_deploy_cmd"] : config.deploy_cmd
+        def deploy_cmd = config.deploy 
         Process proc = null
         if (deploy_cmd instanceof ArrayList && deploy_cmd.head() instanceof ArrayList) {
             deploy_cmd.each { cmd ->
