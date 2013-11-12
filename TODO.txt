@@ -7,4 +7,4 @@
 1. Fix the problem with file watching when non-existed dir that should be watched appears during running preview, for example
    when ~/.grain/GlobalConfig.groovy is created along with .grain dir during preview.
 1. Implement grain.home autodetection for the case of running Grain in IntelliJ and Eclipse.
-1. Think about the option to use Guice for injecting dependencies into plugins classes code.
+1. Think about the option to use Guice for injecting dependencies into theme src classes code.

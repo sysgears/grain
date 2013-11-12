@@ -23,7 +23,7 @@ include_dir = "${theme_dir}/includes"
 layout_dir = "${theme_dir}/layouts"
 destination_dir = "${base_dir}/target"
 
-excludes = ['/sass/.*', '/plugins/.*', '/target/.*']
+excludes = ['/sass/.*', '/src/.*', '/target/.*']
 
 features {
     highlight = "pygments"

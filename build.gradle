@@ -74,7 +74,7 @@ dependencies {
 sourceSets {
     main {
         groovy {
-            srcDirs = ['src/main/groovy', 'themes/octopress/theme/plugins']
+            srcDirs = ['src/main/groovy', 'themes/octopress/theme/src']
         }
     }
 }
