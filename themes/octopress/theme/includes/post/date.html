@@ -1,6 +1,6 @@
 <%
-  def postedOn = dateCreated(page)
-  def updatedOn = lastUpdated(page)
+  def postedOn = page.date
+  def updatedOn = page.updated
   def when = page.when
 
   final String monthFormat = 'MMM'

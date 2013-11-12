@@ -14,36 +14,6 @@ class OctopressTagLib {
     }
 
     /**
-     * Determines page.creating time.
-     * Uses <code>date</code> header field of the page
-     * with fallback to resource file <code>dateCreated</code> timestamp.
-     *
-     * @param page a page map
-     * 
-     * @return page creation timestamp
-     */
-    def dateCreated = { Map page ->
-        page.date ?
-            Date.parse(taglib.site.datetime_format, page.date) :
-            new Date(page.dateCreated as Long)
-    }
-
-    /**
-     * Determines last updated date of the page.
-     * Uses <code>updated</code> header field of the page
-     * with fallback to resource file <code>lastUpdated</code> timestamp.
-     *
-     * @param page a page map
-     *
-     * @return last updated timestamp
-     */
-    def lastUpdated = { Map page ->
-        page.updated ?
-            Date.parse(taglib.site.datetime_format, page.updated) :
-            new Date(page.lastUpdated as Long)
-    }
-
-    /**
      * Renders a quote block which contains the quote text, author and source.
      *
      * @attr content the quote content

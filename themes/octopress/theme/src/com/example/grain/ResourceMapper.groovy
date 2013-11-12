@@ -26,43 +26,60 @@ class ResourceMapper {
     }
 
     /**
-     * This closure is used to map pages.
+     * This closure is used to transform page URLs and page data models.
      */
     def map = { resources ->
-        // excludes resources with published property set to false,
-        // unless it is allowed to show unpublished resources in SiteConfig.
-        def publishedResources = resources.findAll { it.published != false || site.show_unpublished }.
-            sort { -(it.date ? Date.parse(site.datetime_format, it.date).time : it.dateCreated) }
 
-        customizeModels << addSiteMenu << customizeAsides << customizeUrls << publishedResources
+        def tweets = tweetsFetcher.getTweets(site.asides.tweets.count) ?: []
+
+        def refinedResources = resources.findResults(filterPublished).collect { Map resource ->
+            customizeUrls.curry(tweets) <<
+            fillDates <<
+            resource
+        }.sort { -it.date.time }
+        
+        customizeModels << addSiteMenu << customizeAsides << refinedResources
+    }
+
+    /**
+     * Excludes resources with published property set to false,
+     * unless it is allowed to show unpublished resources in SiteConfig.
+     */
+    private def filterPublished = { Map it ->
+        (it.published != false || site.show_unpublished) ? it : null
+    }
+
+    /**
+     * Fills in page `date` and `updated` fields 
+     */
+    private def fillDates = { Map it ->
+        def update = [date: it.date ? Date.parse(site.datetime_format, it.date) : new Date(it.dateCreated as Long),
+                updated: it.updated ? Date.parse(site.datetime_format, it.updated) : new Date(it.lastUpdated as Long)] 
+        it + update 
     }
 
     /**
      * Customizes pages urls.
      */
-    private def customizeUrls = { List resources ->
-        def tweets = tweetsFetcher.getTweets(site.asides.tweets.count) ?: []
-
-        resources.collect { Map resource ->
-            def location = resource.location
-            def customUrl = resource.url
-            switch (location) {
-                case ~/\/(images|javascripts|stylesheets)\/.*/:
-                    if (location == '/javascripts/jquery.tweet.js') {
-                        resource += [tweets: tweets.toString().replace('\\', '\\\\')]
-                    }
-                    customUrl = getFingerprintUrl(resource)
-                    break
-                case ~/\/blog\/.*/:
-                    customUrl = getPostUrl('/blog/', resource)
-                    break
-                case ~/\/errors.*/:
-                    customUrl = "/errors/"
-                    break
-            }
-
-            resource + [url: customUrl]
+    private def customizeUrls = { List tweets, Map resource ->
+        def location = resource.location
+        def update = [:] 
+        switch (location) {
+            case ~/\/(images|javascripts|stylesheets)\/.*/:
+                if (location == '/javascripts/jquery.tweet.js') {
+                    update.tweets = tweets.toString().replace('\\', '\\\\')
+                }
+                update.url = getFingerprintUrl(resource)
+                break
+            case ~/\/blog\/.*/:
+                update.url = getPostUrl('/blog/', resource)
+                break
+            case ~/\/errors.*/:
+                update.url = "/errors/"
+                break
         }
+
+        resource + update
     }
 
     /**
@@ -116,9 +133,7 @@ class ResourceMapper {
                     break
                 case '/atom.xml':
                     int maxRss = site.rss.post_count
-                    def lastUpdated = posts.collect { Map post ->
-                        post.updated ? Date.parse(site.datetime_format, post.updated) : new Date(post.lastUpdated)
-                    }.max()
+                    def lastUpdated = new Date(posts.max { it.updated.time }.updated.time as Long)
 
                     // default feed
                     updatedResources << (page + [posts: posts.take(maxRss), lastUpdated: lastUpdated])
@@ -171,7 +186,7 @@ class ResourceMapper {
      * @return formatted url to the post page
      */
     private String getPostUrl(String basePath, Map resource) {
-        def date = Date.parse(site.datetime_format, resource.date).format('yyyy/MM/dd/')
+        def date = resource.date.format('yyyy/MM/dd/')
         def title = resource.title.encodeAsSlug()
         "$basePath$date$title/"
     }
