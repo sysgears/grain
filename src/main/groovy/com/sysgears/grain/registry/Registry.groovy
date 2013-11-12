@@ -167,7 +167,6 @@ class Registry implements FileChangeListener, Service {
         }
         resourceConfig.dateCreated = resourceFile.dateCreated()
         resourceConfig.lastUpdated =  resourceFile.lastModified()
-        resourceConfig.defaultUrl = defaultUrl
         resourceConfig.url = defaultUrl
         resourceConfig.location = location
         resourceConfig.bytes = { resourceFile.bytes }
