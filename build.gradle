@@ -5,6 +5,7 @@ import org.eclipse.jgit.lib.*
 apply plugin: 'maven'
 apply plugin: 'groovy'
 apply plugin: 'idea'
+apply plugin: 'ivy-publish'
 group = 'com.sysgears.grain'
 version = '1.0'
 defaultTasks 'clean', 'build', 'createAllDeliverables'
@@ -15,8 +16,8 @@ sourceCompatibility = compatibilityVersion
 targetCompatibility = compatibilityVersion
 
 buildscript {
-  repositories { mavenCentral() }
-  dependencies { classpath 'org.eclipse.jgit:org.eclipse.jgit:3.1.0.201310021548-r' }
+    repositories { mavenCentral() }
+    dependencies { classpath 'org.eclipse.jgit:org.eclipse.jgit:3.1.0.201310021548-r' }
 }
 
 configurations.all {
@@ -28,47 +29,47 @@ repositories {
 }
 
 dependencies {
-     compile('org.codehaus.groovy.modules.http-builder:http-builder:0.5.2') {
-       exclude module: 'groovy'
-     }
-     compile 'net.sf.jpathwatch:jpathwatch:0.95'
-     compile 'org.eclipse.jetty:jetty-server:8.1.8.v20121106'
-     compile 'org.eclipse.jetty:jetty-servlet:8.1.8.v20121106'
-     compile 'javax.servlet:javax.servlet-api:3.0.1'
-     compile 'org.yaml:snakeyaml:1.11'
-     compile 'org.codehaus.gpars:gpars:1.0.0'
-     compile 'com.github.rjeschke:txtmark:0.9'
-     compile 'org.python:jython-standalone:2.7-b1'
-     compile 'org.jruby:jruby-complete:1.7.4'
-     compile 'com.googlecode.htmlcompressor:htmlcompressor:1.5.2'
-     compile('com.yahoo.platform.yui:yuicompressor:2.4.7') {
-         exclude group: 'rhino'
-     }
-     compile 'commons-io:commons-io:2.4'
-     compile 'commons-cli:commons-cli:1.2'
-     compile 'org.codehaus.groovy:groovy-xml:2.1.2'
-     compile 'org.jsoup:jsoup:1.7.2'
-     compile('ch.qos.logback:logback-classic:1.0.13') {
-         exclude group: 'org.slf4j'
-     }
-     compile 'org.slf4j:jcl-over-slf4j:1.7.5'
+    compile('org.codehaus.groovy.modules.http-builder:http-builder:0.5.2') {
+        exclude module: 'groovy'
+    }
+    compile 'net.sf.jpathwatch:jpathwatch:0.95'
+    compile 'org.eclipse.jetty:jetty-server:8.1.8.v20121106'
+    compile 'org.eclipse.jetty:jetty-servlet:8.1.8.v20121106'
+    compile 'javax.servlet:javax.servlet-api:3.0.1'
+    compile 'org.yaml:snakeyaml:1.11'
+    compile 'org.codehaus.gpars:gpars:1.0.0'
+    compile 'com.github.rjeschke:txtmark:0.9'
+    compile 'org.python:jython-standalone:2.7-b1'
+    compile 'org.jruby:jruby-complete:1.7.4'
+    compile 'com.googlecode.htmlcompressor:htmlcompressor:1.5.2'
+    compile('com.yahoo.platform.yui:yuicompressor:2.4.7') {
+        exclude group: 'rhino'
+    }
+    compile 'commons-io:commons-io:2.4'
+    compile 'commons-cli:commons-cli:1.2'
+    compile 'org.codehaus.groovy:groovy-xml:2.1.2'
+    compile 'org.jsoup:jsoup:1.7.2'
+    compile('ch.qos.logback:logback-classic:1.0.13') {
+        exclude group: 'org.slf4j'
+    }
+    compile 'org.slf4j:jcl-over-slf4j:1.7.5'
 
-     compile 'oauth.signpost:signpost-core:1.2.1.2'
-     compile 'oauth.signpost:signpost-commonshttp4:1.2.1.2'
+    compile 'oauth.signpost:signpost-core:1.2.1.2'
+    compile 'oauth.signpost:signpost-commonshttp4:1.2.1.2'
 
-     compile "com.google.inject:guice:4.0-beta"
-     compile "com.google.inject.extensions:guice-assistedinject:4.0-beta"
+    compile "com.google.inject:guice:4.0-beta"
+    compile "com.google.inject.extensions:guice-assistedinject:4.0-beta"
 
-     compile "javax.inject:javax.inject:1"
+    compile "javax.inject:javax.inject:1"
 
-     testCompile("org.spockframework:spock-core:0.7-groovy-2.0") {
-         exclude module: 'groovy-all'
-     }
-     testCompile("org.spockframework:spock-guice:0.7-groovy-2.0") {
-         exclude module: 'groovy-all'
-     }
+    testCompile("org.spockframework:spock-core:0.7-groovy-2.0") {
+        exclude module: 'groovy-all'
+    }
+    testCompile("org.spockframework:spock-guice:0.7-groovy-2.0") {
+        exclude module: 'groovy-all'
+    }
 
-     compile 'org.codehaus.groovy:groovy:2.1.2'
+    compile 'org.codehaus.groovy:groovy:2.1.2'
 }
 
 sourceSets {
@@ -89,7 +90,7 @@ task getGitRev {
     project.ext.revId = id.toString()[0..6]
 }
 
-task uberJar(type: Jar, dependsOn:[':compileJava',':compileGroovy', getGitRev]) {
+task uberJar(type: Jar, dependsOn: [':compileJava', ':compileGroovy', getGitRev]) {
     from files(sourceSets.main.output.classesDir)
     from files(sourceSets.main.output.resourcesDir)
     from(project.rootProject.projectDir) {
@@ -111,7 +112,7 @@ task uberJar(type: Jar, dependsOn:[':compileJava',':compileGroovy', getGitRev]) 
     }
 }
 
-task createAllDeliverables(dependsOn: [uberJar, install]) {
+task createAllDeliverables(dependsOn: [uberJar, 'publishIvyPublicationToLocal-grain-repoRepository']) {
     description = 'Creates all deliverables.'
 }
 
@@ -119,8 +120,34 @@ task wrapper(type: Wrapper) {
     gradleVersion = '1.8'
 }
 
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from (sourceSets.main.allSource) {
+        exclude 'logback.xml'
+    }
+}
+
 artifacts {
     archives uberJar
+    archives sourcesJar
+}
+
+publishing {
+    publications {
+        ivy(IvyPublication) {
+            organisation group
+            module project.rootProject.name
+            revision version
+            artifact uberJar
+            artifact sourcesJar
+        }
+    }
+    repositories {
+        ivy {
+            url 'ivy/'
+            name 'local-grain-repo'
+        }
+    }
 }
 
 ext.pomConfiguration = {
