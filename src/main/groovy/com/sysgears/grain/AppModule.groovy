@@ -57,7 +57,7 @@ class AppModule extends AbstractModule {
         classLoader.addURL(new File(options.vendorHome, 'compass/').toURI().toURL())
         String siteDir = options.configFile.parentFile.canonicalPath
         String globalConfDir = options.globalConfigFile.parentFile.canonicalPath
-        String[] gseRoots = ["${siteDir}/theme/plugins/", siteDir, globalConfDir]        
+        String[] gseRoots = ["${siteDir}/theme/src/", siteDir, globalConfDir]        
         def conf = new CompilerConfiguration()
         conf.setMinimumRecompilationInterval(0)
         def gcl = new GroovyClassLoader(classLoader, conf)
