@@ -90,18 +90,8 @@ task getGitRev {
     project.ext.revId = id.toString()[0..6]
 }
 
-task uberJar(type: Jar, dependsOn: [':compileJava', ':compileGroovy', getGitRev]) {
-    from files(sourceSets.main.output.classesDir)
-    from files(sourceSets.main.output.resourcesDir)
-    from(project.rootProject.projectDir) {
-        include "vendor/**"
-    }
-    from(configurations.runtime.asFileTree.files.collect { zipTree(it) }) {
-        exclude "META-INF/*.SF"
-        exclude "META-INF/*.DSA"
-        exclude "META-INF/*.RSA"
-    }
-    manifest {
+task createSharedManifest(dependsOn: getGitRev) {
+    project.ext.sharedManifest = manifest {
         attributes 'Implementation-Title': 'Grain Static Website Building Framework',
                 'Implementation-Version': version,
                 'Built-By': System.getProperty('user.name'),
@@ -112,7 +102,60 @@ task uberJar(type: Jar, dependsOn: [':compileJava', ':compileGroovy', getGitRev]
     }
 }
 
-task createAllDeliverables(dependsOn: [uberJar, 'publishIvyPublicationToLocal-grain-repoRepository']) {
+task uberJar(type: Jar, dependsOn: [':compileJava', ':compileGroovy', createSharedManifest]) {
+    from files(sourceSets.main.output.classesDir)
+    from files(sourceSets.main.output.resourcesDir)
+    from(project.rootProject.projectDir) {
+        include "vendor/**"
+    }
+    from(configurations.runtime.asFileTree.files.collect { zipTree(it) }) {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+    manifest = project.manifest {
+        from sharedManifest
+    }
+    baseName = "$project.rootProject.name-standalone"
+}
+
+jar {
+    manifest = project.manifest {
+        from sharedManifest
+    }
+    from(project.rootProject.projectDir) {
+        include "vendor/**"
+    }
+}
+
+artifacts {
+    archives uberJar
+}
+
+publishing {
+    publications {
+        grain(IvyPublication) {
+            organisation group
+            module project.rootProject.name
+            from components.java
+            artifacts = [sourcesJar, javadocJar, jar]
+        }
+        'grain-standalone'(IvyPublication) {
+            organisation group
+            module "$project.rootProject.name-standalone"
+            revision version
+            artifact uberJar
+        }
+    }
+    repositories {
+        ivy {
+            url 'ivy/'
+            name 'local-grain-repo'
+        }
+    }
+}
+
+task createAllDeliverables(dependsOn: [jar, publish]) {
     description = 'Creates all deliverables.'
 }
 
@@ -122,32 +165,14 @@ task wrapper(type: Wrapper) {
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
-    from (sourceSets.main.allSource) {
+    from(sourceSets.main.allSource) {
         exclude 'logback.xml'
     }
 }
 
-artifacts {
-    archives uberJar
-    archives sourcesJar
-}
-
-publishing {
-    publications {
-        ivy(IvyPublication) {
-            organisation group
-            module project.rootProject.name
-            revision version
-            artifact uberJar
-            artifact sourcesJar
-        }
-    }
-    repositories {
-        ivy {
-            url 'ivy/'
-            name 'local-grain-repo'
-        }
-    }
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
 }
 
 ext.pomConfiguration = {
