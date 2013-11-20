@@ -1,6 +1,4 @@
-import org.eclipse.jgit.api.*
-import org.eclipse.jgit.revwalk.*
-import org.eclipse.jgit.lib.*
+import java.security.MessageDigest
 
 apply plugin: 'maven'
 apply plugin: 'groovy'
@@ -80,22 +78,27 @@ sourceSets {
     }
 }
 
-task getGitRev {
-    def git = Git.open(project.file(project.rootProject.projectDir))
-    def repo = git.repository
-    def ref = repo.getRef(repo.fullBranch)
-    def walk = new RevWalk(repo)
-    def rev = walk.parseCommit(ref.objectId)
-    def id = ObjectId.toString(rev.id)
-    project.ext.revId = id.toString()[0..6]
+task getVendorMD5Checksum {
+    def md5 = MessageDigest.getInstance('MD5')
+    new File("vendor/").eachFileRecurse { file ->
+        if (file.isFile()) {
+            md5.update(file.bytes)
+        }
+    }
+    def messageDigest = md5.digest()
+    def sb = new StringBuilder()
+    messageDigest.each {
+        sb.append(String.format('%02x', it))
+    }
+    project.ext.vendorMD5 = sb.toString()
 }
 
-task createSharedManifest(dependsOn: getGitRev) {
+task createSharedManifest(dependsOn: getVendorMD5Checksum) {
     project.ext.sharedManifest = manifest {
         attributes 'Implementation-Title': 'Grain Static Website Building Framework',
                 'Implementation-Version': version,
                 'Built-By': System.getProperty('user.name'),
-                'Built-Rev': project.ext.revId,
+                'Built-Rev': project.ext.vendorMD5,
                 'Built-Date': new Date(),
                 'Built-JDK': System.getProperty('java.version'),
                 'Main-Class': mainClassName
