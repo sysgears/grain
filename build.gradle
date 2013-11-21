@@ -18,6 +18,13 @@ buildscript {
     dependencies { classpath 'org.eclipse.jgit:org.eclipse.jgit:3.1.0.201310021548-r' }
 }
 
+ext {
+    title = 'Grain Static Website Building Framework'
+    url = 'http://www.sysgears.com/grain'
+    licenseName = 'Apache License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+}
+
 configurations.all {
     exclude group: 'commons-logging'
 }
@@ -80,7 +87,7 @@ sourceSets {
 
 task getVendorMD5Checksum {
     def md5 = MessageDigest.getInstance('MD5')
-    new File("$project.rootProject.projectDir/vendor/").eachFileRecurse { file ->
+    file('vendor').eachFileRecurse { file ->
         if (file.isFile()) {
             md5.update(file.bytes)
         }
@@ -95,10 +102,10 @@ task getVendorMD5Checksum {
 
 task createSharedManifest(dependsOn: getVendorMD5Checksum) {
     project.ext.sharedManifest = manifest {
-        attributes 'Implementation-Title': 'Grain Static Website Building Framework',
+        attributes 'Implementation-Title': project.title,
                 'Implementation-Version': version,
                 'Built-By': System.getProperty('user.name'),
-                'Built-Rev': project.ext.vendorMD5,
+                'Built-Rev': project.vendorMD5,
                 'Built-Date': new Date(),
                 'Built-JDK': System.getProperty('java.version'),
                 'Main-Class': mainClassName
@@ -142,12 +149,20 @@ publishing {
             module project.rootProject.name
             from components.java
             artifacts = [sourcesJar, javadocJar, jar]
+            descriptor.withXml {
+                asNode().info[0].appendNode('license', ['name': project.licenseName, 'url': project.licenseUrl])
+                asNode().info[0].appendNode('description', ['homepage': project.url], project.title)
+            }
         }
         'grain-standalone'(IvyPublication) {
             organisation group
             module "$project.rootProject.name-standalone"
             revision version
             artifact uberJar
+            descriptor.withXml {
+                asNode().info[0].appendNode('license', ['name': project.licenseName, 'url': project.licenseUrl])
+                asNode().info[0].appendNode('description', ['homepage': project.url], project.title)
+            }
         }
     }
     repositories {
@@ -179,9 +194,10 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 }
 
 ext.pomConfiguration = {
-    name 'Grain Static Website Building Framework'
-    description 'Grain is a static web site building framework for Groovy that makes demanding static web site implementation an intuitive and enjoyable task to do.'
-    url 'http://sysgears.com/products/grain'
+    name project.title
+    description '''Grain is a static web site building framework for Groovy that makes demanding static web site
+            implementation an intuitive and enjoyable task to do.'''
+    url project.url
     inceptionYear '2013'
 
     scm {
@@ -192,8 +208,8 @@ ext.pomConfiguration = {
 
     licenses {
         license {
-            name 'The Apache Software License, Version 2.0'
-            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+            name project.licenseName
+            url project.licenseUrl
             distribution 'repo'
         }
     }
