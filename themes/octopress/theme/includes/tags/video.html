@@ -1,8 +1,0 @@
-<% def video = page.video %>
-
-<video <%= video.width && video.height ? "width=\"${video.width}\" height=\"${video.height}\"" : '' %>
-       <%= video.poster ? " poster=\"${video.poster}\" preload=\"none\"" : '' %>
-       controls="">
-  <source src="${video.url}" type="${video.type}">
-</video>
-

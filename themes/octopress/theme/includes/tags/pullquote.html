@@ -1,9 +1,0 @@
-<% def textblock = page.textblock %>
-
-<% if (textblock.quote) { %>
-    <span class="pullquote-${textblock.align}" data-pullquote="${textblock.quote}">
-        ${textblock.content}
-    </span>
-<% } else { %>
-    ${textblock.content}
-<% } %>

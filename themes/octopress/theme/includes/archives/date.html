@@ -1,8 +1,0 @@
-<%
-  def date = page.date
-  def day = date.format('dd')
-  def month = date.format('MMM')
-%>
-<time datetime="${toXmlTime(date)}" pubdate>
-  <span class="month">${month}</span> <span class="day">${day}</span>
-</time>

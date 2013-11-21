@@ -1,7 +1,0 @@
-<% if (page.sidebar != false) { %>
-<aside class="sidebar">
-  <% (page.asides ?: site.default_asides).each { aside -> %>
-    ${ include aside }
-  <% } %>
-</aside>
-<% } %>
