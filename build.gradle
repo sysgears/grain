@@ -23,6 +23,7 @@ ext {
     url = 'http://www.sysgears.com/grain'
     licenseName = 'Apache License, Version 2.0'
     licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    localMavenRepoCopy = "file:///${System.getProperty('user.home')}/projects/grain/grain-pages/repo"
 }
 
 configurations.all {
@@ -80,7 +81,7 @@ dependencies {
 sourceSets {
     main {
         groovy {
-            srcDirs = ['src/main/groovy', 'themes/octopress/theme/src']
+            srcDirs = ['src/main/groovy']
         }
     }
 }
@@ -138,8 +139,9 @@ jar {
     }
 }
 
-artifacts {
-    archives uberJar
+ext.ivyConfiguration = {
+    asNode().info[0].appendNode('license', ['name': project.licenseName, 'url': project.licenseUrl])
+    asNode().info[0].appendNode('description', ['homepage': project.url], project.title)
 }
 
 publishing {
@@ -149,20 +151,14 @@ publishing {
             module project.rootProject.name
             from components.java
             artifacts = [sourcesJar, javadocJar, jar]
-            descriptor.withXml {
-                asNode().info[0].appendNode('license', ['name': project.licenseName, 'url': project.licenseUrl])
-                asNode().info[0].appendNode('description', ['homepage': project.url], project.title)
-            }
+            descriptor.withXml project.ivyConfiguration
         }
         'grain-standalone'(IvyPublication) {
             organisation group
             module "$project.rootProject.name-standalone"
             revision version
             artifact uberJar
-            descriptor.withXml {
-                asNode().info[0].appendNode('license', ['name': project.licenseName, 'url': project.licenseUrl])
-                asNode().info[0].appendNode('description', ['homepage': project.url], project.title)
-            }
+            descriptor.withXml project.ivyConfiguration
         }
     }
     repositories {
@@ -191,6 +187,13 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 task javadocJar(type: Jar, dependsOn: javadoc) {
     classifier = 'javadoc'
     from javadoc.destinationDir
+}
+
+artifacts {
+    archives sourcesJar
+    archives javadocJar
+    archives uberJar
+    archives jar
 }
 
 ext.pomConfiguration = {
@@ -223,15 +226,25 @@ ext.pomConfiguration = {
     }
 }
 
-install {
-    repositories.mavenInstaller {
-        pom.project pomConfiguration
+uploadArchives {
+    repositories.mavenDeployer {
+        repository(url: project.localMavenRepoCopy)
+        addFilter("$project.rootProject.name-standalone") { artifact, file ->
+            artifact.name == "$project.rootProject.name-standalone"
+        }
+        addFilter("$project.rootProject.name") { artifact, file ->
+            artifact.name == "$project.rootProject.name"
+        }
+        pom("$project.rootProject.name-standalone").project pomConfiguration
+        pom("$project.rootProject.name").project pomConfiguration
+        pom("$project.rootProject.name-standalone").whenConfigured { pom ->
+            pom.dependencies = []
+        }
     }
 }
 
 idea {
     module {
-        excludeDirs = ['.cache', '.idea', '.gradle', '.nb-gradle', '.settings', 'out', 'target', 'build'].
-                collect { [file(it), file("themes/octopress/${it}")] }.flatten()
+        excludeDirs = ['.idea', '.gradle', 'build'].collect { file(it) }
     }
 }
