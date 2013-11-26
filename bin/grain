@@ -38,4 +38,4 @@ fi
 # Check if Grain environment variable is set.
 [ -z "$GRAIN_HOME" ] && die "ERROR: GRAIN_HOME is not set";
 
-exec "$JAVACMD" -jar "$GRAIN_HOME"/ivy/com.sysgears.grain/grain-standalone/1.0/grain-standalone-1.0.jar "$@"
+exec "$JAVACMD" -jar "$GRAIN_HOME"/dist/grain-standalone-1.0.jar "$@"

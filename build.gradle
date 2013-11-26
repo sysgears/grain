@@ -130,6 +130,11 @@ task uberJar(type: Jar, dependsOn: [':compileJava', ':compileGroovy', createShar
     baseName = "$project.rootProject.name-standalone"
 }
 
+task installUberJar(type: Copy, dependsOn: [uberJar]) {
+    from "${project.buildDir}/libs/${project.name}-standalone-${project.version}.jar"
+    into "${project.projectDir}/dist"
+}
+
 jar {
     manifest = project.manifest {
         from sharedManifest
@@ -139,37 +144,7 @@ jar {
     }
 }
 
-ext.ivyConfiguration = {
-    asNode().info[0].appendNode('license', ['name': project.licenseName, 'url': project.licenseUrl])
-    asNode().info[0].appendNode('description', ['homepage': project.url], project.title)
-}
-
-publishing {
-    publications {
-        grain(IvyPublication) {
-            organisation group
-            module project.rootProject.name
-            from components.java
-            artifacts = [sourcesJar, javadocJar, jar]
-            descriptor.withXml project.ivyConfiguration
-        }
-        'grain-standalone'(IvyPublication) {
-            organisation group
-            module "$project.rootProject.name-standalone"
-            revision version
-            artifact uberJar
-            descriptor.withXml project.ivyConfiguration
-        }
-    }
-    repositories {
-        ivy {
-            url 'ivy/'
-            name 'local-grain-repo'
-        }
-    }
-}
-
-task createAllDeliverables(dependsOn: [jar, publish]) {
+task createAllDeliverables(dependsOn: [jar, installUberJar]) {
     description = 'Creates all deliverables.'
 }
 
@@ -192,7 +167,6 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
 artifacts {
     archives sourcesJar
     archives javadocJar
-    archives uberJar
     archives jar
 }
 
@@ -229,17 +203,7 @@ ext.pomConfiguration = {
 uploadArchives {
     repositories.mavenDeployer {
         repository(url: project.localMavenRepoCopy)
-        addFilter("$project.rootProject.name-standalone") { artifact, file ->
-            artifact.name == "$project.rootProject.name-standalone"
-        }
-        addFilter("$project.rootProject.name") { artifact, file ->
-            artifact.name == "$project.rootProject.name"
-        }
-        pom("$project.rootProject.name-standalone").project pomConfiguration
-        pom("$project.rootProject.name").project pomConfiguration
-        pom("$project.rootProject.name-standalone").whenConfigured { pom ->
-            pom.dependencies = []
-        }
+        pom.project pomConfiguration
     }
 }
 

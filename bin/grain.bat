@@ -57,7 +57,7 @@ echo location of your Grain installation.
 goto fail
 
 :findGrainFromGrainHome
-set GRAIN_JAR=%GRAIN_HOME%/ivy/com.sysgears.grain/grain-standalone/1.0/grain-standalone-1.0.jar
+set GRAIN_JAR=%GRAIN_HOME%/dist/grain-standalone-1.0.jar
 
 if exist "%GRAIN_JAR%" goto init
 
