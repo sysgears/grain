@@ -23,7 +23,7 @@ ext {
     url = 'http://www.sysgears.com/grain'
     licenseName = 'Apache License, Version 2.0'
     licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-    localMavenRepoCopy = "file:///${System.getProperty('user.home')}/projects/grain/grain-pages/repo"
+    localGHPagesRepoDir = "${System.getProperty('user.home')}/projects/grain/grain-pages"
 }
 
 configurations.all {
@@ -200,10 +200,31 @@ ext.pomConfiguration = {
     }
 }
 
-uploadArchives {
+task pullRemoteRepoChanges(type: Exec) {
+    workingDir = new File(project.localGHPagesRepoDir)
+    commandLine = ['git', 'pull', 'origin', 'gh-pages:gh-pages']
+}
+
+task uploadArchivesToLocalRepo(type: Upload, dependsOn: [build, pullRemoteRepoChanges]) {
+    configuration = configurations.archives
     repositories.mavenDeployer {
-        repository(url: project.localMavenRepoCopy)
+        repository(url: "file:///$project.localGHPagesRepoDir/repo")
         pom.project pomConfiguration
+    }
+}
+
+task uploadArchivesToRemoteRepo(dependsOn: uploadArchivesToLocalRepo) {
+    [
+            ['./update-directory-index.sh'],
+            ['git', 'commit', '-a', '-m', 'Updated remote Grain repo'],
+            ['git', 'push']
+    ].each { command ->
+        doLast {
+            exec {
+                workingDir = new File(project.localGHPagesRepoDir)
+                commandLine = command
+            }
+        }
     }
 }
 
