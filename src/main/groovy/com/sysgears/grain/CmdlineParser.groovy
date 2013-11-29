@@ -22,7 +22,7 @@ import java.util.jar.Manifest
 /**
  * Command line arguments parser and validator.
  * <p>
- * In case of facing wrong cmdline arguments dumps help and shutdowns the application 
+ * In case of facing wrong cmdline arguments dumps help and shutdowns the application
  */
 class CmdlineParser {
 
@@ -31,6 +31,9 @@ class CmdlineParser {
 
     /** Default global config file name */
     private static final String GLOBAL_CONFIG_FILE_NAME = 'GlobalConfig.groovy'
+
+    /** Default properties file name */
+    private static final String PROPERTIES_FILE_NAME = 'application.properties'
 
     /**
      * Parses and validates command line arguments.
@@ -90,7 +93,12 @@ Options:
                     break
             }
         }
-        
+        def grainVersion = getGrainVersion()
+
+        validateGrainVersion(grainVersion)
+
+        opts.grainVersion = grainVersion
+
         opts.vendorHome = getVendorHome()
 
         opts.args = commands
@@ -99,42 +107,124 @@ Options:
 
     /**
      * Detects vendor home directory 
-     * 
+     *
      * @return Grain vendor home directory
      */
     private static File getVendorHome() {
-        def vendorHome = null
+        def vendorHome
 
         def vendorHomeProperty = System.getProperty('vendor.home')
         if (vendorHomeProperty) {
             vendorHome = new File(vendorHomeProperty).canonicalFile
         } else {
-            def className = CmdlineParser.getSimpleName() + ".class"
-            String classPath = CmdlineParser.getResource(className).toString()
-            
-            if (!classPath.startsWith("jar")) {
-                def cl = ClassLoader.getSystemClassLoader() as URLClassLoader
+            def classPath = getCurrentClassPath()
 
-                for (URL url : cl.getURLs()) {
-                    if (url.getFile().endsWith('/out/production/grain/')) {
-                        vendorHome = new File(url.getFile().toString(), "../../../vendor").canonicalFile
-                    }
-                }
+            if (!classPath.startsWith('jar')) {
+                vendorHome = getFileInDevMode('vendor')
 
                 if (!vendorHome) {
                     throw new RuntimeException('Unable to guess Grain vendor home, please set vendor.home system property')
                 }
             } else {
-                def manifestPath = classPath.substring(0, classPath.lastIndexOf("!") + 1) +
-                        "/META-INF/MANIFEST.MF"
+                def manifestPath = classPath.substring(0, classPath.lastIndexOf('!') + 1) +
+                        '/META-INF/MANIFEST.MF'
                 def manifest = new Manifest(new URL(manifestPath).openStream())
                 def attr = manifest.getMainAttributes()
-                def rev = attr.getValue("Built-Rev")
-                
+                def rev = attr.getValue('Built-Rev')
+
                 vendorHome = new File(System.getProperty('user.home'), ".grain/vendor/${rev}")
             }
         }
-        
+
         vendorHome
+    }
+
+    /**
+     * Detects Grain version
+     *
+     * @return Grain version
+     */
+    private static String getGrainVersion() {
+        def classPath = getCurrentClassPath()
+
+        def grainPropertiesStream
+
+        if (!classPath.startsWith('jar')) {
+            def grainPropertiesFile = getFileInDevMode('src/main/resources/application.properties')
+            if (grainPropertiesFile && grainPropertiesFile.exists()) {
+                grainPropertiesStream = new FileInputStream(grainPropertiesFile)
+            } else {
+                throw new RuntimeException('Unable to locate Grain properties file')
+            }
+        } else {
+            def grainPropsPath = classPath.substring(0, classPath.lastIndexOf('!') + 1) +
+                    '/application.properties'
+
+            grainPropertiesStream = new URL(grainPropsPath).openStream()
+        }
+
+        def grainProps = new Properties()
+        grainProps.load(grainPropertiesStream)
+        def grainVersion = grainProps.getProperty('grain.version')
+
+        if (!grainVersion) {
+            throw new RuntimeException('Unable to find which Grain version is used')
+        }
+
+        grainVersion
+    }
+
+    /**
+     * Validates Grain version specified in theme.
+     *
+     * @param grainVersion current running Grain version
+     */
+    private static validateGrainVersion(String grainVersion) {
+        def propertiesFile = new File(PROPERTIES_FILE_NAME)
+        if (!propertiesFile.exists() || !propertiesFile.isFile()) {
+            throw new RuntimeException("Unable to locate properties file: ${propertiesFile.canonicalPath}")
+        }
+
+        def themeProps = new Properties()
+        themeProps.load(new FileInputStream(propertiesFile))
+        def themeGrainVersion = themeProps.getProperty('grain.version')
+
+        if (!themeGrainVersion) {
+            throw new RuntimeException("Grain version not specified in properties file: ${propertiesFile.canonicalPath}")
+        }
+
+        if (themeGrainVersion != grainVersion) {
+            throw new RuntimeException("""Grain versions do not match: \nGrain version of the theme: ${themeGrainVersion}.
+Current Grain version: ${grainVersion}.""")
+        }
+    }
+
+    /**
+     * Gets File instance out of the relative path to file when running Grain in dev mode
+     *
+     * @param relativeFilePath relative path to file
+     * @return File instance of the canonical file that corresponds to specified relative file path
+     */
+    private static File getFileInDevMode(String relativeFilePath) {
+        def result = null
+        def cl = ClassLoader.getSystemClassLoader() as URLClassLoader
+
+        for (URL url : cl.getURLs()) {
+            if (url.getFile().endsWith('/out/production/grain/')) {
+                result = new File(url.getFile().toString(), "../../../$relativeFilePath").canonicalFile
+            }
+        }
+
+        result
+    }
+
+    /**
+     * Gets current class' classpath
+     *
+     * @return current class' classpath
+     */
+    private static String getCurrentClassPath() {
+        def className = CmdlineParser.getSimpleName() + '.class'
+        CmdlineParser.getResource(className).toString()
     }
 }

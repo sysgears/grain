@@ -38,4 +38,7 @@ class CmdlineOptions {
 
     /** Command-specific options */ 
     List<String> args
+
+    /** Grain version */
+    String grainVersion
 }
