@@ -217,7 +217,7 @@ task uploadArchivesToRemoteRepo(dependsOn: uploadArchivesToLocalRepo) {
     [
             ['./update-directory-index.sh'],
             ['git', 'commit', '-a', '-m', 'Updated remote Grain repo'],
-            ['git', 'push']
+            ['git', 'push', 'origin', 'gh-pages']
     ].each { command ->
         doLast {
             exec {
