@@ -47,14 +47,20 @@ class SiteDeployer {
             deploy_cmd.each { cmd ->
                 log.info "Executing deploy command:\n${cmd}"
                 proc = cmd.execute()
-                streamLoggerFactory.create(proc.in, proc.err).start()
+                def logger =  streamLoggerFactory.create(proc.in, proc.err)
+                logger.start()
                 proc.waitFor()
+                logger.interrupt()
+                logger.join()
             }
         } else {
             log.info "Executing deploy command:\n${deploy_cmd}"
             proc = deploy_cmd.execute()
-            streamLoggerFactory.create(proc.in, proc.err).start()
+            def logger =  streamLoggerFactory.create(proc.in, proc.err)
+            logger.start()
             proc.waitFor()
+            logger.interrupt()
+            logger.join()
         }
     }
 }
