@@ -48,33 +48,54 @@ class ScriptWriter {
     }
 
     /**
-     * Writes text wrapped by the specified statement. 
-     * 
+     * Calculates the maximum number of characters that can be placed in the current line wrapped by the
+     * specified statement.
+     *
+     * @param statement a type of statement to wrap the text in
+     * @return maximum number of characters that can be placed in the current line
+     */
+    private def calculateMaxChars(StatementType statement) {
+        def maxChars = MAX_LINE_LENGTH - statement.closeStr.trim().length() - lineLength
+        if (curStatement != statement) {
+            maxChars -= curStatement.closeStr.trim().length() + statement.openStr.length()
+        }
+
+        maxChars
+    }
+
+    /**
+     * Closes a previous statement type and opens a new one.
+     *
+     * @param statement a type of statement to wrap the text in
+     */
+    private void openNewStatement(StatementType statement) {
+        sw.write(curStatement.closeStr)
+        curStatement = statement
+        sw.write(statement.openStr)
+        lineLength = statement.openStr.length()
+    }
+
+    /**
+     * Writes text wrapped by the specified statement.
+     *
      * @param statement a type of statement to wrap the text in
      * @param text a text to write
+     * @param indivisible indicates whether text truncation prohibited or permitted
      */
-    public void write(String text, StatementType statement = StatementType.GSTRING_WRITE) {
+    public void write(String text, StatementType statement = StatementType.GSTRING_WRITE, Boolean indivisible = false) {
         if (text.length() > 0) {
-            def maxChars = MAX_LINE_LENGTH - statement.closeStr.trim().length() - lineLength
-            if (curStatement != statement) {
-                maxChars -= curStatement.closeStr.trim().length() + statement.openStr.length()
-            }
-            if (text.length() > maxChars && statement != StatementType.PLAIN_CODE) {
+            def maxChars = calculateMaxChars(statement)
+            if (text.length() > maxChars && !indivisible) {
                 write(text.substring(0, maxChars), statement)
                 write(text.substring(maxChars), statement)
             } else {
-                if (curStatement != statement) {
-                    sw.write(curStatement.closeStr)
-                    sw.write(statement.openStr)
-                    lineLength = statement.openStr.length()
-                    curStatement = statement
+                if (curStatement != statement || (indivisible && (text.length() > maxChars))) {
+                    openNewStatement(statement)
                 }
                 sw.write(text)
                 lineLength += text.length()
                 if (lineLength + statement.closeStr.length() >= MAX_LINE_LENGTH) {
-                    sw.write(statement.closeStr)
-                    sw.write(statement.openStr)
-                    lineLength = statement.openStr.length()
+                    openNewStatement(statement)
                 }
             }
         }

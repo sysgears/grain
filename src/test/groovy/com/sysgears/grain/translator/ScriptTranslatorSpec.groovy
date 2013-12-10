@@ -38,4 +38,13 @@ class ScriptTranslatorSpec extends Specification {
         translator.translate('a' * 30000).trim() ==
                 'out.write("""' + ('a' * (30000 - stLen)) + '""");\n' + 'out.write("""' + ('a' * stLen) + '""");'
     }
+
+    def 'check translation of text with indivisible block'() {
+        def stLen = 'out.write("""""");'.length()
+        def block = '${r "/patch/to/some/icon.png"}' // indivisible block
+        def text = ('a' * (30000 - stLen - (block.length() / 2))).trim() + block
+        expect: 'indivisible block should not be automatically truncated'
+        translator.translate(text).trim() == 'out.write("""' + ('a' * (30000 - stLen - (block.length() / 2))) +
+                '""");\n' + 'out.write("""' + block + '""");'
+    }
 }

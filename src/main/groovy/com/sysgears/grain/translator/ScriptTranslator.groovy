@@ -63,20 +63,21 @@ public class ScriptTranslator {
                 } else if (op == '<%') {
                     def m2 = scriptSource =~ /%>/
                     if (m2.find()) {
-                        script.write(scriptSource.substring(0, m2.start()).trim() + ";\n", StatementType.PLAIN_CODE)
+                        script.write(scriptSource.substring(0, m2.start()).trim() + ";\n", StatementType.PLAIN_CODE, true)
                         scriptSource = scriptSource.substring(m2.end())
                     }
                 } else if (op == '<%=') {
                     def m2 = scriptSource =~ /%>/
                     if (m2.find()) {
-                        script.write('${' + scriptSource.substring(0, m2.start()).trim() + '}')
+                        script.write('${' + scriptSource.substring(0, m2.start()).trim() + '}',
+                                StatementType.GSTRING_WRITE, true)
                         scriptSource = scriptSource.substring(m2.end())
                     }
                 } else if (op == '${') {
                     def m2 = scriptSource =~ /}/
                     if (m2.find()) {
                         script.write('${' + scriptSource.substring(0, m2.start())
-                                .replaceAll('[\r\n]', '').trim() + '}')
+                                .replaceAll('[\r\n]', '').trim() + '}', StatementType.GSTRING_WRITE, true)
                         scriptSource = scriptSource.substring(m2.end())
                     }
                 }
