@@ -41,6 +41,9 @@ public class Main {
      */
     public static void main(String[] args) {
         def options = new CmdlineParser().parse(args)
+        
+        // Extract bundled tools
+        new ToolsExtractor().extractTools(options)
 
         // Initialize Spring context
         def injector = Guice.createInjector(
