@@ -23,7 +23,8 @@ ext {
     url = 'http://www.sysgears.com/grain'
     licenseName = 'Apache License, Version 2.0'
     licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-    localGHPagesRepoDir = "${System.getProperty('user.home')}/projects/grain/grain-pages"
+    localGHPagesRepoDir = '../grain.gh-pages'
+    localGHPagesRepoCanonicalPath = new File(localGHPagesRepoDir).canonicalPath
 }
 
 configurations.all {
@@ -208,7 +209,7 @@ task pullRemoteRepoChanges(type: Exec) {
 task uploadArchivesToLocalRepo(type: Upload, dependsOn: [build, pullRemoteRepoChanges]) {
     configuration = configurations.archives
     repositories.mavenDeployer {
-        repository(url: "file:///$project.localGHPagesRepoDir/repo")
+        repository(url: "file:///$project.localGHPagesRepoCanonicalPath/repo")
         pom.project pomConfiguration
     }
 }
