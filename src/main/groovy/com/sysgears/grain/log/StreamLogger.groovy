@@ -54,12 +54,12 @@ class StreamLogger {
      */
     public void start() {
         threads = streams.collect { is ->
-            Thread.startDaemon {
+            Thread.start {
                 def sb = new StringBuilder()
                 byte[] buffer = new byte[BUFFER_SIZE]
                 boolean exit = false
 
-                while (!exit || is.available() > 0) {
+                while (true) {
                     while (is.available() > 0) {
                         int bytes = is.read(buffer, 0, BUFFER_SIZE)
                         if (bytes < 0) {
@@ -73,6 +73,9 @@ class StreamLogger {
                             log.info sb.substring(0, idx)
                             sb = sb.delete(0, idx + 1)
                         }
+                    }
+                    if (exit) {
+                        break
                     }
                     sleep(1000L, { exit = true })
                 }

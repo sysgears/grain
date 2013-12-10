@@ -43,12 +43,7 @@ class AutoCompass extends AbstractCompass {
      * @param mode compass mode
      */
     public void launchCompass(String mode) {
-        try {
-            "ruby --version".execute()
-            compass = rubyCompass
-        } catch (IOException ignored) {
-            compass = jrubyCompass 
-        }
+        compass = RubyFinder.rubyCmd != null ? rubyCompass : jrubyCompass
         compass.launchCompass(mode)
     }
 
