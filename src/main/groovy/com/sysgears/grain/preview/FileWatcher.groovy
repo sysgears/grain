@@ -33,9 +33,13 @@ import javax.inject.Named
 @javax.inject.Singleton
 @Slf4j
 class FileWatcher extends Thread {
+
+    /** File watching service */
+    private WatchService watchService = FileSystems.default.newWatchService()
+
     /** Watch key to watch directory map */
     private Map<WatchKey, File> keys = [:]
-
+    
     /** Site config */
     @Inject private Config config
 
@@ -50,7 +54,7 @@ class FileWatcher extends Thread {
 
     /** Site change broadcaster */
     @Inject private SiteChangeBroadcaster siteChangeBroadcaster
-    
+
     /** Rendering mutex */
     @Inject @Named("renderMutex") private Object mutex
     
@@ -64,7 +68,6 @@ class FileWatcher extends Thread {
      * Watches for changes of site files in a background thread.
      */
     void run() {
-        def watchService = FileSystems.default.newWatchService()
         def sourceDirs = config.source_dir.collect { new File(it as String).absolutePath }
         Set<String> configDirs = [opts.configFile, opts.globalConfigFile]*.parentFile.absolutePath 
 
@@ -72,13 +75,13 @@ class FileWatcher extends Thread {
             sourceDirs.each { String path ->
                 def srcDir = new File(path)
                 if (srcDir.exists()) {
-                    watchRecursive(watchService, srcDir)
+                    watchRecursive(srcDir)
                 }
             }
             configDirs.each { String path ->
                 def srcDir = new File(path)
                 if (srcDir.exists()) {
-                    keys.put(Paths.get(srcDir.absolutePath).register(watchService, EVENTS), srcDir)
+                    watchDir(srcDir)
                 }
             }
         } catch (t) {
@@ -113,7 +116,7 @@ class FileWatcher extends Thread {
                             File f = new File(dir, relativePath)
                             if (f.isDirectory() && !keys.containsKey(Paths.get(f.absolutePath))) {
                                 log.debug "Registering new dir to watch: ${f.absolutePath}"
-                                watchRecursive(watchService, f)
+                                watchRecursive(f)
                                 f.eachFileRecurse {
                                     if (!isIgnored(it)) {
                                         changedFiles << it
@@ -153,15 +156,27 @@ class FileWatcher extends Thread {
     }
 
     /**
+     * Registers single directory for watching file changes.
+     * 
+     * @param dir new directory to watch for changes 
+     */
+    private void watchDir(File dir) {
+        try {
+            keys.put(Paths.get(dir.absolutePath).register(watchService, EVENTS), dir)
+        } catch (t) {
+            throw new RuntimeException("Error while registering watch hook for: ${dir.absolutePath}", t)
+        }
+    }
+
+    /**
      * Adds directory and all subdirectory recursively for watching.
      * 
-     * @param watchService watch service
      * @param dir new directory to watch for changes
      */
-    private void watchRecursive(WatchService watchService, File dir) {
-        keys.put(Paths.get(dir.absolutePath).register(watchService, EVENTS), dir)
+    private void watchRecursive(File dir) {
+        watchDir(dir)
         dir.eachDirRecurse { File childDir ->
-            keys.put(Paths.get(childDir.absolutePath).register(watchService, EVENTS), childDir)
+            watchDir(childDir)
         }
     }
 }
