@@ -54,7 +54,7 @@ class StreamLogger {
      */
     public void start() {
         threads = streams.collect { is ->
-            Thread.start {
+            Thread.startDaemon {
                 def sb = new StringBuilder()
                 byte[] buffer = new byte[BUFFER_SIZE]
                 boolean exit = false
