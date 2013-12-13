@@ -91,7 +91,7 @@ class PythonPygments extends Pygments {
             // Generate random ID for Mentos which is used to check that input and output are in sync
             def id = new String((1..8).collect { (65 + random.nextInt(25)) as char } as char[])
             // Encode source code
-            def sourceBytes = "${id}  ${code}  ${id}".bytes
+            def sourceBytes = "${id}  ${code.replace('\r', '')}  ${id}".bytes
             // Pass various options to highlight pygments method
             def kwargs = [id: id, bytes: sourceBytes.length, options: [outencoding: 'utf-8'], lexer: language]
             // Create header for Mentos
