@@ -70,7 +70,7 @@ class StreamLogger {
 
                         int idx
                         while ((idx = sb.lastIndexOf('\n')) != -1) {
-                            log.info sb.substring(0, idx)
+                            log.info sb.substring(0, idx).trim()
                             sb = sb.delete(0, idx + 1)
                         }
                     }
