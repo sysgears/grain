@@ -206,16 +206,17 @@ Current Grain version: ${grainVersion}.""")
      * @return File instance of the canonical file that corresponds to specified relative file path
      */
     private static File getFileInDevMode(String relativeFilePath) {
-        def result = null
         def cl = ClassLoader.getSystemClassLoader() as URLClassLoader
 
         for (URL url : cl.getURLs()) {
             if (url.getFile().endsWith('/out/production/grain/')) {
-                result = new File(url.getFile().toString(), "../../../$relativeFilePath").canonicalFile
+                return new File(url.getFile().toString(), "../../../$relativeFilePath").canonicalFile
+            } else if (url.getFile().endsWith('/build/classes/production/grain/')) {
+                return new File(url.getFile().toString(), "../../../../$relativeFilePath").canonicalFile
             }
         }
 
-        result
+        null
     }
 
     /**
