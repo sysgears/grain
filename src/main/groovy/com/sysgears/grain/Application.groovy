@@ -74,8 +74,6 @@ class Application {
             t.printStackTrace()
         }
         
-        
-
         // Create cache directories
         def cacheDir = new File(config.cache_dir.toString())
         def dirs = (File[]) ([] + cacheDir +
