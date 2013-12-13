@@ -57,7 +57,7 @@ class ShellCompass extends AbstractCompass {
      */
     public void launchCompass(String mode) {
         latch = new CountDownLatch(1)
-        thread = Thread.startDaemon {
+        thread = Thread.start {
             try {
                 log.info 'Launching shell compass process...'
                 def process = ['compass', mode].execute([],
@@ -65,7 +65,7 @@ class ShellCompass extends AbstractCompass {
                 streamLogger = streamLoggerFactory.create(process.in, process.err)
                 streamLogger.start()
                 latch.countDown()
-                def watcher = Thread.startDaemon {
+                def watcher = Thread.start {
                     process.waitFor()
                     streamLogger.interrupt()
                 }

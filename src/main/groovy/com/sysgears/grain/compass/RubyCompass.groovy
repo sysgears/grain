@@ -86,7 +86,7 @@ class RubyCompass extends AbstractCompass {
                 streamLogger = streamLoggerFactory.create(process.in, process.err)
                 streamLogger.start()
                 latch.countDown()
-                def watcher = Thread.startDaemon {
+                def watcher = Thread.start {
                     process.waitFor()
                     streamLogger.interrupt()
                 }

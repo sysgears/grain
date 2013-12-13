@@ -55,7 +55,7 @@ class JythonPygments extends Pygments {
     @Override
     public void start() {
         latch = new CountDownLatch(1)
-        Thread.startDaemon {
+        Thread.start {
             try {
                 log.info 'Intitializing highlighter'
                 python = new PythonInterpreter()

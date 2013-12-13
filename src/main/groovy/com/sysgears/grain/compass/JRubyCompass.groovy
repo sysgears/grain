@@ -56,7 +56,7 @@ class JRubyCompass extends AbstractCompass {
      */
     public void launchCompass(String mode) {
         latch = new CountDownLatch(1)
-        thread = Thread.startDaemon {
+        thread = Thread.start {
             try {
                 System.setProperty('jruby.compile.fastest', 'true')
                 

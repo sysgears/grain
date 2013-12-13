@@ -154,7 +154,7 @@ class PythonPygments extends Pygments {
     @Override
     public void launchPygments() {
         latch = new CountDownLatch(1)
-        thread = Thread.startDaemon {
+        thread = Thread.start {
             try {
                 log.info 'Launching python pygments process...'
                 def env = ["VENDOR_SIMPLEJSON=${new File(opts.vendorHome, 'simplejson').canonicalPath}"]
@@ -169,7 +169,7 @@ class PythonPygments extends Pygments {
                 latch.countDown()
                 streamLogger = streamLoggerFactory.create(process.err)
                 streamLogger.start()
-                def watcher = Thread.startDaemon {
+                def watcher = Thread.start {
                     process.waitFor()
                     streamLogger.interrupt()
                 }
