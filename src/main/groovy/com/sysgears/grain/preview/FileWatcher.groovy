@@ -68,19 +68,19 @@ class FileWatcher extends Thread {
      * Watches for changes of site files in a background thread.
      */
     void run() {
-        def sourceDirs = config.source_dir.collect { new File(it as String).absolutePath }
-        Set<String> configDirs = [opts.configFile, opts.globalConfigFile]*.parentFile.absolutePath 
+        Set<File> sourceDirs = config.source_dir.collect { new File(it as String).absoluteFile }
+        Set<File> configDirs = [opts.configFile, opts.globalConfigFile]*.parentFile.absoluteFile
 
         try {
-            sourceDirs.each { String path ->
-                def srcDir = new File(path)
+            sourceDirs.each { File srcDir ->
                 if (srcDir.exists()) {
+                    log.info "Watching dir ${srcDir} for changes recursively"
                     watchRecursive(srcDir)
                 }
             }
-            configDirs.each { String path ->
-                def srcDir = new File(path)
+            configDirs.each { File srcDir ->
                 if (srcDir.exists()) {
+                    log.info "Watching dir ${srcDir} for changes non-recursively"
                     watchDir(srcDir)
                 }
             }
@@ -114,8 +114,10 @@ class FileWatcher extends Thread {
                         if (relativePath != null) {
                             File dir = keys.get(signalledKey)
                             File f = new File(dir, relativePath)
-                            if (f.isDirectory() && !keys.containsKey(Paths.get(f.absolutePath))) {
+                            if (!configDirs.contains(dir) && f.isDirectory() &&
+                                    !keys.containsKey(Paths.get(f.absolutePath))) {
                                 log.debug "Registering new dir to watch: ${f.absolutePath}"
+                                log.info "Watching dir ${f} for changes recursively"
                                 watchRecursive(f)
                                 f.eachFileRecurse {
                                     if (!isIgnored(it)) {
