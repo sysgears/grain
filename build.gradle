@@ -4,7 +4,7 @@ apply plugin: 'maven'
 apply plugin: 'groovy'
 apply plugin: 'idea'
 group = 'com.sysgears.grain'
-version = '1.0'
+version = '1.0.0'
 defaultTasks 'clean', 'build', 'createAllDeliverables'
 
 def mainClassName = 'com.sysgears.grain.Main'
