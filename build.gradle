@@ -3,7 +3,6 @@ import java.security.MessageDigest
 apply plugin: 'maven'
 apply plugin: 'groovy'
 apply plugin: 'idea'
-apply plugin: 'ivy-publish'
 group = 'com.sysgears.grain'
 version = '1.0'
 defaultTasks 'clean', 'build', 'createAllDeliverables'
@@ -29,6 +28,10 @@ ext {
 
 configurations.all {
     exclude group: 'commons-logging'
+}
+
+configurations {
+    deployerJars
 }
 
 repositories {
@@ -77,6 +80,8 @@ dependencies {
     }
 
     compile 'org.codehaus.groovy:groovy:2.1.2'
+
+    deployerJars 'org.apache.maven.wagon:wagon-ssh:2.2'
 }
 
 sourceSets {
@@ -201,30 +206,14 @@ ext.pomConfiguration = {
     }
 }
 
-task pullRemoteRepoChanges(type: Exec) {
-    workingDir = new File(project.localGHPagesRepoDir)
-    commandLine = ['git', 'pull', 'origin', 'gh-pages:gh-pages']
-}
-
-task uploadArchivesToLocalRepo(type: Upload, dependsOn: [build, pullRemoteRepoChanges]) {
-    configuration = configurations.archives
+uploadArchives {
     repositories.mavenDeployer {
-        repository(url: "file:///$project.localGHPagesRepoCanonicalPath/repo")
-        pom.project pomConfiguration
-    }
-}
-
-task uploadArchivesToRemoteRepo(dependsOn: uploadArchivesToLocalRepo) {
-    [
-            ['./update-directory-index.sh'],
-            ['git', 'commit', '-a', '-m', 'Updated remote Grain repo'],
-            ['git', 'push', 'origin', 'gh-pages']
-    ].each { command ->
-        doLast {
-            exec {
-                workingDir = new File(project.localGHPagesRepoDir)
-                commandLine = command
-            }
+        configuration = configurations.deployerJars
+        repository(url: "scp://repo.sysgears.com/mnt/srv/repo/releases") {
+            authentication(
+                userName: 'repo',
+                privateKey: new File(System.properties['user.home'], ".ssh/id_rsa").absolutePath,
+            )
         }
     }
 }
