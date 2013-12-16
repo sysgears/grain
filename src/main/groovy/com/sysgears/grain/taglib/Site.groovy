@@ -16,7 +16,7 @@
 
 package com.sysgears.grain.taglib
 
-import com.sysgears.grain.CmdlineOptions
+import com.sysgears.grain.init.CmdlineOptions
 import com.sysgears.grain.config.Config
 import com.sysgears.grain.registry.HeaderParser
 import com.sysgears.grain.registry.URLRegistry

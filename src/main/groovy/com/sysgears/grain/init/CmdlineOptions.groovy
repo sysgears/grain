@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.sysgears.grain
+package com.sysgears.grain.init
 
 /**
  * Command-line options
@@ -27,8 +27,8 @@ class CmdlineOptions {
     /** Global config file. */
     File globalConfigFile
     
-    /** Location of directory with vendor files */ 
-    File vendorHome
+    /** Location of directory with external tools files */ 
+    File toolsHome
 
     /** Environment of the site (dev, prod, ..) */
     String env

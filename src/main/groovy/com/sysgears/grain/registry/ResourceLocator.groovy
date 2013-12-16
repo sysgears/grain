@@ -16,7 +16,7 @@
 
 package com.sysgears.grain.registry
 
-import com.sysgears.grain.CmdlineOptions
+import com.sysgears.grain.init.CmdlineOptions
 import com.sysgears.grain.config.Config
 
 import javax.inject.Inject

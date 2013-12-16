@@ -16,7 +16,7 @@
 
 package com.sysgears.grain.highlight.pygments
 
-import com.sysgears.grain.CmdlineOptions
+import com.sysgears.grain.init.CmdlineOptions
 import com.sysgears.grain.log.StreamLogger
 import com.sysgears.grain.log.StreamLoggerFactory
 import groovy.util.logging.Slf4j
@@ -44,7 +44,7 @@ class PythonPygments extends Pygments {
     protected DataInputStream dis
 
     /** Whether use bundled pygments or system-supplied pygments */
-    protected boolean vendorPygments
+    protected boolean bundledPygments
 
     /** Stream logger factory */
     @Inject private StreamLoggerFactory streamLoggerFactory
@@ -61,10 +61,10 @@ class PythonPygments extends Pygments {
     /**
      * Creates an instance of pygments code highlighter
      *
-     * @param vendorPygments whether use bundled pygments or system-supplied pygments
+     * @param bundledPygments whether use bundled pygments or system-supplied pygments
      */
-    public PythonPygments(boolean vendorPygments) {
-        this.vendorPygments = vendorPygments
+    public PythonPygments(boolean bundledPygments) {
+        this.bundledPygments = bundledPygments
     }
 
     /**
@@ -157,13 +157,13 @@ class PythonPygments extends Pygments {
         thread = Thread.start {
             try {
                 log.info 'Launching python pygments process...'
-                def env = ["VENDOR_SIMPLEJSON=${new File(opts.vendorHome, 'simplejson').canonicalPath}"]
-                if (vendorPygments) {
-                    env += ["VENDOR_PYGMENTS=${new File(opts.vendorHome, 'pygments-main').canonicalPath}"]
+                def env = ["SIMPLEJSON_HOME=${new File(opts.toolsHome, 'simplejson').canonicalPath}"]
+                if (bundledPygments) {
+                    env += ["PYGMENTS_HOME=${new File(opts.toolsHome, 'pygments-main').canonicalPath}"]
                 }
                 def process = Runtime.runtime.exec(["python", "mentos.py"] as String[],
                         env as String[],
-                        new File(opts.vendorHome, 'mentos'))
+                        new File(opts.toolsHome, 'mentos'))
                 bos = new BufferedOutputStream(process.out)
                 dis = new DataInputStream(process.in)
                 latch.countDown()

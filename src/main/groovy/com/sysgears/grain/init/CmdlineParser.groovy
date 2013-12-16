@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package com.sysgears.grain
+package com.sysgears.grain.init
 
-import java.util.jar.Attributes
 import java.util.jar.Manifest
 
 /**
@@ -99,31 +98,31 @@ Options:
 
         opts.grainVersion = grainVersion
 
-        opts.vendorHome = getVendorHome()
+        opts.toolsHome = getToolsHome()
 
         opts.args = commands
         opts
     }
 
     /**
-     * Detects vendor home directory 
+     * Detects tools home directory 
      *
-     * @return Grain vendor home directory
+     * @return Grain tools home directory
      */
-    private static File getVendorHome() {
-        def vendorHome
+    private static File getToolsHome() {
+        def toolsHome
 
-        def vendorHomeProperty = System.getProperty('vendor.home')
-        if (vendorHomeProperty) {
-            vendorHome = new File(vendorHomeProperty).canonicalFile
+        def toolsHomeProperty = System.getProperty('tools.home')
+        if (toolsHomeProperty) {
+            toolsHome = new File(toolsHomeProperty).canonicalFile
         } else {
             def classPath = getCurrentClassPath()
 
             if (!classPath.startsWith('jar')) {
-                vendorHome = getFileInDevMode('vendor')
+                toolsHome = getFileInDevMode('tools')
 
-                if (!vendorHome) {
-                    throw new RuntimeException('Unable to guess Grain vendor home, please set vendor.home system property')
+                if (!toolsHome) {
+                    throw new RuntimeException('Unable to guess Grain tools home, please set tools.home system property')
                 }
             } else {
                 def manifestPath = classPath.substring(0, classPath.lastIndexOf('!') + 1) +
@@ -132,11 +131,11 @@ Options:
                 def attr = manifest.getMainAttributes()
                 def rev = attr.getValue('Built-Rev')
 
-                vendorHome = new File(System.getProperty('user.home'), ".grain/vendor/${rev}")
+                toolsHome = new File(System.getProperty('user.home'), ".grain/tools/${rev}")
             }
         }
 
-        vendorHome
+        toolsHome
     }
 
     /**

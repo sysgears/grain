@@ -16,6 +16,8 @@
 
 package com.sysgears.grain
 
+import com.sysgears.grain.init.CmdlineOptions
+
 public class TestAppModule extends AppModule {    
     public TestAppModule() {
         super(new CmdlineOptions(

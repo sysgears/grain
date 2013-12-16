@@ -19,6 +19,7 @@ package com.sysgears.grain
 import com.google.inject.AbstractModule
 import com.google.inject.Provides
 import com.google.inject.assistedinject.FactoryModuleBuilder
+import com.sysgears.grain.init.CmdlineOptions
 import com.sysgears.grain.log.StreamLogger
 import com.sysgears.grain.log.StreamLoggerFactory
 import org.codehaus.groovy.control.CompilerConfiguration
@@ -54,7 +55,7 @@ class AppModule extends AbstractModule {
     @Provides @javax.inject.Singleton
     public GroovyScriptEngine provideGroovyScriptEngine() {
         ClassLoader classLoader = this.class.classLoader
-        classLoader.addURL(new File(options.vendorHome, 'compass/').toURI().toURL())
+        classLoader.addURL(new File(options.toolsHome, 'compass/').toURI().toURL())
         String siteDir = options.configFile.parentFile.canonicalPath
         String globalConfDir = options.globalConfigFile.parentFile.canonicalPath
         String[] gseRoots = ["${siteDir}/theme/src/", siteDir, globalConfDir]        

@@ -18,8 +18,9 @@ package com.sysgears.grain
 
 import com.google.inject.Guice
 import com.sysgears.grain.compass.CompassModule
-import com.sysgears.grain.compass.RubyFinder
 import com.sysgears.grain.highlight.HighlightModule
+import com.sysgears.grain.init.CmdlineParser
+import com.sysgears.grain.init.ToolsExtractor
 import com.sysgears.grain.preview.DisabledPreviewModule
 import com.sysgears.grain.registry.RegistryModule
 import com.sysgears.grain.preview.PreviewModule

@@ -16,11 +16,10 @@
 
 package com.sysgears.grain.config
 
-import com.sysgears.grain.CmdlineOptions
+import com.sysgears.grain.init.CmdlineOptions
 import com.sysgears.grain.preview.ConfigChangeListener
 import com.sysgears.grain.taglib.Site
 import groovy.util.logging.Slf4j
-import org.yaml.snakeyaml.Yaml
 
 import javax.inject.Inject
 import javax.inject.Named

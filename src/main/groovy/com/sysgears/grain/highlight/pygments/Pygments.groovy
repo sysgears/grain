@@ -16,7 +16,7 @@
 
 package com.sysgears.grain.highlight.pygments
 
-import com.sysgears.grain.CmdlineOptions
+import com.sysgears.grain.init.CmdlineOptions
 import com.sysgears.grain.highlight.Highlighter
 import com.sysgears.grain.preview.ConfigChangeListener
 import com.sysgears.grain.config.Service

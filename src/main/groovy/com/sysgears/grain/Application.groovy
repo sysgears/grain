@@ -20,6 +20,7 @@ import com.sysgears.grain.config.Config
 import com.sysgears.grain.deploy.SiteDeployer
 import com.sysgears.grain.expando.GrainDynamicMethods
 import com.sysgears.grain.generate.SiteGenerator
+import com.sysgears.grain.init.CmdlineOptions
 import com.sysgears.grain.preview.SitePreviewer
 import com.sysgears.grain.preview.ConfigChangeBroadcaster
 import com.sysgears.grain.util.FileUtils

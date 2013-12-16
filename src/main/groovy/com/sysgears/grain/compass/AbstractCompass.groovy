@@ -16,7 +16,7 @@
 
 package com.sysgears.grain.compass
 
-import com.sysgears.grain.CmdlineOptions
+import com.sysgears.grain.init.CmdlineOptions
 import com.sysgears.grain.config.Config
 import groovy.util.logging.Slf4j
 

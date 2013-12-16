@@ -92,9 +92,9 @@ sourceSets {
     }
 }
 
-task getVendorMD5Checksum {
+task getToolsMD5Checksum {
     def md5 = MessageDigest.getInstance('MD5')
-    file('vendor').eachFileRecurse { file ->
+    file('tools').eachFileRecurse { file ->
         if (file.isFile()) {
             md5.update(file.bytes)
         }
@@ -104,15 +104,15 @@ task getVendorMD5Checksum {
     messageDigest.each {
         sb.append(String.format('%02x', it))
     }
-    project.ext.vendorMD5 = sb.toString()
+    project.ext.toolsMD5 = sb.toString()
 }
 
-task createSharedManifest(dependsOn: getVendorMD5Checksum) {
+task createSharedManifest(dependsOn: getToolsMD5Checksum) {
     project.ext.sharedManifest = manifest {
         attributes 'Implementation-Title': project.title,
                 'Implementation-Version': version,
                 'Built-By': System.getProperty('user.name'),
-                'Built-Rev': project.vendorMD5,
+                'Built-Rev': project.toolsMD5,
                 'Built-Date': new Date(),
                 'Built-JDK': System.getProperty('java.version'),
                 'Main-Class': mainClassName
@@ -123,7 +123,7 @@ task uberJar(type: Jar, dependsOn: [':compileJava', ':compileGroovy', createShar
     from files(sourceSets.main.output.classesDir)
     from files(sourceSets.main.output.resourcesDir)
     from(project.rootProject.projectDir) {
-        include 'vendor/**'
+        include 'tools/**'
     }
     from(configurations.runtime.asFileTree.files.collect { zipTree(it) }) {
         exclude 'META-INF/*.SF'
@@ -146,7 +146,7 @@ jar {
         from sharedManifest
     }
     from(project.rootProject.projectDir) {
-        include 'vendor/**'
+        include 'tools/**'
     }
 }
 
