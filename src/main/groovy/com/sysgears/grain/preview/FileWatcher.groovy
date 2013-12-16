@@ -69,7 +69,8 @@ class FileWatcher extends Thread {
      */
     void run() {
         Set<File> sourceDirs = config.source_dir.collect { new File(it as String).absoluteFile }
-        Set<File> configDirs = [opts.configFile, opts.globalConfigFile]*.parentFile.absoluteFile
+        Set<File> configFiles = [opts.configFile, opts.globalConfigFile]*.absoluteFile 
+        Set<File> configDirs = configFiles*.parentFile.absoluteFile
 
         try {
             sourceDirs.each { File srcDir ->
@@ -114,21 +115,22 @@ class FileWatcher extends Thread {
                         if (relativePath != null) {
                             File dir = keys.get(signalledKey)
                             File f = new File(dir, relativePath)
-                            if (!configDirs.contains(dir) && f.isDirectory() &&
-                                    !keys.containsKey(Paths.get(f.absolutePath))) {
-                                log.debug "Registering new dir to watch: ${f.absolutePath}"
-                                log.info "Watching dir ${f} for changes recursively"
-                                watchRecursive(f)
-                                f.eachFileRecurse {
-                                    if (!isIgnored(it)) {
-                                        changedFiles << it
+                            if (!configDirs.contains(dir) || configFiles.contains(f)) {
+                                if (f.isDirectory() && !keys.containsKey(Paths.get(f.absolutePath))) {
+                                    log.debug "Registering new dir to watch: ${f.absolutePath}"
+                                    log.info "Watching dir ${f} for changes recursively"
+                                    watchRecursive(f)
+                                    f.eachFileRecurse {
+                                        if (!isIgnored(it)) {
+                                            changedFiles << it
+                                        }
                                     }
-                                }
-                            } else {
-                                // Exclude from consideration generated files by IntelliJ IDEA (yyy.___jb_bak___, zzz.__jb_old___)
-                                // and Mac OS x (._yyy.zzz)
-                                if (!isIgnored(f)) {
-                                    changedFiles << f
+                                } else {
+                                    // Exclude from consideration generated files by IntelliJ IDEA (yyy.___jb_bak___, zzz.__jb_old___)
+                                    // and Mac OS x (._yyy.zzz)
+                                    if (!isIgnored(f)) {
+                                        changedFiles << f
+                                    }
                                 }
                             }
                         }
