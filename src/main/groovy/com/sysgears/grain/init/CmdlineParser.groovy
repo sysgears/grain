@@ -191,9 +191,12 @@ Options:
         if (!themeGrainVersion) {
             throw new RuntimeException("Grain version not specified in properties file: ${propertiesFile.canonicalPath}")
         }
-
-        if (themeGrainVersion != grainVersion) {
-            throw new RuntimeException("""Grain versions do not match: \nGrain version of the theme: ${themeGrainVersion}.
+        
+        println grainVersion
+        println themeGrainVersion
+        
+        if (!new GrainVersion(grainVersion).isBackwardCompatibleTo(new GrainVersion(themeGrainVersion))) {
+            throw new RuntimeException("""Grain versions are not compatible: \nGrain version of the theme: ${themeGrainVersion}.
 Current Grain version: ${grainVersion}.""")
         }
     }
