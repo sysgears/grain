@@ -4,7 +4,7 @@ apply plugin: 'maven'
 apply plugin: 'groovy'
 apply plugin: 'idea'
 group = 'com.sysgears.grain'
-version = '1.0.0'
+version = '1.1.0-SNAPSHOT'
 defaultTasks 'clean', 'build', 'createAllDeliverables'
 
 def mainClassName = 'com.sysgears.grain.Main'
@@ -210,6 +210,12 @@ uploadArchives {
     repositories.mavenDeployer {
         configuration = configurations.deployerJars
         repository(url: "scp://repo.sysgears.com/mnt/srv/repo/releases") {
+            authentication(
+                userName: 'repo',
+                privateKey: new File(System.properties['user.home'], ".ssh/id_rsa").absolutePath,
+            )
+        }
+        snapshotRepository(url: "scp://repo.sysgears.com/mnt/srv/repo/snapshots") {
             authentication(
                 userName: 'repo',
                 privateKey: new File(System.properties['user.home'], ".ssh/id_rsa").absolutePath,
