@@ -15,9 +15,9 @@ class GrainVersion {
     private int minor
     
     public GrainVersion(String version) {
-        def m = version =~ /([0-9]+)\.([0-9]+)\.([0-9]+)/
-        if (!m.matches()) {
-            throw new IllegalArgumentException("Wrong Grain version ${version}, expected format: x.y.z")
+        def m = version =~ /^([0-9]+)\.([0-9]+)\.([0-9]+)/
+        if (!m.find()) {
+            throw new IllegalArgumentException("Wrong Grain version ${version}, expected format: x.y.z with optional -SNAPSHOT ending")
         } else {
             major = m[0][1]
             middle = m[0][2]
