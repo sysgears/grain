@@ -1,8 +1,3 @@
----
-layout: doc
-published: true
----
-
 ##Overview
 
 ###Description
