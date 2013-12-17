@@ -8,7 +8,7 @@ import javax.inject.Named
 public class RubyFinder {
     
     /** Ruby command candidates to check */
-    private static final def RUBY_CANDIDATES = ["ruby", "ruby1.9.3", "${System.getProperty('user.home')}/.rvm/bin/ruby"] 
+    private static final def RUBY_CANDIDATES = ["ruby", "ruby1.8.7", "ruby1.9.3", "${System.getProperty('user.home')}/.rvm/bin/ruby"] 
     
     /**
      * Finds most appropriate Ruby command in the system.
@@ -16,7 +16,7 @@ public class RubyFinder {
     public static String getRubyCmd() {
         RUBY_CANDIDATES.find {
             try {
-                [it, '-v'].execute().text.readLines().first().matches(/ruby 1\.9\..*/)
+                [it, '-v'].execute()
             } catch (Throwable ignored) {
                 false
             }
