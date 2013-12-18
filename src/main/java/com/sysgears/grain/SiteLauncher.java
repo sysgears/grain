@@ -104,7 +104,8 @@ public class SiteLauncher {
         }
         
         if (exitValue == 0) {
-            Main.main(grainArgs);
+            Method main = Class.forName("com.sysgears.grain.Main").getMethod("main", String[].class);
+            main.invoke(null, (Object)grainArgs);
         } else {
             System.exit(exitValue);
         }
