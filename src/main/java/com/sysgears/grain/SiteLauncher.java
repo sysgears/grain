@@ -1,8 +1,10 @@
 package com.sysgears.grain;
 
 import java.io.*;
+import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.security.MessageDigest;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,7 +24,10 @@ public class SiteLauncher {
     private String grainVersion;
     
     /** Grain snapshots repo URL */
-    private String snapshotsRepoUrl; 
+    private String snapshotsRepoUrl;
+    
+    /** Cmdline arguments passed to Grain */
+    private String[] grainArgs = new String[0];
 
     /**
      * Entry point into site launcher.
@@ -66,11 +71,16 @@ public class SiteLauncher {
         
         final long lastModified = dependencyFile.lastModified();
         int exitValue = 0;
-        
+
+        Method method = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
+        method.setAccessible(true);
         for (File dependency : dependencies) {
             if (!dependency.exists() || dependency.lastModified() > lastModified) {
                 exitValue = 2;
                 break;
+            }
+            if (!dependency.equals(grainJar)) {
+                method.invoke(ClassLoader.getSystemClassLoader(), new Object[]{dependency.toURI().toURL()});
             }
         }
         
@@ -93,7 +103,11 @@ public class SiteLauncher {
             }
         }
         
-        System.exit(exitValue);
+        if (exitValue == 0) {
+            Main.main(grainArgs);
+        } else {
+            System.exit(exitValue);
+        }
     }
 
     /**
@@ -171,10 +185,17 @@ public class SiteLauncher {
                 printUsage();
                 System.exit(1);
             }
-            if (args.length > 1) {
-                snapshotsRepoUrl = args[2];
+            if (args.length > 1 && !args[1].equals("--")) {
+                snapshotsRepoUrl = args[1];
             } else {
                 snapshotsRepoUrl = "http://repo.sysgears.com/snapshots/";
+            }
+            int idx;
+            for (idx = 1; idx < args.length; idx++) {
+                if (args[idx].equals("--")) {
+                    grainArgs = new String[args.length - (idx + 1)];
+                    System.arraycopy(args, idx + 1, grainArgs, 0, grainArgs.length);
+                }
             }
         }
     }
@@ -183,6 +204,6 @@ public class SiteLauncher {
      * Prints command-line usage of SiteLauncher.
      */
     private void printUsage() {
-        System.out.println("Syntax: " + this.getClass().getCanonicalName() + " grain_version [Grain snapshots repo url]");
+        System.out.println("Syntax: " + this.getClass().getCanonicalName() + " grain_version [Grain snapshots repo url] -- grain_args");
     }
 }
