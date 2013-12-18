@@ -20,7 +20,7 @@ import com.sysgears.grain.config.Config
 import com.sysgears.grain.deploy.SiteDeployer
 import com.sysgears.grain.expando.GrainDynamicMethods
 import com.sysgears.grain.generate.SiteGenerator
-import com.sysgears.grain.init.CmdlineOptions
+import com.sysgears.grain.init.GrainSettings
 import com.sysgears.grain.preview.SitePreviewer
 import com.sysgears.grain.preview.ConfigChangeBroadcaster
 import com.sysgears.grain.util.FileUtils
@@ -43,8 +43,8 @@ class Application {
     /** Site config change broadcaster */
     @Inject private ConfigChangeBroadcaster configChangeBroadcaster
 
-    /** Command line options */
-    @Inject private CmdlineOptions options
+    /** Grain settings */
+    @Inject private GrainSettings settings
 
     /** Grain web server for running in preview mode */
     @Inject private SitePreviewer previewer
@@ -90,7 +90,7 @@ class Application {
     public void run() {
         long startTime = System.currentTimeMillis()
         prepare()
-        switch (options.command) {
+        switch (settings.command) {
             case 'preview':
                 previewer.start()
                 break
@@ -105,16 +105,20 @@ class Application {
                 deployer.deploy()
                 break
             default:
-                def command = config.commands[options.command] as Closure
-                if (!command) {
-                    throw new RuntimeException("Unknown command: ${options.command}")
+                def command = config?.commands?.getAt(settings.command) as Closure
+                if (!command || command == 'help') {
+                    settings.cliBuilder.usage()
+                    println("\nTheme commands:")
+                    config.commands.each { name, closure ->
+                        println(name)
+                    }
                 } else {
-                    command(options.args)
+                    command(settings.args)
                 }
                 break
         }
         log.info "Total time: ${System.currentTimeMillis() - startTime}"
-        if (options.command == 'preview') {
+        if (settings.command == 'preview') {
             Thread.startDaemon {
                 log.info "Press 'q' and ENTER to terminate Grain"
                 boolean exit = false

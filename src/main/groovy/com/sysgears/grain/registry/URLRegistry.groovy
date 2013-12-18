@@ -16,9 +16,9 @@
 
 package com.sysgears.grain.registry
 
-import com.sysgears.grain.init.CmdlineOptions
 import com.sysgears.grain.PerfMetrics
 import com.sysgears.grain.config.Config
+import com.sysgears.grain.init.GrainSettings
 import com.sysgears.grain.preview.SiteChangeListener
 import groovy.util.logging.Slf4j
 
@@ -53,8 +53,8 @@ class URLRegistry implements SiteChangeListener {
     /** Site config instance */
     @Inject private Config config
 
-    /** Command line options */
-    @Inject private CmdlineOptions opts
+    /** Grain settings */
+    @Inject private GrainSettings settings
 
     /** Performance metrics */
     @Inject private PerfMetrics perf
@@ -142,7 +142,7 @@ class URLRegistry implements SiteChangeListener {
      */
     public String getUrl(String location) {
         def res = locationMap[location]
-        if (res == null && opts.command != 'preview') {
+        if (res == null && settings.command != 'preview') {
             throw new RuntimeException("Failed to find resource with location: ${location}")
         }
         res

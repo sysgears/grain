@@ -17,9 +17,13 @@
 package com.sysgears.grain
 
 import com.google.inject.Guice
+import com.sun.org.apache.xml.internal.security.Init
 import com.sysgears.grain.compass.CompassModule
 import com.sysgears.grain.highlight.HighlightModule
 import com.sysgears.grain.init.CmdlineParser
+import com.sysgears.grain.init.GrainSettings
+import com.sysgears.grain.init.InitModule
+import com.sysgears.grain.init.Initializer
 import com.sysgears.grain.init.ToolsExtractor
 import com.sysgears.grain.preview.DisabledPreviewModule
 import com.sysgears.grain.registry.RegistryModule
@@ -41,19 +45,29 @@ public class Main {
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        def options = new CmdlineParser().parse(args)
         
-        // Extract bundled tools
-        new ToolsExtractor().extractTools(options)
-
-        // Initialize Spring context
+        // Create init dependency injector
+        def initInjector = Guice.createInjector(new InitModule())
+        
+        // Initialize Grain application
+        def initializer = initInjector.getInstance(Initializer.class)
+        GrainSettings settings = null
+        try {
+            settings = initializer.run(args)
+        } catch (Throwable t) {
+            // Exit on exception
+            t.printStackTrace()
+            System.exit(1)
+        }
+        
+        // Create main dependency injector
         def injector = Guice.createInjector(
-                new AppModule(options),
+                new AppModule(settings),
                 new HighlightModule(),
                 new CompassModule(),
                 new RegistryModule(),
                 new RenderModule(),
-                options.command in ['preview', 'generate', 'gendeploy'] ?
+                settings.command in ['preview', 'generate', 'gendeploy'] ?
                     new PreviewModule() : new DisabledPreviewModule())
         
         // Run main application

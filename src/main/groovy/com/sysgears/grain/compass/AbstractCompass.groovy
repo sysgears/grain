@@ -16,7 +16,6 @@
 
 package com.sysgears.grain.compass
 
-import com.sysgears.grain.init.CmdlineOptions
 import com.sysgears.grain.config.Config
 import groovy.util.logging.Slf4j
 
@@ -32,9 +31,6 @@ abstract class AbstractCompass implements Compass {
     /** Site config */
     @Inject private Config config
     
-    /** Command line options */
-    @Inject private CmdlineOptions opts
-
     /** Rendering mutex */
     @Inject @Named("renderMutex") private Object mutex
 
@@ -73,7 +69,7 @@ abstract class AbstractCompass implements Compass {
      */
     @Override
     public void start() {
-        if (opts.command == 'preview') {
+        if (settings.command == 'preview') {
             configureAndLaunch("watch")
         }
     }

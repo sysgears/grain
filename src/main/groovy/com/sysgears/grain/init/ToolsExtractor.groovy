@@ -3,6 +3,7 @@ package com.sysgears.grain.init
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.IOUtils
 
+import javax.inject.Named
 import java.util.jar.JarEntry
 import java.util.jar.JarFile
 
@@ -11,19 +12,23 @@ import java.util.jar.JarFile
  * Grain initialization.
  */
 @Slf4j
+@Named
+@javax.inject.Singleton
 class ToolsExtractor {
 
     /**
      * Extracts bundled tool sources to .grain/tools/git-rev directory
      * for reusing them with external processes.
+     * 
+     * @param settings Grain settings
      */
-    public void extractTools(CmdlineOptions options) {
-        if (options.toolsHome.exists()) {
-            log.info "Using tools home: ${options.toolsHome}"
+    public void extractTools(GrainSettings settings) {
+        if (settings.toolsHome.exists()) {
+            log.info "Using tools home: ${settings.toolsHome}"
             return
         }
         
-        log.info("Unpacking bundled tools to ${options.toolsHome}")
+        log.info "Unpacking bundled tools to ${settings.toolsHome}"
 
         def className = CmdlineParser.getSimpleName() + ".class"
         String classPath = CmdlineParser.getResource(className).toString()
@@ -37,14 +42,14 @@ class ToolsExtractor {
 
         String jarPath = classPath.substring(9, classPath.indexOf("!"))
         JarFile jar = new JarFile(URLDecoder.decode(jarPath, "UTF-8"))
-        if (!options.toolsHome.mkdirs()) {
-            throw new RuntimeException("Unable to create dir: ${options.toolsHome}")
+        if (!settings.toolsHome.mkdirs()) {
+            throw new RuntimeException("Unable to create dir: ${settings.toolsHome}")
         }
         def entries = jar.entries()
         while (entries.hasMoreElements()) {
             def file = (JarEntry) entries.nextElement()
             if (file.name.startsWith('tools/') && !file.isDirectory()) {
-                def targetFile = new File(options.toolsHome, file.name.replace('tools/', ''))
+                def targetFile = new File(settings.toolsHome, file.name.replace('tools/', ''))
                 def targetDir = targetFile.parentFile
                 if (!targetDir.exists() && !targetDir.mkdirs()) {
                     throw new RuntimeException("Unable to create dir: ${targetDir}")

@@ -16,7 +16,7 @@
 
 package com.sysgears.grain.compass
 
-import com.sysgears.grain.init.CmdlineOptions
+import com.sysgears.grain.init.GrainSettings
 import com.sysgears.grain.log.StreamLogger
 import com.sysgears.grain.log.StreamLoggerFactory
 import com.sysgears.grain.taglib.Site
@@ -38,8 +38,8 @@ class RubyCompass extends AbstractCompass {
     /** Site */
     @Inject private Site site
 
-    /** Grain command-line options */
-    @Inject private CmdlineOptions opts
+    /** Grain settings */
+    @Inject private GrainSettings settings
 
     /** Stream logger factory */
     @Inject private StreamLoggerFactory streamLoggerFactory
@@ -65,7 +65,7 @@ class RubyCompass extends AbstractCompass {
         thread = Thread.start {
             try {
                 log.info "Launching Ruby compass process in ${mode} mode..."
-                File gemDir = new File(opts.toolsHome, 'compass/gems')
+                File gemDir = new File(settings.toolsHome, 'compass/gems')
                 File compassDir
                 def gemIncludes = [] as List<String>
 

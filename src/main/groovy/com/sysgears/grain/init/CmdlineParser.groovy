@@ -16,6 +16,7 @@
 
 package com.sysgears.grain.init
 
+import javax.inject.Named
 import java.util.jar.Manifest
 
 /**
@@ -23,6 +24,8 @@ import java.util.jar.Manifest
  * <p>
  * In case of facing wrong cmdline arguments dumps help and shutdowns the application
  */
+@Named
+@javax.inject.Singleton
 class CmdlineParser {
 
     /** Default Site config file name */
@@ -43,9 +46,10 @@ class CmdlineParser {
      *
      * @return parsed command line options
      */
-    public CmdlineOptions parse(String[] args) {
-        def cli = new CliBuilder(usage: 'grain [command] [options]',
+    public GrainSettings parse(String[] args) {
+        def cli = new CliBuilder(usage: 'site [command] [options]',
                 header: '''Commands:
+help                      Print out this help
 preview                   Run the site in preview mode on local web server
 generate                  Generate site from source
 deploy                    Deploy the static site
@@ -57,16 +61,17 @@ Options:
             h longOpt: 'help', 'Show usage information'
         }
 
+        def opts = new GrainSettings(cliBuilder: cli, showUsageAndExit: false)
+
+        def arguments = args.toList()
+
         def configFile = new File(CONFIG_FILE_NAME)
         if (!configFile.exists() || !configFile.isFile()) {
             System.err.println("Unable to locate config file: ${configFile.canonicalPath}")
             cli.usage()
             System.exit(0)
         }
-
-        def arguments = args.toList()
-
-        def opts = new CmdlineOptions()
+        
         opts.configFile = configFile.canonicalFile
         opts.globalConfigFile = new File("${System.getProperty('user.home')}/.grain",
                 GLOBAL_CONFIG_FILE_NAME)
@@ -81,6 +86,11 @@ Options:
             opts.env = optionAccessor.e
         } else {
             switch (opts.command) {
+                case 'help':
+                    cli.usage()
+                    opts.showUsageAndExit = true
+                    opts.env = 'cmd'
+                    break
                 case 'preview':
                     opts.env = 'dev'
                     break
@@ -92,15 +102,21 @@ Options:
                     break
             }
         }
+
         def grainVersion = getGrainVersion()
 
-        validateGrainVersion(grainVersion)
+        if (!opts.showUsageAndExit)
+            validateGrainVersion(grainVersion)
 
         opts.grainVersion = grainVersion
 
         opts.toolsHome = getToolsHome()
 
         opts.args = commands
+        
+        if (opts.showUsageAndExit) {
+            opts.env = 'cmd'
+        }
         opts
     }
 

@@ -19,7 +19,7 @@ package com.sysgears.grain
 import com.google.inject.AbstractModule
 import com.google.inject.Provides
 import com.google.inject.assistedinject.FactoryModuleBuilder
-import com.sysgears.grain.init.CmdlineOptions
+import com.sysgears.grain.init.GrainSettings
 import com.sysgears.grain.log.StreamLogger
 import com.sysgears.grain.log.StreamLoggerFactory
 import org.codehaus.groovy.control.CompilerConfiguration
@@ -30,11 +30,11 @@ import org.yaml.snakeyaml.Yaml
  */
 class AppModule extends AbstractModule {
     
-    /** Command-line options */
-    private CmdlineOptions options
+    /** Grain settings */
+    private GrainSettings settings
     
-    public AppModule(CmdlineOptions options) {
-        this.options = options
+    public AppModule(GrainSettings settings) {
+        this.settings = settings
     }
 
     @Provides @javax.inject.Singleton
@@ -55,9 +55,9 @@ class AppModule extends AbstractModule {
     @Provides @javax.inject.Singleton
     public GroovyScriptEngine provideGroovyScriptEngine() {
         ClassLoader classLoader = this.class.classLoader
-        classLoader.addURL(new File(options.toolsHome, 'compass/').toURI().toURL())
-        String siteDir = options.configFile.parentFile.canonicalPath
-        String globalConfDir = options.globalConfigFile.parentFile.canonicalPath
+        classLoader.addURL(new File(settings.toolsHome, 'compass/').toURI().toURL())
+        String siteDir = settings.configFile.parentFile.canonicalPath
+        String globalConfDir = settings.globalConfigFile.parentFile.canonicalPath
         String[] gseRoots = ["${siteDir}/theme/src/", siteDir, globalConfDir]        
         def conf = new CompilerConfiguration()
         conf.setMinimumRecompilationInterval(0)
@@ -69,7 +69,7 @@ class AppModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(CmdlineOptions.class).toInstance(options)
+        bind(GrainSettings.class).toInstance(settings)
         install(new FactoryModuleBuilder()
                 .implement(StreamLogger.class, StreamLogger.class)
                 .build(StreamLoggerFactory.class));

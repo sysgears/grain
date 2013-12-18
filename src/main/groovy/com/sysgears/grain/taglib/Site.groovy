@@ -16,8 +16,8 @@
 
 package com.sysgears.grain.taglib
 
-import com.sysgears.grain.init.CmdlineOptions
 import com.sysgears.grain.config.Config
+import com.sysgears.grain.init.GrainSettings
 import com.sysgears.grain.registry.HeaderParser
 import com.sysgears.grain.registry.URLRegistry
 import groovy.util.logging.Slf4j
@@ -33,8 +33,8 @@ import javax.inject.Named
 @Slf4j
 class Site {
     
-    /** Command line options */
-    @Inject private CmdlineOptions opts
+    /** Grain settings */
+    @Inject private GrainSettings settings
 
     /** Resource registry */
     @Inject private URLRegistry registry
@@ -78,7 +78,7 @@ class Site {
      * @return currently used site environment
      */
     public String getEnv() {
-        opts.env
+        settings.env
     }
 
     /**

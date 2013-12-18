@@ -16,8 +16,8 @@
 
 package com.sysgears.grain.preview
 
-import com.sysgears.grain.init.CmdlineOptions
 import com.sysgears.grain.config.Config
+import com.sysgears.grain.init.GrainSettings
 import groovy.util.logging.Slf4j
 import name.pachler.nio.file.*
 
@@ -43,8 +43,8 @@ class FileWatcher extends Thread {
     /** Site config */
     @Inject private Config config
 
-    /** Grain command-line options */
-    @Inject private CmdlineOptions opts
+    /** Grain settings */
+    @Inject private GrainSettings settings
 
     /** Config change broadcaster */
     @Inject private ConfigChangeBroadcaster configChangeBroadcaster
@@ -69,7 +69,7 @@ class FileWatcher extends Thread {
      */
     void run() {
         Set<File> sourceDirs = config.source_dir.collect { new File(it as String).absoluteFile }
-        Set<File> configFiles = [opts.configFile, opts.globalConfigFile]*.absoluteFile 
+        Set<File> configFiles = [settings.configFile, settings.globalConfigFile]*.absoluteFile 
         Set<File> configDirs = configFiles*.parentFile.absoluteFile
 
         try {

@@ -16,11 +16,11 @@
 
 package com.sysgears.grain
 
-import com.sysgears.grain.init.CmdlineOptions
+import com.sysgears.grain.init.GrainSettings
 
 public class TestAppModule extends AppModule {    
     public TestAppModule() {
-        super(new CmdlineOptions(
+        super(new GrainSettings(
                 configFile: new File("/tmp/SiteConfig.groovy"),
                 globalConfigFile: new File("/tmp/GlobalConfig.groovy"),
                 env: "test",

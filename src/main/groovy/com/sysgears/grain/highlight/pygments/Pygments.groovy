@@ -16,8 +16,8 @@
 
 package com.sysgears.grain.highlight.pygments
 
-import com.sysgears.grain.init.CmdlineOptions
 import com.sysgears.grain.highlight.Highlighter
+import com.sysgears.grain.init.GrainSettings
 import com.sysgears.grain.preview.ConfigChangeListener
 import com.sysgears.grain.config.Service
 import com.sysgears.grain.taglib.Site
@@ -38,8 +38,8 @@ abstract class Pygments implements Highlighter, ConfigChangeListener, Service {
     /** Site instance */
     private @Inject Site site
 
-    /** Command line options */
-    private @Inject CmdlineOptions opts
+    /** Grain settings */
+    private @Inject GrainSettings settings
 
     /**
      * Launches pygments in a separate thread 

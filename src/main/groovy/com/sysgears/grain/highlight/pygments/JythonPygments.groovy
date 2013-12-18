@@ -16,7 +16,7 @@
 
 package com.sysgears.grain.highlight.pygments
 
-import com.sysgears.grain.init.CmdlineOptions
+import com.sysgears.grain.init.GrainSettings
 import groovy.util.logging.Slf4j
 import org.python.core.PyFunction
 import org.python.core.PyObject
@@ -43,8 +43,8 @@ class JythonPygments extends Pygments {
     /** Pygments python formatter Object */
     private PyObject formatter
 
-    /** Grain command-line options */
-    @Inject private CmdlineOptions opts
+    /** Grain settings */
+    @Inject private GrainSettings settings
 
     /** Mutex for pygments starting and using */
     private CountDownLatch latch
@@ -60,7 +60,7 @@ class JythonPygments extends Pygments {
                 log.info 'Intitializing highlighter'
                 python = new PythonInterpreter()
                 python.exec('import sys')
-                python.exec("sys.path.append('${new File(opts.toolsHome, 'pygments-main').absolutePath}')")
+                python.exec("sys.path.append('${new File(settings.toolsHome, 'pygments-main').absolutePath}')")
                 python.exec("from pygments import highlight")
                 python.exec('from pygments.lexers import get_lexer_by_name')
                 python.exec('from pygments.formatters import HtmlFormatter')

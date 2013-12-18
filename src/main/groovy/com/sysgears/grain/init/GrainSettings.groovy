@@ -17,9 +17,9 @@
 package com.sysgears.grain.init
 
 /**
- * Command-line options
+ * Grain settings
  */
-class CmdlineOptions {
+class GrainSettings {
     
     /** Config file of the site. */
     File configFile
@@ -41,4 +41,10 @@ class CmdlineOptions {
 
     /** Grain version */
     String grainVersion
+    
+    /** Grain command-line builder */
+    CliBuilder cliBuilder
+    
+    /** Whether Grain should show usage and exit */
+    boolean showUsageAndExit
 }

@@ -16,7 +16,7 @@
 
 package com.sysgears.grain.config
 
-import com.sysgears.grain.init.CmdlineOptions
+import com.sysgears.grain.init.GrainSettings
 import com.sysgears.grain.preview.ConfigChangeListener
 import com.sysgears.grain.taglib.Site
 import groovy.util.logging.Slf4j
@@ -32,8 +32,8 @@ import javax.inject.Named
 @Slf4j
 class ConfigUpdater implements ConfigChangeListener {
 
-    /** Command line options */
-    @Inject private CmdlineOptions opts
+    /** Grain settings */
+    @Inject private GrainSettings settings
 
     /** Config parser */
     private ConfigSlurper configParser
@@ -52,13 +52,13 @@ class ConfigUpdater implements ConfigChangeListener {
     /**
      * Creates an instance of Site's config
      *
-     * @param opts command line options
+     * @param settings Grain settings
      * @param site site instance
      */
     @Inject
-    public ConfigUpdater(Site site, CmdlineOptions opts) {
-        this.opts = opts
-        this.configParser = new ConfigSlurper(opts.env)
+    public ConfigUpdater(Site site, GrainSettings settings) {
+        this.settings = settings
+        this.configParser = new ConfigSlurper(settings.env)
         this.defaultConfigBindings = ["site": site, "log": log]
     }
 
@@ -68,7 +68,7 @@ class ConfigUpdater implements ConfigChangeListener {
     public void configChanged() {
         ConfigObject newConfig = new ConfigObject()
 
-        for (configFile in [opts.globalConfigFile, opts.configFile]) {
+        for (configFile in [settings.globalConfigFile, settings.configFile]) {
             if (configFile.exists()) {
                 log.info "Rereading config ${configFile}"
                 configParser.binding = newConfig + defaultConfigBindings

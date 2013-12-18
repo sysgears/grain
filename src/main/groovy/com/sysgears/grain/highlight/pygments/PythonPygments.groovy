@@ -16,7 +16,7 @@
 
 package com.sysgears.grain.highlight.pygments
 
-import com.sysgears.grain.init.CmdlineOptions
+import com.sysgears.grain.init.GrainSettings
 import com.sysgears.grain.log.StreamLogger
 import com.sysgears.grain.log.StreamLoggerFactory
 import groovy.util.logging.Slf4j
@@ -49,8 +49,8 @@ class PythonPygments extends Pygments {
     /** Stream logger factory */
     @Inject private StreamLoggerFactory streamLoggerFactory
 
-    /** Command-line options */
-    @Inject private CmdlineOptions opts
+    /** Grain settings */
+    @Inject private GrainSettings settings
 
     /** Process streams logger */
     private StreamLogger streamLogger
@@ -157,13 +157,13 @@ class PythonPygments extends Pygments {
         thread = Thread.start {
             try {
                 log.info 'Launching python pygments process...'
-                def env = ["SIMPLEJSON_HOME=${new File(opts.toolsHome, 'simplejson').canonicalPath}"]
+                def env = ["SIMPLEJSON_HOME=${new File(settings.toolsHome, 'simplejson').canonicalPath}"]
                 if (bundledPygments) {
-                    env += ["PYGMENTS_HOME=${new File(opts.toolsHome, 'pygments-main').canonicalPath}"]
+                    env += ["PYGMENTS_HOME=${new File(settings.toolsHome, 'pygments-main').canonicalPath}"]
                 }
                 def process = Runtime.runtime.exec(["python", "mentos.py"] as String[],
                         env as String[],
-                        new File(opts.toolsHome, 'mentos'))
+                        new File(settings.toolsHome, 'mentos'))
                 bos = new BufferedOutputStream(process.out)
                 dis = new DataInputStream(process.in)
                 latch.countDown()

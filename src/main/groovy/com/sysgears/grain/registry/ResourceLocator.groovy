@@ -16,8 +16,8 @@
 
 package com.sysgears.grain.registry
 
-import com.sysgears.grain.init.CmdlineOptions
 import com.sysgears.grain.config.Config
+import com.sysgears.grain.init.GrainSettings
 
 import javax.inject.Inject
 import javax.inject.Named
@@ -32,8 +32,8 @@ class ResourceLocator {
     /** Site config */
     @Inject private Config config
 
-    /** Command-line options */
-    @Inject private CmdlineOptions opts
+    /** Grain settings */
+    @Inject private GrainSettings settings
 
     /**
      * Returns canonical location of the resource given it's file
@@ -73,7 +73,7 @@ class ResourceLocator {
             file.exists() && file.isFile()
         }
         if (!dirStr) {
-            if (opts.command == 'preview') {
+            if (settings.command == 'preview') {
                 null
             } else {
                 throw new RuntimeException("Unable to find layout: ${location}")
@@ -97,7 +97,7 @@ class ResourceLocator {
             file.exists() && file.isFile()
         }
         if (!dirStr) {
-            if (opts.command == 'preview') {
+            if (settings.command == 'preview') {
                 null
             } else {
                 throw new RuntimeException("Unable to find include: ${location}")
