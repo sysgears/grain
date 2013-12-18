@@ -17,6 +17,7 @@
 package com.sysgears.grain.compass
 
 import com.sysgears.grain.config.Config
+import com.sysgears.grain.init.GrainSettings
 import groovy.util.logging.Slf4j
 
 import javax.inject.Inject
@@ -33,6 +34,9 @@ abstract class AbstractCompass implements Compass {
     
     /** Rendering mutex */
     @Inject @Named("renderMutex") private Object mutex
+
+    /** Grain settings */
+    @Inject private GrainSettings settings
 
     /**
      * Configures and launches Compass process
