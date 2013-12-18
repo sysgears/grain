@@ -107,6 +107,8 @@ class Application {
             default:
                 def command = config?.commands?.getAt(settings.command) as Closure
                 if (!command || command == 'help') {
+                    if (!command)
+                        System.err.println("Unknown command: ${settings.command}")
                     settings.cliBuilder.usage()
                     println("\nTheme commands:")
                     config.commands.each { name, closure ->
