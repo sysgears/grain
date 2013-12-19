@@ -12,7 +12,9 @@ public class PythonFinder {
      * Finds most appropriate Ruby command in the system.
      */
     public static String getPythonCmd() {
-        PYTHON_CANDIDATES.find {
+        def candidates = System.getProperty("os.name").toLowerCase().contains('win') ?
+            PYTHON_CANDIDATES.collect { it + ".exe" } : PYTHON_CANDIDATES
+        candidates.find {
             try {
                 [it, '-v'].execute()
             } catch (Throwable ignored) {

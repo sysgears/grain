@@ -14,7 +14,9 @@ public class RubyFinder {
      * Finds most appropriate Ruby command in the system.
      */
     public static String getRubyCmd() {
-        RUBY_CANDIDATES.find {
+        def candidates = System.getProperty("os.name").toLowerCase().contains('win') ?
+                RUBY_CANDIDATES.collect { it + ".exe" } : RUBY_CANDIDATES
+        candidates.find {
             try {
                 [it, '-v'].execute()
             } catch (Throwable ignored) {
