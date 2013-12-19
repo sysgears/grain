@@ -5,7 +5,7 @@ apply plugin: 'groovy'
 apply plugin: 'idea'
 group = 'com.sysgears.grain'
 version = '0.5.0-SNAPSHOT'
-defaultTasks 'clean', 'build', 'createAllDeliverables'
+defaultTasks 'build'
 
 def mainClassName = 'com.sysgears.grain.Main'
 def compatibilityVersion = 1.5
@@ -119,28 +119,6 @@ task createSharedManifest(dependsOn: getToolsMD5Checksum) {
     }
 }
 
-task uberJar(type: Jar, dependsOn: [':compileJava', ':compileGroovy', createSharedManifest]) {
-    from files(sourceSets.main.output.classesDir)
-    from files(sourceSets.main.output.resourcesDir)
-    from(project.rootProject.projectDir) {
-        include 'tools/**'
-    }
-    from(configurations.runtime.asFileTree.files.collect { zipTree(it) }) {
-        exclude 'META-INF/*.SF'
-        exclude 'META-INF/*.DSA'
-        exclude 'META-INF/*.RSA'
-    }
-    manifest = project.manifest {
-        from sharedManifest
-    }
-    baseName = "$project.rootProject.name-standalone"
-}
-
-task installUberJar(type: Copy, dependsOn: [uberJar]) {
-    from "${project.buildDir}/libs/${project.name}-standalone-${project.version}.jar"
-    into "${project.projectDir}/dist"
-}
-
 jar {
     manifest = project.manifest {
         from sharedManifest
@@ -148,10 +126,6 @@ jar {
     from(project.rootProject.projectDir) {
         include 'tools/**'
     }
-}
-
-task createAllDeliverables(dependsOn: [jar, installUberJar]) {
-    description = 'Creates all deliverables.'
 }
 
 task wrapper(type: Wrapper) {
