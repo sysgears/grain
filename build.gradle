@@ -79,7 +79,7 @@ dependencies {
         exclude module: 'groovy-all'
     }
 
-    compile 'org.codehaus.groovy:groovy:2.1.2'
+    compile 'org.codehaus.groovy:groovy:2.2.1'
 
     deployerJars 'org.apache.maven.wagon:wagon-ssh:2.2'
 }
