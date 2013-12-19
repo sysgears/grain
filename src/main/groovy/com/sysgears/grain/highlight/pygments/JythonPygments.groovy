@@ -60,7 +60,8 @@ class JythonPygments extends Pygments {
                 log.info 'Intitializing highlighter'
                 python = new PythonInterpreter()
                 python.exec('import sys')
-                python.exec("sys.path.append('${new File(settings.toolsHome, 'pygments-main').absolutePath}')")
+                // There are some problems with \ on Windows here, use backslashes instead
+                python.exec("sys.path.append('${new File(settings.toolsHome, 'pygments-main').absolutePath.replace('\\', '/')}')")
                 python.exec("from pygments import highlight")
                 python.exec('from pygments.lexers import get_lexer_by_name')
                 python.exec('from pygments.formatters import HtmlFormatter')
