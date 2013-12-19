@@ -16,6 +16,8 @@
 
 package com.sysgears.grain.highlight.pygments
 
+import com.sysgears.grain.compass.RubyFinder
+
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -48,12 +50,7 @@ class AutoPygments extends Pygments {
      */
     @Override
     public void start() {
-        try {
-            "python --version".execute()
-            pygments = pythonPygments
-        } catch (IOException ignored) {
-            pygments = jythonPygments
-        }
+        pygments = PythonFinder.pythonCmd != null ? pythonPygments : jythonPygments
         pygments.start()
     }
  
