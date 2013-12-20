@@ -5,10 +5,6 @@ Grain is a static website building framework for Groovy that makes demanding sta
 an intuitive and enjoyable task to do. The framework provides a complete development mode with reload of changed
 resources on the fly and website generation mode.
 
-###Motivation
-After developing several marketing and blogging websites using static website generators we have noticed that 
-much of our time were spent.  
-
 ###Requirements
 
 To run Grain framework you need [JDK 6 or later](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
@@ -16,91 +12,43 @@ set up. Download and install the appropriate JDK for your operating system.
 
 ###Installation
 
- 1. Download the latest Grain distribution archive from the [GitHub page](https://github.com/sysgears/grain) and
- extract the zip file to a location of your choice. Alternatively you can clone grain git repository to the location
- of your choice.
- 1. Build Grain framework binary by executing build script for your operating system,
-    `./gradlew` for Unix/Linux/Mac OS X systems or `gradlew.bat` for Windows.
- 1. Set the **GRAIN_HOME** environment variable to the location where you extracted the zip
-    * On Unix/Linux systems add `export GRAIN_HOME=/path/to/grain` to your ~/.profile or /etc/profile
-    * On Windows set the **GRAIN_HOME** variable under *My Computer/Advanced/Environment Variables*
- 1. Add the Grain bin directory to your **PATH** variable
-    * On Unix/Linux systems add `export PATH="$PATH:$GRAIN_HOME/bin"` to your profile
-    * On Windows add the bin directory to the **PATH** environment variable under
-      *My Computer/Advanced/Environment Variables*
+As Grain provided as a JAR dependency, it is shipped along with any Grain theme, no additional installation procedures
+required. You may start from downloading a [template theme](#) and building your website from there. Also, if you are
+new to Grain, we recommend to check out the first officially supported Grain Octopress theme [here](#). It would give
+you good overview on how to efficiently use Grain features.
 
 ##Getting Started
 
 ###Create website
 
-To create a Grain based website you need to have Grain theme set up. Grain ships with the Octopress theme
-in *grain/themes* directory. In order to use the provided theme, copy *grain/themes/octopress* directory
-to the location of your choice.
-``` sh:nl
-cp -rf octopress /path/to/your_site
-```
+In order to start creating your website, download template theme [here](#) and unpack it to the location of your choice.
 
 ###Preview website
 Navigate to the location of your newly created website `cd /path/to/your_site` and run the command
 ``` sh:nl
-grain
+./grainw
 ```
 
-to launch your website in preview mode. After that you can view your website by pointing web browser
+to launch your website in preview mode.
+
+**Note:** here and further command-line snippets will work for Unix-like systems. In case if you run Grain from
+Windows simply use `grainw` command instead of `./grainw`.
+
+After that you can view your website by pointing web browser
 to http://localhost:4000, then you can add/change/delete files of your website and see all the changes in your web
 browser immediately after refreshing the page.
-
-###Create new pages and posts
-
-####Add new post
-Now, when your website is up and running you could add new pages and posts and see them appearing.
-
-To create new post execute:
-``` sh:nl
-grain new_post "My new post title"
-```
-
-This command will add the file `/content/blog/yyyy-mm-dd-my-new-post-title.markdown`. You can open this file
-in any text editor and fill in author name and write some markdown text below the end of header:
-``` yaml:nl
----
-layout: post
-title: "My new post title"
-date: "2013-10-22 17:11"
-author:
-comments: true
-categories: [article]
----
-Your post text goes here
-```
-
-After you save the file you can see the result in web browser by navigating to your new post.
-
-####Add new page
-New pages get added the similar way:
-``` sh:nl
-grain new_page "/about/us" "About"
-```
-
-This will add the file `/content/about/us/index.markdown` representing the page. New page will show up in the 
-site menu automatically, just refresh your browser.
-
-To add new page in html format, execute the following command:
-``` sh:nl
-grain new_page "/contacts/index.html" "Contacts"
-``` 
 
 ###Generate and deploy
 When your site is ready for going live you can generate all the website files by executing
 ``` sh:nl
-grain generate
+./grainw generate
 ```
 
 The files of website will be generated to `/path/to/your_site/target` directory. 
 
 You can deploy the resulting files either manually or with the help of Grain:
 ``` sh:nl
-grain deploy
+./grainw deploy
 ```
 Check the deployment section for more information.
 
@@ -144,9 +92,9 @@ Grain has the following conventions for website files and directories:
 
   - content - website content, organized the same way as in resulting website
   - theme - top level directory for the site content representation theme
-    - includes - common page parts, included from layouts 
+    - includes - common page parts, included at the layouts side, such as header, footer, etc.
     - layouts - page layouts
-    - src - Groovy classes used from website pages
+    - src - any Groovy classes used for processing content
     - ... - other assets, organized the same way as in resulting website
   - SiteConfig.groovy - website configuration parameters
   
@@ -154,18 +102,20 @@ Grain has the following conventions for website files and directories:
 
 ###Predefined variables
 
-Grain passes minimal set of pre-defined variables to `SiteConfig.groovy`. These variables are:  
+Grain provides `SiteConfig.groovy` file for general configuration. For specifying configuration in this file, use
+[ConfigSlurper](http://groovy.codehaus.org/ConfigSlurper) syntax. When working with `SiteConfig.groovy`, you
+may use set of pre-defined variables. These variables are:
 
-`site` - a reference to facade for accessing website resources and configuration
+`site` - access point to website resources and configuration
 
 `log` - default logger
 
 ###Filesystem layout
 
 Though in many situations you wouldn't touch default conventions, in some cases it is still beneficial
-to have the  possibility for more fine-grained control over Grain website structure on the filesystem. 
+to have the possibility for more fine-grained control over Grain website structure on the filesystem.
 
-The parameters below control website filesystem layout:
+You can control website filesystem layout by modifying the following parameters in `SiteConfig.Groovy`:
 
 `cache_dir` - directory where cache files of various Grain subsystems are stored
 
@@ -186,44 +136,9 @@ listed later takes precedence
 
 `jetty_port` - TCP port for serving HTTP request in preview mode (default is `4000`)
 
-###Taglibs configuration
-
-`tag_libs` - a list of tag library classes
-
-***Example***
-``` groovy:nl
-tag_libs = [OctopressTagLib, PaginationTagLib]
-```
-
-###Resource mapping
-
-`resource_mapper` - a closure that will be executed each time website changes for transforming initial resource models
-
-***Parameters***:
-
-  1. List of initial resource models
-
-***Return value***: transformed resource models to be used for actual rendering of resources
-
-***Example***
-``` groovy:nl
-resource_mapper = { resources ->
-    resources.collect { Map resource ->
-        if (resource.location =~/\/blog\/.*/) {
-            // Rewrite url for blog posts
-            def date = Date.parse(site.datetime_format, resource.date).format('yyyy/MM/dd/')
-            def title = resource.title.encodeAsSlug()
-            resource + [url: "/blog/$date$title/"]
-        } else {
-            resource
-        }
-    }
-}
-```
-
 ###Features configuration
 
-Grain have many features provided by different implementations. Concrete implementations are specified in the `features` 
+Grain has many features provided by different implementations. Concrete implementations are specified in the `features`
 configuration section.
 
 ####Syntax highlighting feature
@@ -236,10 +151,10 @@ configuration section.
 `pygments` - Pygments integration method (default is `auto`):
 
   - `none` - do not use Pygments 
-  - `python` - use Pygments bundled with Grain as Python process 
+  - `python` - use Pygments bundled with Grain as Python process (requires Python installed)
   - `jython` - use Pygments bundled with Grain as Jython process (slow startup time)
   - `shell` - use Pygments installed in the system as shell Python process
-  - `auto` - use Pygments bundled with Grain as Python process if python is installed in the system,
+  - `auto` - use Pygments bundled with Grain as Python process if Python is installed in the system,
              otherwise fallback to Jython process 
  
 `cache_highlight` - cache highlighting results (default is `true`):
@@ -258,10 +173,10 @@ can use website configuration parameters and have embedded Groovy code. The Comp
 `compass`- SASS/Compass integration method (default is `none`):
 
   - `none` - do not launch Compass 
-  - `ruby` - use Compass bundled with Grain as Ruby process   
+  - `ruby` - use Compass bundled with Grain as Ruby process (requires Ruby installed)
   - `jruby` - use Compass bundled with Grain as JRuby process (slow startup time, generally slower than Ruby process)   
   - `shell` - use Compass installed in the system as shell Ruby process
-  - `auto` - use Compass bundled with Grain as Ruby process if ruby is installed in the system,
+  - `auto` - use Compass bundled with Grain as Ruby process if Ruby is installed in the system,
              otherwise fallback to JRuby process
              
 ####Minification and compression features
@@ -295,36 +210,6 @@ The generated files of website can be minified and compressed in various ways.
 `compress` - compress all generated files
   - `none` - do not compress generated files
   - `gzip` - compress all generated files using GZIP
-  
-###Theme-specific command-line extension
-
-It can be beneficial to add support for new custom commands to Grain command-line for pre-populating new pages or posts
-or whatever.
-
-All the commands supported by theme should be stored into `commands` list. Each command in this list is a closure
-that accepts zero or more String parameters that will be passed from command-line.
-
-***Example***
-``` groovy:nl
-commands = [
-new_post: { String postTitle ->
-    def date = new Date()
-    def fileDate = date.format("yyyy-MM-dd")
-    def filename = fileDate + "-" + postTitle.encodeAsSlug() + ".markdown"
-    def file = new File(content_dir + "/blog/" + filename)
-    file.exists() || file.write("""---
-layout: post
-title: "${postTitle}"
-date: "${date.format(datetime_format)}"
-author:
-categories: []
-comments: true
-published: false
----
-""")},
-...
-]
-```
 
 ###Deployment configuration
 
@@ -382,9 +267,7 @@ Grain uses the following environments:
 ``` groovy:nl
 source_modifier = { File file ->
     if (file.name.endsWith('.css')) {
-        file.text.replaceAll(/url\(\.[.\/]*([^)]+)\)/, {
-            'url(${r "/' + it[1] + '"})'
-        })
+        file.text.replaceAll('foo', 'bar')
     } else {
         file.text
     }
@@ -436,30 +319,32 @@ In both cases 4 will be inserted into the content of the page as the result of e
 To include large blocks of Groovy code one can use notation below:
 ``` grain:nl
 <%
-    def project = site.pages.find {
-        it.url == page.url.find(~/(.*)docs/) { match, url -> url }
-    }
+    def foo = 2 + 2
 %>
-<span itemprop="title">${project.title}</span>
 ...
-<% if (project.completed) { %>
-   <span class="completed"></span>
+<% if (foo == 4) { %>
+   <span class="true"></span>
 <% } %>
 ``` 
 
 The `if` above will work as expected, e.g. the span will be rendered into page contents only when the criteria is met.
+Also note that variables declared in one piece of embedded code will be available anywhere on the page.
 
 ###Variables on a page
 Grain has several variables reserved, others can be freely introduced on a page.
 
 These variables are reserved:
 
-  - `site` - a facade to accessing website resources and configuration
   - `page` - current page model
+  - `site` - a facade to accessing website resources and configuration
   - `content` - HTML content of the page, accessible in layout
   - `out` - internal string buffer used to accumulate page contents during rendering
- 
-All the header keys are accessible on a page through `page` variable.
+
+Below more explanations regarding `page` and `site` variables are provided.
+
+####Page variable
+
+`page` variable provides access to all the header keys.
 
 For example to get page title one can use the following code snippet:
 ``` grain:nl
@@ -472,7 +357,7 @@ Grain generates the following header keys on initial loading of resource from so
   - `url` - URL of the page
   - `type` - resource type, either 'page' for resources that render into HTML or `asset` for all the other
              resources
-  - `dateCreated` - resource file creation time in milliseconds              
+  - `dateCreated` - resource file creation time in milliseconds
   - `lastUpdated` - resource file last update time in milliseconds
   - `text` - text contents of resource file
   - `bytes` - byte contents of resource file
@@ -480,8 +365,10 @@ Grain generates the following header keys on initial loading of resource from so
 `page` variable is just a Groovy map. You can add keys to this map in the page code
 or make other changes, but these changes will be only visible to the page itself,
 they will not be visible to other pages.
- 
-All the keys from SiteConfig.groovy are accessible through `site` variable. For example to get
+
+####Site variable
+
+`site` variable provides access to all the properties declared in SiteConfig.groovy. For example, in order to get
 configured URL of the site one can use this code:
 ``` grain:nl
 <a href="${site.url}">Home</a>
@@ -577,6 +464,32 @@ After that, inside tags.html, you will have `page.tags` set to the value of `pos
 
 ##URL mapping
 
+###Resource mapping
+
+`resource_mapper` - a closure that will be executed each time website changes for transforming initial resource models
+
+***Parameters***:
+
+  1. List of initial resource models
+
+***Return value***: transformed resource models to be used for actual rendering of resources
+
+***Example***
+``` groovy:nl
+resource_mapper = { resources ->
+    resources.collect { Map resource ->
+        if (resource.location =~/\/blog\/.*/) {
+            // Rewrite url for blog posts
+            def date = Date.parse(site.datetime_format, resource.date).format('yyyy/MM/dd/')
+            def title = resource.title.encodeAsSlug()
+            resource + [url: "/blog/$date$title/"]
+        } else {
+            resource
+        }
+    }
+}
+```
+
 ###In-memory resource representation
 In Grain each resource is represented as plain Groovy map. Each resource should have at least two keys in its map:
 
@@ -657,7 +570,7 @@ The standard tags are:
 ${include 'tags.html', [tags: post.categories]} ```
 
 ###Custom tag libraries
-You can add own tags in your website theme. This is done by implementing your tags as Groovy closures.
+You can add own tags in your website theme. This can be made by implementing your tags as Groovy closures.
 
 Class with tag closures should be added into the list of tag libs in `SiteConfig.groovy -> tag_libs`.
 The tag lib class constructor should expect one argument - standard Grain taglib.
@@ -695,5 +608,35 @@ class MyTagLib {
     ...
 
 }
+```
+
+##Custom command-line commands
+
+It can be beneficial to add support for new custom commands to Grain command-line for pre-populating new pages or posts
+or whatever.
+
+All the commands supported by theme should be stored into `commands` list. Each command in this list is a closure
+that accepts zero or more String parameters that will be passed from command-line.
+
+***Example***
+``` groovy:nl
+commands = [
+new_post: { String postTitle ->
+    def date = new Date()
+    def fileDate = date.format("yyyy-MM-dd")
+    def filename = fileDate + "-" + postTitle.toLowerCase().replaceAll("\\s+","-") + ".markdown"
+    def file = new File(content_dir + "/blog/" + filename)
+    file.exists() || file.write("""---
+layout: post
+title: "${postTitle}"
+date: "${date.format(datetime_format)}"
+author:
+categories: []
+comments: true
+published: false
+---
+""")},
+...
+]
 ```
 
