@@ -12,10 +12,10 @@ set up. Download and install the appropriate JDK for your operating system.
 
 ###Installation
 
-As Grain provided as a JAR dependency, it is shipped along with any Grain theme, no additional installation procedures
-required. You may start from downloading a [template theme](#) and building your website from there. Also, if you are
-new to Grain, we recommend to check out the first officially supported Grain Octopress theme [here](#). It would give
-you good overview on how to efficiently use Grain features.
+As Grain is provided as a JAR dependency, it is shipped along with any Grain theme, no additional installation procedures
+required. You may start from downloading a template theme from [here](#) and start building your website.
+Also, if you are new to Grain, we recommend to check out the first officially supported Grain Octopress theme [here](#).
+It would give you good overview on how to efficiently use Grain features.
 
 ##Getting Started
 
@@ -31,12 +31,11 @@ Navigate to the location of your newly created website `cd /path/to/your_site` a
 
 to launch your website in preview mode.
 
-**Note:** here and further command-line snippets will work for Unix-like systems. In case if you run Grain from
+**Note:** here and further command-line snippets work for Unix-like systems only. In case if you run Grain from
 Windows simply use `grainw` command instead of `./grainw`.
 
-After that you can view your website by pointing web browser
-to http://localhost:4000, then you can add/change/delete files of your website and see all the changes in your web
-browser immediately after refreshing the page.
+After that you can view your website by pointing a web browser to http://localhost:4000, then you can add/change/delete
+files of your website and see all the changes in the web browser immediately after refreshing the page.
 
 ###Generate and deploy
 When your site is ready for going live you can generate all the website files by executing
@@ -139,7 +138,7 @@ listed later takes precedence
 ###Features configuration
 
 Grain has many features provided by different implementations. Concrete implementations are specified in the `features`
-configuration section.
+section of the configuration file.
 
 ####Syntax highlighting feature
 
@@ -215,7 +214,7 @@ The generated files of website can be minified and compressed in various ways.
 
 Deployment of final website is implemented as shell command execution.
 
-`deploy` - a shell command or list of shell commands to deploy a website, that will be executed sequentially
+`deploy` - a shell command or list of shell commands to deploy a website, that are executed sequentially
  
 ***Example***
 ``` groovy:nl
@@ -254,7 +253,7 @@ Grain uses the following environments:
 
 ####Source modifier closure
 
-`source_modifier` - a closure that will be run for each source file of website before rendering
+`source_modifier` - a closure that is run for each source file of website before rendering
 
 ***Parameters***:
 
@@ -276,7 +275,7 @@ source_modifier = { File file ->
 
 ####Config posthandler hook
 
-`config_posthandler` - a closure that will be executed right after each execution of `SiteConfig.groovy`
+`config_posthandler` - a closure that is executed right after each execution of `SiteConfig.groovy`
  
 ***Example***
 
@@ -340,11 +339,9 @@ These variables are reserved:
   - `content` - HTML content of the page, accessible in layout
   - `out` - internal string buffer used to accumulate page contents during rendering
 
-Below more explanations regarding `page` and `site` variables are provided.
-
 ####Page variable
 
-`page` variable provides access to all the header keys.
+`page` variable provides access to all the keys of pages YAML headers.
 
 For example to get page title one can use the following code snippet:
 ``` grain:nl
@@ -364,7 +361,7 @@ Grain generates the following header keys on initial loading of resource from so
   - `bytes` - byte contents of resource file
 
 `page` variable is just a Groovy map. You can add keys to this map in the page code
-or make other changes, but these changes will be only visible to the page itself,
+or make other changes, but these changes are only visible to the page itself,
 they will not be visible to other pages.
 
 ####Site variable
@@ -387,7 +384,7 @@ defined in every site page one could do:
 ###Concept
 Rendered page content usually wrapped up by layout, where most of the presentation logic is held.
 
-Here is some example layout: 
+Here is an example of a layout:
 ``` grain /theme/layout/default.html
 <html>
 <head>
@@ -405,7 +402,7 @@ Here is some example layout:
 </html>
 ```
 
-Please note that rendered page contents will be passed in `content` variable to the layout.
+Please note that rendered page contents is passed in `content` variable to the layout.
 
 ###Layout nesting 
 One layout can be based on another layout. For example, here is some page layout, based on default layout above:
@@ -426,7 +423,7 @@ Layout nesting can be unlimited.
 ###Concept
 Common page presentation parts can be kept in separate files and then included into layouts.
 
-For example in the example below sidebar.html included into layout:
+For example in the code below sidebar.html is included into layout:
 ``` grain /theme/layout/page.html
 ---
 layout: default
@@ -455,16 +452,16 @@ After that, inside tags.html, you will have `page.tags` set to the value of `pag
 
 ###Introduction
 
-It is often appearing situation when you need to have full control over your website resources. For example, you may
-want to customize website urls, add custom pages, like pagination pages or pages that gathering posts related to certain
-tags, etc.
+It is obvious that in order to implement some complex tasks for your website, you may need to have full control over
+your website resources. For example, you may want to customize website urls, add custom pages, like pagination pages or
+pages that gathers posts related to certain tags, etc.
 All sorts of this transformations can be made by using resource mapping mechanism. In order to start working with it,
 it is important to be familiar with how website resources are represented in Grain.
 
 ###Resource representation
 In Grain each resource is represented as plain Groovy map. Each resource should have at least two keys in its map:
 
-- `location` - pointing to the file of the resources in filesystem
+- `location` - pointing to the resource file in filesystem
 - `url` - representing the URL of the resource
 
 Along with these keys, resource representation holds all the properties specified in content files' headers.
@@ -472,7 +469,7 @@ Along with these keys, resource representation holds all the properties specifie
 ###Mapping customization
 
 The list of all the resources after any site change is passed to the `SiteConfig.groovy -> resource_mapper` closure.
-The closure is expected to build new list of resources with customized URLs, other resource variables, etc.
+The closure is expected to build new list of resources that may have customized URLs, different resource variables, etc.
 
 For example the input list of resources might look like this:
 ``` groovy:nl
@@ -507,7 +504,7 @@ receive additional model variable `posts`.
 
 Below is the detailed specification on configuring resource mapping in `SiteConfig.groovy`
 
-`resource_mapper` - a closure that will be executed each time website changes for transforming initial resource models
+`resource_mapper` - a closure that is executed each time website changes for transforming initial resource models
 
 ***Parameters***:
 
@@ -573,7 +570,7 @@ The standard tags are:
 ${include 'tags.html', [tags: post.categories]} ```
 
 ###Custom tag libraries
-You can add own tags in your website theme. This can be made by implementing your tags as Groovy closures.
+You can add your own tags in your website theme. This can be made by implementing your tags as Groovy closures.
 
 Class with tag closures should be added into the list of tag libs in `SiteConfig.groovy -> tag_libs`.
 The tag lib class constructor should expect one argument - standard Grain taglib.
@@ -615,11 +612,12 @@ class MyTagLib {
 
 ##Custom command-line commands
 
-It can be beneficial to add support for new custom commands to Grain command-line for pre-populating new pages or posts
-or whatever.
+###Creating your own commands
+It can be beneficial to add support for new custom commands to Grain command-line for pre-populating new pages, posts,
+etc.
 
 All the commands supported by theme should be stored into `commands` list property in `SiteConfig.groovy`. Each command
-in this list is a closure that accepts zero or more String parameters that will be passed from command-line.
+in this list is a closure that accepts zero or more String parameters that is passed from command-line.
 
 ***Example***
 ``` groovy:nl
