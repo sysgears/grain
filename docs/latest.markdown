@@ -247,7 +247,7 @@ Grain uses the following environments:
 
 `prod` - site generation and site deployment environment 
 
-`cmd` - theme-specific command-mode environment, used when running an extension command
+`cmd` - theme-specific command-mode environment, used when running a custom command
         defined in SiteConfig.groovy  
    
 ###Advanced configuration
@@ -352,6 +352,7 @@ ${page.title}
 ```
 
 Grain generates the following header keys on initial loading of resource from source file:
+
   - `location` - relative page location on the filesystem, for example `/index.html`
                  or `/contacts/index.markdown`
   - `url` - URL of the page
@@ -388,20 +389,19 @@ Rendered page content usually wrapped up by layout, where most of the presentati
 
 Here is some example layout: 
 ``` grain /theme/layout/default.html
-${include 'head.html'}
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>${site.title}</title>
+</head>
 
-<body ${page.sidebar != false ? '' : "class='no-sidebar'"}>
-  <header role="banner">${include 'header.html'}</header>
-  <nav role="navigation">${include 'navigation.html'}</nav>
+<body>
   <div id="main">
     <div id="content">
       ${content}
     </div>
   </div>
-  <footer>${include 'footer.html'}</footer>
-  ${include 'after_footer.html'}
 </body>
-
 </html>
 ```
 
@@ -415,20 +415,11 @@ layout: default
 title: "Default page title"
 ---
 <div class="page">
-  <article class="hentry" role="article">
     ${content}
-  </article>
-<% if (site.disqus.short_name && page.comments == true) { %>
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite">${include 'post/disqus_thread.html'}</div>
-  </section>
-<% } %>
 </div>
-${include 'sidebar.html'}
 ```
 
-Layout nesting can be unlimited. 
+Layout nesting can be unlimited.
 
 ##Includes
 
@@ -453,53 +444,36 @@ layout: page
 ---
 ...
            <footer>
-             <a href="${post.url}" class="button medium color">Read More</a>
-             ${include 'tags.html', [tags: post.categories]}
- 
-             <hr class="top bottom-2" />
+             <a href="${page.url}">Read More</a>
+             ${include 'tags.html', [tags: page.categories]}
            </footer>
 ```
 
-After that, inside tags.html, you will have `page.tags` set to the value of `post.categories`.
+After that, inside tags.html, you will have `page.tags` set to the value of `page.categories`.
 
-##URL mapping
+##URL and resource mapping
 
-###Resource mapping
+###Introduction
 
-`resource_mapper` - a closure that will be executed each time website changes for transforming initial resource models
+It is often appearing situation when you need to have full control over your website resources. For example, you may
+want to customize website urls, add custom pages, like pagination pages or pages that gathering posts related to certain
+tags, etc.
+All sorts of this transformations can be made by using resource mapping mechanism. In order to start working with it,
+it is important to be familiar with how website resources are represented in Grain.
 
-***Parameters***:
-
-  1. List of initial resource models
-
-***Return value***: transformed resource models to be used for actual rendering of resources
-
-***Example***
-``` groovy:nl
-resource_mapper = { resources ->
-    resources.collect { Map resource ->
-        if (resource.location =~/\/blog\/.*/) {
-            // Rewrite url for blog posts
-            def date = Date.parse(site.datetime_format, resource.date).format('yyyy/MM/dd/')
-            def title = resource.title.encodeAsSlug()
-            resource + [url: "/blog/$date$title/"]
-        } else {
-            resource
-        }
-    }
-}
-```
-
-###In-memory resource representation
+###Resource representation
 In Grain each resource is represented as plain Groovy map. Each resource should have at least two keys in its map:
 
 - `location` - pointing to the file of the resources in filesystem
 - `url` - representing the URL of the resource
 
+Along with these keys, resource representation holds all the properties specified in content files' headers.
+
 ###Mapping customization
+
 The list of all the resources after any site change is passed to the `SiteConfig.groovy -> resource_mapper` closure.
-The closure is expected to build new list of resources with customized URLs and other resource variables.
-  
+The closure is expected to build new list of resources with customized URLs, other resource variables, etc.
+
 For example the input list of resources might look like this:
 ``` groovy:nl
 [
@@ -528,6 +502,35 @@ And the output could be as follows:
 
 Note how one physical resource `/blog/index.html` is mapped here to different URLs and each time `/blog/index.html` will
 receive additional model variable `posts`.
+
+###Resource mapper configuration
+
+Below is the detailed specification on configuring resource mapping in `SiteConfig.groovy`
+
+`resource_mapper` - a closure that will be executed each time website changes for transforming initial resource models
+
+***Parameters***:
+
+  1. List of initial resource models
+
+***Return value***: transformed resource models to be used for actual rendering of resources
+
+***Example***
+``` groovy:nl
+resource_mapper = { resources ->
+    resources.collect { Map resource ->
+        if (resource.location =~/\/blog\/.*/) { //Select all the resources, which content files placed under /blog dir
+            // Rewrite url for blog posts
+            def unParsedDate = resource.date //Date specified in content file's header
+            def date = Date.parse(site.datetime_format, resource.date).format('yyyy/MM/dd/')
+            def title = resource.title.toLowerCase().replaceAll("\\s+","-")
+            resource + [url: "/blog/$date$title/"]
+        } else {
+            resource
+        }
+    }
+}
+```
 
 ##Tag libraries
 
@@ -615,8 +618,8 @@ class MyTagLib {
 It can be beneficial to add support for new custom commands to Grain command-line for pre-populating new pages or posts
 or whatever.
 
-All the commands supported by theme should be stored into `commands` list. Each command in this list is a closure
-that accepts zero or more String parameters that will be passed from command-line.
+All the commands supported by theme should be stored into `commands` list property in `SiteConfig.groovy`. Each command
+in this list is a closure that accepts zero or more String parameters that will be passed from command-line.
 
 ***Example***
 ``` groovy:nl
@@ -629,11 +632,6 @@ new_post: { String postTitle ->
     file.exists() || file.write("""---
 layout: post
 title: "${postTitle}"
-date: "${date.format(datetime_format)}"
-author:
-categories: []
-comments: true
-published: false
 ---
 """)},
 ...
