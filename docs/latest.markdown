@@ -208,6 +208,7 @@ The generated files of website can be minified and compressed in various ways.
 #####Compression
 
 `compress` - compress all generated files
+
   - `none` - do not compress generated files
   - `gzip` - compress all generated files using GZIP
 
@@ -501,9 +502,7 @@ And the output could be as follows:
 Note how one physical resource `/blog/index.html` is mapped here to different URLs and each time `/blog/index.html` will
 receive additional model variable `posts`.
 
-###Resource mapper configuration
-
-Below is the detailed specification on configuring resource mapping in `SiteConfig.groovy`
+####Resource mapper closure
 
 `resource_mapper` - a closure that is executed each time website changes for transforming initial resource models
 
