@@ -84,7 +84,9 @@ public class SiteLauncher {
             }
         }
         
-        if (exitValue == 0 && grainVersion.endsWith("-SNAPSHOT")) {
+        if (exitValue == 0 && grainVersion.endsWith("-SNAPSHOT") &&
+                !snapshotsRepoUrl.contains("://") &&
+                !grainJar.getPath().contains(File.separator + ".m2" + File.separator)) {
             try {
                 String metadata = downloadFromRepo("maven-metadata.xml");
                 Matcher m1 = Pattern.compile("<timestamp>([0-9\\.]+)").matcher(metadata);
