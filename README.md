@@ -5,7 +5,7 @@ Grain is a lightweight and yet powerful static website generator for [Groovy][Gr
 to make demanding site implementation an intuitive and enjoyable. Grain framework is equally
 well-suited for any static website, whether it is a complex and sophisticated company site
 or a simple and neat blog. The framework applies elegant website building concepts and allows to
-rapidly develop by making and seeing changes on the fly.
+develop rapidly by making and seeing changes on the fly.
 
 Getting Started
 ---
