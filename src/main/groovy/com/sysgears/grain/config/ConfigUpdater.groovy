@@ -70,7 +70,8 @@ class ConfigUpdater implements ConfigChangeListener {
 
         for (configFile in [settings.globalConfigFile, settings.configFile]) {
             if (configFile.exists()) {
-                log.info "Rereading config ${configFile}"
+                if (settings.env != 'cmd')
+                    log.info "Rereading config ${configFile}"
                 configParser.binding = newConfig + defaultConfigBindings
                 def config = gse.loadScriptByName(configFile.name)
                 newConfig = configParser.parse(config).merge(newConfig) as ConfigObject
@@ -80,7 +81,8 @@ class ConfigUpdater implements ConfigChangeListener {
         newConfig.putAll(defaultConfigBindings)
         config.reload(newConfig)
         if (config.config_posthandler) {
-            log.info "Executing config post handler"
+            if (settings.env != 'cmd')
+                log.info "Executing config post handler"
             config.config_posthandler.call()
         }
     }
