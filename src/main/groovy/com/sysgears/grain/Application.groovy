@@ -119,9 +119,6 @@ class Application {
                 }
                 break
         }
-        addShutdownHook {
-            log.info "Terminating Grain..."
-        }
         log.info "Total time: ${System.currentTimeMillis() - startTime}"
         if (settings.command == 'preview') {
             Thread.startDaemon {
@@ -131,6 +128,7 @@ class Application {
                     while (System.in.available()) {
                         int ch = System.in.read()
                         if (ch == 'q' || ch == 'Q') {
+                            log.info "Terminating Grain..."
                             System.exit(0)
                         }
                     }

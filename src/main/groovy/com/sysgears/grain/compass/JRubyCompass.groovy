@@ -80,7 +80,7 @@ class JRubyCompass extends AbstractCompass {
                 } catch (RaiseException re) {
                     if (re.exception.toString() != "exit") {
                         log.error("Error while running compass", re)
-                    } else if (re.exception.toString() == "exit" && !stopInProcess) {
+                    } else if (re.exception.toString() == "exit" && mode == "watch" && !stopInProcess) {
                         // Use pressed CTRL-C which was intercepted by JRuby, terminating Grain
                         Thread.startDaemon {
                             System.exit(0)
