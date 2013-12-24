@@ -28,6 +28,7 @@ ext {
 
 configurations.all {
     exclude group: 'commons-logging'
+    exclude group: 'rhino'
 }
 
 configurations {
@@ -52,9 +53,7 @@ dependencies {
     compile 'org.python:jython-standalone:2.7-b1'
     compile 'org.jruby:jruby-complete:1.7.9'
     compile 'com.googlecode.htmlcompressor:htmlcompressor:1.5.2'
-    compile('com.yahoo.platform.yui:yuicompressor:2.4.7') {
-        exclude group: 'rhino'
-    }
+    compile 'com.yahoo.platform.yui:yuicompressor:2.4.7'
     compile 'commons-io:commons-io:2.4'
     compile 'commons-cli:commons-cli:1.2'
     compile 'org.codehaus.groovy:groovy-xml:2.1.2'
