@@ -2,26 +2,27 @@
 
 ###Description
 Grain is a static website building framework for Groovy that makes demanding static website implementation
-an intuitive and enjoyable task to do. The framework provides a complete development mode with reload of changed
+an intuitive and enjoyable. The framework provides a complete development mode with reload of changed
 resources on the fly and website generation mode.
 
 ###Requirements
 
-To run Grain framework you need [JDK 6 or later](http://www.oracle.com/technetwork/java/javase/downloads/index.html)
-set up. Download and install the appropriate JDK for your operating system.
+To run Grain framework you need [JDK 6 or later](http://www.oracle.com/technetwork/java/javase/downloads/index.html).
+Download and install the appropriate JDK for your operating system.
 
 ###Installation
 
-As Grain is provided as a JAR dependency, it is shipped along with any Grain theme, no additional installation procedures
-required. You may start from downloading a template theme from [here](#) and start building your website.
-Also, if you are new to Grain, we recommend to check out the first officially supported Grain Octopress theme [here](#).
-It would give you good overview on how to efficiently use Grain features.
+No installation required. Grain is loaded as a JAR dependency by a Grain theme.
+
+If you are new to Grain, we recommend to start with Grain [Octopress](http://sysgears.com/grain/themes/octopress/) theme,
+it would give you a good overview on how to efficiently use Grain features.
+To build website from scratch, download Grain theme [template](http://sysgears.com/grain/themes/template/).
 
 ##Getting Started
 
 ###Create website
 
-In order to start creating your website, download template theme [here](#) and unpack it to the location of your choice.
+In order to start creating your website, download the theme [template](http://sysgears.com/grain/themes/template/) and unpack it to the location of your choice.
 
 ###Preview website
 Navigate to the location of your newly created website `cd /path/to/your_site` and run the command
@@ -31,11 +32,11 @@ Navigate to the location of your newly created website `cd /path/to/your_site` a
 
 to launch your website in preview mode.
 
-**Note:** here and further command-line snippets work for Unix-like systems only. In case if you run Grain from
+**Note:** here and further command-line snippets work for Unix-like systems only. In case you are running Grain from
 Windows simply use `grainw` command instead of `./grainw`.
 
 After that you can view your website by pointing a web browser to http://localhost:4000, then you can add/change/delete
-files of your website and see all the changes in the web browser immediately after refreshing the page.
+files of your website and see all changes in the web browser immediately after refreshing the page.
 
 ###Generate and deploy
 When your site is ready for going live you can generate all the website files by executing
@@ -62,13 +63,13 @@ Check the deployment section for more information.
 
 ####Prerequisites:
 
-  1. Install [Groovy-Eclipse plugin](http://groovy.codehaus.org/Eclipse+Plugin) along with Groovy Compiler 2.1 Feature 
+  1. Install [Groovy-Eclipse plugin](http://groovy.codehaus.org/Eclipse+Plugin) along with Groovy Compiler 2.1
 
 ####Importing project:
 
   1. Generate Eclipse project files by executing `./gradlew eclipse` or `gradlew.bat eclipse` in website directory.
   1. Import project by selecting from menu: `File -> Import... -> Existing Projects Into Workspace -> Select your website dir`
-  1. Right click on theme/src/com.example.grain/Launcher and select `Run As -> Groovy Script` to launch Grain in preview mode.
+  1. Right click on theme/src/com.example.grain/Launcher and select `Run As -> Java Application` to launch Grain in preview mode.
 
 ###NetBeans IDE
 
@@ -207,6 +208,7 @@ The generated files of website can be minified and compressed in various ways.
 #####Compression
 
 `compress` - compress all generated files
+
   - `none` - do not compress generated files
   - `gzip` - compress all generated files using GZIP
 
@@ -500,9 +502,7 @@ And the output could be as follows:
 Note how one physical resource `/blog/index.html` is mapped here to different URLs and each time `/blog/index.html` will
 receive additional model variable `posts`.
 
-###Resource mapper configuration
-
-Below is the detailed specification on configuring resource mapping in `SiteConfig.groovy`
+####Resource mapper closure
 
 `resource_mapper` - a closure that is executed each time website changes for transforming initial resource models
 
