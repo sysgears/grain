@@ -156,7 +156,7 @@ class PythonPygments extends Pygments {
         latch = new CountDownLatch(1)
         thread = Thread.start {
             try {
-                log.info 'Launching python pygments process...'
+                log.info 'Launching Python pygments...'
                 def env = ["SIMPLEJSON_HOME=${new File(settings.toolsHome, 'simplejson').canonicalPath}"]
                 if (bundledPygments) {
                     env += ["PYGMENTS_HOME=${new File(settings.toolsHome, 'pygments-main').canonicalPath}"]
@@ -178,7 +178,7 @@ class PythonPygments extends Pygments {
                 watcher.join()
                 bos.close()
                 dis.close()
-                log.info 'Python pygments process finished.'
+                log.info 'Python pygments finished'
             } catch (t) {
                 log.error("Error launching Pygments", t)
                 latch.countDown()

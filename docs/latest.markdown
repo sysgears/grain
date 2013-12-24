@@ -69,7 +69,7 @@ Check the deployment section for more information.
 
   1. Generate Eclipse project files by executing `./gradlew eclipse` or `gradlew.bat eclipse` in website directory.
   1. Import project by selecting from menu: `File -> Import... -> Existing Projects Into Workspace -> Select your website dir`
-  1. Right click on theme/src/com.example.grain/Launcher and select `Run As -> Groovy Script` to launch Grain in preview mode.
+  1. Right click on theme/src/com.example.grain/Launcher and select `Run As -> Java Application` to launch Grain in preview mode.
 
 ###NetBeans IDE
 

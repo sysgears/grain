@@ -106,14 +106,16 @@ class Application {
                 break
             default:
                 def command = config?.commands?.getAt(settings.command) as Closure
-                if (!command || command == 'help') {
-                    if (!command)
+                if (!command || settings.command == 'help') {
+                    if (settings.command != 'help') {
                         System.err.println("Unknown command: ${settings.command}")
-                    settings.cliBuilder.usage()
+                        settings.cliBuilder.usage()
+                    }                               
                     println("\nTheme commands:")
                     config.commands.each { name, closure ->
                         println(name)
                     }
+                    System.exit(0)
                 } else {
                     command(settings.args)
                 }
@@ -122,19 +124,22 @@ class Application {
         log.info "Total time: ${System.currentTimeMillis() - startTime}"
         if (settings.command == 'preview') {
             Thread.startDaemon {
-                log.info "Press 'q' and ENTER to terminate Grain"
+                log.info "Press CTRL-C or 'q' and ENTER to Stop Grain"
                 boolean exit = false
                 while (!exit) {
                     while (System.in.available()) {
                         int ch = System.in.read()
                         if (ch == 'q' || ch == 'Q') {
-                            log.info "Terminating Grain"
+                            log.info "Terminating Grain..."
                             System.exit(0)
                         }
                     }
                     sleep(100, { exit = true })
                 }
             }
+        } else {
+            // Terminate all active service threads
+            System.exit(0)
         }
     }
 }

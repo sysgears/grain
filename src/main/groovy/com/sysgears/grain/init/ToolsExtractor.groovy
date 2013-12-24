@@ -24,11 +24,13 @@ class ToolsExtractor {
      */
     public void extractTools(GrainSettings settings) {
         if (settings.toolsHome.exists()) {
-            log.info "Using tools home: ${settings.toolsHome}"
+            if (settings.env != 'cmd')
+                log.info "Using tools home: ${settings.toolsHome}"
             return
         }
-        
-        log.info "Unpacking bundled tools to ${settings.toolsHome}"
+
+        if (settings.env != 'cmd')
+            log.info "Unpacking bundled tools to ${settings.toolsHome}"
 
         def className = CmdlineParser.getSimpleName() + ".class"
         String classPath = CmdlineParser.getResource(className).toString()
