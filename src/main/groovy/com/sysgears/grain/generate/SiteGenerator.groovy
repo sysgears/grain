@@ -90,7 +90,11 @@ class SiteGenerator {
                 throw new RuntimeException("Failed to create dirs for file: ${file}")
             }
             file.withOutputStream { os ->
-                os.write(compressor.compress(resource.location, resource.render().bytes))
+                try {
+                    os.write(compressor.compress(resource.location, resource.render().bytes))
+                } catch (Throwable t) {
+                    throw new RuntimeException("While generating ${resource.location}", t)
+                }
             }
         }
         log.info "Perf data: ${perf}"
