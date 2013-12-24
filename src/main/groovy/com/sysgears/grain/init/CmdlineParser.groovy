@@ -57,8 +57,6 @@ Options:
 ''')
         cli.with {
             e longOpt: 'env', args: 1, argName: 'environment', 'Override environment used for site config'
-            v longOpt: 'verbose', args: 0, argName: 'verbose', 'Verbose output of file processing'
-            h longOpt: 'help', 'Show usage information'
         }
 
         def opts = new GrainSettings(cliBuilder: cli, showUsageAndExit: false)
