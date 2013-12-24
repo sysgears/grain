@@ -135,6 +135,9 @@ class Application {
                     sleep(100, { exit = true })
                 }
             }
+        } else {
+            // Terminate all active service threads
+            System.exit(0)
         }
     }
 }
