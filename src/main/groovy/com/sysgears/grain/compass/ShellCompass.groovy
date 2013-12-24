@@ -59,7 +59,7 @@ class ShellCompass extends AbstractCompass {
         latch = new CountDownLatch(1)
         thread = Thread.start {
             try {
-                log.info 'Launching shell compass process...'
+                log.info 'Launching Shell Compass process...'
                 def process = ['compass', mode].execute([],
                         new File(site.cache_dir.toString()))
                 streamLogger = streamLoggerFactory.create(process.in, process.err)
@@ -72,7 +72,7 @@ class ShellCompass extends AbstractCompass {
                 streamLogger.join()
                 process.destroy()
                 watcher.join()
-                log.info 'Shell compass process finished.'
+                log.info 'Shell Compass finished'
             } catch (t) {
                 log.error("Error launching Compass", t)
                 latch.countDown()

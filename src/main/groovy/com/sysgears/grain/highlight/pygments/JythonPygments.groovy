@@ -57,7 +57,7 @@ class JythonPygments extends Pygments {
         latch = new CountDownLatch(1)
         Thread.start {
             try {
-                log.info 'Intitializing highlighter'
+                log.info 'Launching bundled Jython pygments...'
                 python = new PythonInterpreter()
                 python.exec('import sys')
                 // There are some problems with \ on Windows here, use backslashes instead
@@ -66,7 +66,7 @@ class JythonPygments extends Pygments {
                 python.exec('from pygments.lexers import get_lexer_by_name')
                 python.exec('from pygments.formatters import HtmlFormatter')
                 formatter = python.eval('HtmlFormatter(encoding=\'utf-8\')')
-                log.info 'Highlighter initialized.'
+                log.info 'Jython pygments initialized'
                 latch.countDown()
             } catch (t) {
                 log.error("Error launching Pygments", t)
@@ -83,6 +83,7 @@ class JythonPygments extends Pygments {
         if (latch) {
             latch.await()
             python?.cleanup()
+            log.info 'Bundled Jython Pygments finished'
             python = null
             latch = null
         }

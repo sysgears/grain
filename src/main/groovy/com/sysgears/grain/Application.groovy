@@ -119,16 +119,18 @@ class Application {
                 }
                 break
         }
+        addShutdownHook {
+            log.info "Terminating Grain..."
+        }
         log.info "Total time: ${System.currentTimeMillis() - startTime}"
         if (settings.command == 'preview') {
             Thread.startDaemon {
-                log.info "Press 'q' and ENTER to terminate Grain"
+                log.info "Press CTRL-C or 'q' and ENTER to Stop Grain"
                 boolean exit = false
                 while (!exit) {
                     while (System.in.available()) {
                         int ch = System.in.read()
                         if (ch == 'q' || ch == 'Q') {
-                            log.info "Terminating Grain"
                             System.exit(0)
                         }
                     }

@@ -46,6 +46,9 @@ class JRubyCompass extends AbstractCompass {
     
     /** JRuby Compass thread */ 
     private Thread thread
+    
+    /** Whether stop is in process */ 
+    private volatile stopInProcess = false 
 
     /**
      * Launches compass in a separate thread 
@@ -70,18 +73,23 @@ class JRubyCompass extends AbstractCompass {
                 config.processArguments(config.parseShebangOptions(inp));
                 def filename = config.displayedFileName();
     
-                log.info 'Launching bundled compass via JRuby...'
+                log.info 'Launching bundled JRuby Compass...'
                 try {
                     latch.countDown()
                     ruby.runFromMain(inp, filename)
                 } catch (RaiseException re) {
                     if (re.exception.toString() != "exit") {
                         log.error("Error while running compass", re)
+                    } else if (re.exception.toString() == "exit" && !stopInProcess) {
+                        // Use pressed CTRL-C which was intercepted by JRuby, terminating Grain
+                        Thread.startDaemon {
+                            System.exit(0)
+                        }
                     }
                 } catch (t) {
                     log.error("Error while running compass", t)
                 }
-                log.info 'Bundled compass is finished...'
+                log.info 'Bundled JRuby Compass finished'
             } catch (t) {
                 log.error("Error launching Compass", t)
                 latch.countDown()
@@ -109,8 +117,10 @@ class JRubyCompass extends AbstractCompass {
     public void stop() {
         if (latch) {
             latch.await()
+            stopInProcess = true
             ruby?.threadService?.mainThread?.internalRaise(ruby?.interrupt)
             thread.join()
+            stopInProcess = false
             latch = null
         }
     }

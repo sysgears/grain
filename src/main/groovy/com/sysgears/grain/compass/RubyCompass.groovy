@@ -64,7 +64,7 @@ class RubyCompass extends AbstractCompass {
         latch = new CountDownLatch(1)
         thread = Thread.start {
             try {
-                log.info "Launching Ruby compass process in ${mode} mode..."
+                log.info "Launching bundled Ruby Compass process in ${mode} mode..."
                 File gemDir = new File(settings.toolsHome, 'compass/gems')
                 File compassDir
                 def gemIncludes = [] as List<String>
@@ -93,7 +93,7 @@ class RubyCompass extends AbstractCompass {
                 streamLogger.join()
                 process.destroy()
                 watcher.join()
-                log.info 'Ruby compass process finished.'
+                log.info 'Bundled Ruby Compass finished'
             } catch (t) {
                 log.error("Error launching Compass", t)
                 latch.countDown()
