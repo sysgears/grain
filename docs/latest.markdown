@@ -35,7 +35,7 @@ to launch your website in preview mode.
 **Note:** here and further command-line snippets work for Unix-like systems only. In case you are running Grain from
 Windows simply use `grainw` command instead of `./grainw`.
 
-After that you can view your website by pointing a web browser to http://localhost:4000, then you can add/change/delete
+After that you can view your website by pointing a web browser to `http://localhost:4000`, then you can add/change/delete
 files of your website and see all changes in the web browser immediately after refreshing the page.
 
 ###Generate and deploy
@@ -75,7 +75,7 @@ Check the deployment section for more information.
 
 ####Prerequisites:
 
-  1. Install Groovy And Grails plugin, in the menu `Tools -> Plugins -> Available Plugins -> Groovy And Grails -> Install`
+  1. Install Groovy And Grails plugin by selecting from the menu: `Tools -> Plugins -> Available Plugins -> Groovy And Grails -> Install`
 
 ####Importing project:
 
@@ -225,7 +225,7 @@ deploy = "s3cmd sync --acl-public --reduced-redundancy ${destination_dir}/ s3://
 ```
 
 ###Environments
-Different modes of Grain operation are associated with different configuration environments. These configuration
+Different modes of Grain operation are associated with different configuration environments. These
 environments can be used to provide environment specific configuration. 
 
 ***Example***
@@ -305,7 +305,7 @@ on page file extension.
 
 ###Embedded Groovy code
 
-Embedded Groovy code can be anywhere in page content, but not in the page header.
+Embedded Groovy code can be included anywhere in a page content, but not in the page header.
 To include a simple Groovy expression one can use this notation:
 ``` groovy:nl
 ${2 + 2}
