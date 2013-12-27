@@ -16,6 +16,10 @@
 
 package com.sysgears.grain.render
 
+import com.google.inject.assistedinject.Assisted
+
+import javax.annotation.Nullable
+
 /**
  * GroovyTemplate factory.
  */
@@ -27,8 +31,10 @@ interface GroovyTemplateFactory {
      * @param file source file
      * @param source source code of the groovy script
      * @param script compiled groovy script
+     * @param layout resource layout
      */
     public GroovyTemplate create(final File file,
-                                 final String source,
-                                 final Script script) 
+                                 @Assisted("source") final String source,
+                                 final Script script,
+                                 @Nullable @Assisted("layout") final String layout) 
 }

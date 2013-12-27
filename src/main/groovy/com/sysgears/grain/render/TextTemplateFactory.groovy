@@ -28,11 +28,11 @@ public interface TextTemplateFactory {
     /**
      * Creates an instance of TextTemplate
      *
-     * @param file source file
      * @param contents resource file text contents
      * @param fragments highlighted fragments
+     * @param layout resource layout
      */
-    public TextTemplate create(@Assisted final File file,
-                               @Assisted final String contents,
-                               @Nullable final List<String> fragments)
+    public TextTemplate create(@Assisted("contents") final String contents,
+                               @Nullable final List<String> fragments,
+                               @Assisted("layout") @Nullable final String layout)
 }

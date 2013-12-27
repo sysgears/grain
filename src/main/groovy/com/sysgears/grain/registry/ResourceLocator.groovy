@@ -36,20 +36,6 @@ class ResourceLocator {
     @Inject private GrainSettings settings
 
     /**
-     * Checks whether specified file is non-excluded resource file 
-     *
-     * @param file a file
-     *
-     * @return whether specified file is non-excluded resource file
-     */
-    public boolean isResource(File file) {
-        (!file.exists() || file.isFile()) &&
-                ([] + config.include_dir).find { file.path.startsWith(new File(it.toString()).absolutePath) } == null &&
-                ([] + config.layout_dir).find { file.path.startsWith(new File(it.toString()).absolutePath) } == null &&
-                !isExcluded(file)
-    }
-
-    /**
      * Returns canonical location of the resource given it's file
      * 
      * @param resourceFile resource file
@@ -120,24 +106,4 @@ class ResourceLocator {
             new File(dirStr.toString(), location)
         }
     }
-
-    /**
-     * Checks whether resource was excluded by config rules
-     *
-     * @param file resource file
-     *
-     * @return whether the file was excluded by config rules
-     */
-    private boolean isExcluded(File file) {
-        def excludes = (config.excludes ?: []) + ['/SiteConfig.groovy', '']
-        if (excludes) {
-            def location = getLocation(file)
-            excludes.find { String pattern ->
-                location.matches(pattern)
-            } != null
-        } else {
-            return false
-        }
-    }
-
 }

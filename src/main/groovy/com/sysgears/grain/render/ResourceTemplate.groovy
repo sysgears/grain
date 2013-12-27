@@ -30,4 +30,10 @@ interface ResourceTemplate {
      */
     ResourceView render(final Map bindings)
 
+    /**
+     * Returns resource layout
+     *
+     * @return resource layout
+     */
+    String getLayout()
 }
