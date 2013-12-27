@@ -69,7 +69,7 @@ class Registry implements FileChangeListener, Service {
         log.info "Starting filling up template cache"
         def sourceDirs = (config.source_dir as List<String>).collect { new File(it) }.reverse()
         sourceDirs*.eachFileRecurse(FileType.FILES) {
-            if (isResource(it)) {
+            if (locator.isResource(it)) {
                 templateEngine.createTemplate(it)
             }
         }
@@ -84,7 +84,7 @@ class Registry implements FileChangeListener, Service {
         log.info "Starting resource scan"
         def sourceDirs = (config.source_dir as List<String>).collect { new File(it) }.reverse()
         sourceDirs*.eachFileRecurse(FileType.FILES) {
-            if (isResource(it)) {
+            if (locator.isResource(it)) {
                 add(it)
             }
         }
@@ -142,7 +142,7 @@ class Registry implements FileChangeListener, Service {
             layoutDeps[file].each {
                 add(it)
             }
-            if (isResource(file)) {
+            if (locator.isResource(file)) {
                 add(file)
             }
         }
@@ -192,39 +192,6 @@ class Registry implements FileChangeListener, Service {
             pages[resourceFile] = Collections.unmodifiableMap(resourceConfig)
         } else {
             assets[resourceFile] = Collections.unmodifiableMap(resourceConfig)
-        }
-    }
-
-    /**
-     * Checks whether specified file is non-excluded resource file 
-     *
-     * @param file a file
-     *
-     * @return whether specified file is non-excluded resource file
-     */
-    private boolean isResource(File file) {
-        (!file.exists() || file.isFile()) &&
-                ([] + config.include_dir).find { file.path.startsWith(new File(it.toString()).absolutePath) } == null &&
-                ([] + config.layout_dir).find { file.path.startsWith(new File(it.toString()).absolutePath) } == null &&
-                !isExcluded(file)
-    }
-
-    /**
-     * Checks whether resource was excluded by config rules
-     *
-     * @param file resource file
-     *
-     * @return whether the file was excluded by config rules
-     */
-    private boolean isExcluded(File file) {
-        def excludes = (config.excludes ?: []) + ['/SiteConfig.groovy', '']
-        if (excludes) {
-            def location = locator.getLocation(file)
-            excludes.find { String pattern ->
-                location.matches(pattern)
-            } != null
-        } else {
-            return false
         }
     }
 }

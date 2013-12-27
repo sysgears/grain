@@ -18,10 +18,10 @@ package com.sysgears.grain.render
 
 import com.google.inject.assistedinject.Assisted
 import com.sysgears.grain.PerfMetrics
+import com.sysgears.grain.registry.HeaderParser
 import com.sysgears.grain.registry.ResourceLocator
 import org.codehaus.groovy.runtime.InvokerHelper
 
-import javax.annotation.Nullable
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -40,6 +40,9 @@ class GroovyTemplate implements ResourceTemplate {
 
     /** Template engine */
     @Inject private TemplateEngine engine
+    
+    /** Header parser */
+    @Inject private HeaderParser headerParser 
 
     /** Source file */
     private final File file
@@ -49,27 +52,21 @@ class GroovyTemplate implements ResourceTemplate {
     
     /** Compiled groovy script */
     private final Script script
-
-    /** Layout to be used for this resource if any */
-    private final String layout
-
+    
     /**
      * Creates an instance of GroovyTemplate.
      *  
      * @param file source file
      * @param source source code of the groovy script
      * @param script compiled groovy script
-     * @param layout layout to be used for this resource if any 
      */
     @Inject
     public GroovyTemplate(@Assisted final File file,
-                          @Assisted("source") final String source,
-                          @Assisted final Script script,
-                          @Nullable @Assisted("layout") final String layout) {
+                          @Assisted final String source,
+                          @Assisted final Script script) {
         this.file = file
         this.source = source
         this.script = script
-        this.layout = layout
     }
 
     /**
@@ -105,6 +102,10 @@ class GroovyTemplate implements ResourceTemplate {
             def renderTime = System.currentTimeMillis() - startRenderTime
             perf.renderTime += renderTime
             
+            final String layout = locator.isResource(file) ? bindings?.page?.layout : headerParser.parse(file).layout
+
+            println "${file} - ${layout}"
+
             if (layout) {
                 def newView = engine.createTemplate(locator.findLayout(layout)).
                         render(bindings + [content: view.content])
@@ -122,14 +123,5 @@ class GroovyTemplate implements ResourceTemplate {
             source.readLines().eachWithIndex { String line, int i -> src.append("${i+1}: ${line}\n")}
             throw new RenderException("Failed to parse ${file} script: " + sw.toString() + "\nScript source:\n${src}")
         }
-    }
-
-    /**
-     * Returns layout of the resource
-     *
-     * @return layout
-     */
-    public String getLayout() {
-        layout
     }
 }
