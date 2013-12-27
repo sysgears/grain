@@ -79,8 +79,6 @@ class TextTemplate implements ResourceTemplate {
         view.full = view.content
         view.bytes = view.full.bytes
 
-        println "${file} - ${layout} ${layout ? true : false}"
-
         if (layout) {
             def newView = engine.createTemplate(locator.findLayout(layout)).
                     render(bindings + [content: view.content])
