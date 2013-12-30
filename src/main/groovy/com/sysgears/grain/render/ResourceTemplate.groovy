@@ -25,15 +25,10 @@ interface ResourceTemplate {
      * Renders resource template
      * 
      * @param bindings bindings to be used by template
+     * @param isResourcePart whether rendered template is include or layout
      * 
      * @return rendered resource representation
      */
-    ResourceView render(final Map bindings)
+    ResourceView render(final Map bindings, final boolean isResourcePart)
 
-    /**
-     * Returns resource layout
-     *
-     * @return resource layout
-     */
-    String getLayout()
 }

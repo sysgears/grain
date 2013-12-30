@@ -18,6 +18,7 @@ package com.sysgears.grain.render
 
 import com.google.inject.assistedinject.Assisted
 import com.sysgears.grain.PerfMetrics
+import com.sysgears.grain.registry.HeaderParser
 import com.sysgears.grain.registry.ResourceLocator
 import org.codehaus.groovy.runtime.InvokerHelper
 
@@ -40,6 +41,9 @@ class GroovyTemplate implements ResourceTemplate {
 
     /** Template engine */
     @Inject private TemplateEngine engine
+    
+    /** Layout header parser */
+    @Inject HeaderParser parser
 
     /** Source file */
     private final File file
@@ -50,36 +54,31 @@ class GroovyTemplate implements ResourceTemplate {
     /** Compiled groovy script */
     private final Script script
 
-    /** Layout to be used for this resource if any */
-    private final String layout
-
     /**
      * Creates an instance of GroovyTemplate.
      *  
      * @param file source file
      * @param source source code of the groovy script
      * @param script compiled groovy script
-     * @param layout layout to be used for this resource if any 
      */
     @Inject
     public GroovyTemplate(@Assisted final File file,
-                          @Assisted("source") final String source,
-                          @Assisted final Script script,
-                          @Nullable @Assisted("layout") final String layout) {
+                          @Assisted final String source,
+                          @Assisted final Script script) {
         this.file = file
         this.source = source
         this.script = script
-        this.layout = layout
     }
 
     /**
      * Renders template by executing generated Groovy script with specified bindings.
-     * 
+     *
      * @param bindings bindings
-     * 
+     * @param isResourcePart whether rendered template is layout or include
+     *
      * @return rendered view of this template
      */
-    public ResourceView render(final Map bindings) {
+    public ResourceView render(final Map bindings, boolean isResourcePart) {
         Binding binding
         if (bindings == null)
             binding = new Binding()
@@ -105,9 +104,11 @@ class GroovyTemplate implements ResourceTemplate {
             def renderTime = System.currentTimeMillis() - startRenderTime
             perf.renderTime += renderTime
             
+            final String layout = isResourcePart ? parser.parse(file).layout : bindings?.page?.layout  
+
             if (layout) {
                 def newView = engine.createTemplate(locator.findLayout(layout)).
-                        render(bindings + [content: view.content])
+                        render(bindings + [content: view.content], true)
                 view.full = newView.full
                 view.bytes = view.full.bytes
             }
@@ -124,12 +125,4 @@ class GroovyTemplate implements ResourceTemplate {
         }
     }
 
-    /**
-     * Returns layout of the resource
-     *
-     * @return layout
-     */
-    public String getLayout() {
-        layout
-    }
 }

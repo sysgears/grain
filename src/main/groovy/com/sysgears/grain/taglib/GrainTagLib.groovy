@@ -93,9 +93,7 @@ class GrainTagLib {
      */
     def include = { String location, Map model = null ->
         try {
-            def page = this.page.clone() as Map
-            page.location = location
-            page.render(model).full
+            page.include(location, model).full
         } catch (AbsentResourceException e) {
             log.warn "WARNING: ${page.location} tried to include absent resource: ${location}"
             def msg = "Resource not found: ${location}"

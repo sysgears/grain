@@ -47,10 +47,11 @@ class RawTemplate implements ResourceTemplate {
      * as rendered representation of resource. 
      *
      * @param bindings ignored
+     * @param isResourcePart whether rendered template is layout or include
      *
      * @return rendered view of resource
      */
-    public ResourceView render(final Map bindings) {
+    public ResourceView render(final Map bindings, boolean isResourcePart) {
         def view = new ResourceView()
         if (!isBinary(resource)) {
             String content = reader.readText(resource)

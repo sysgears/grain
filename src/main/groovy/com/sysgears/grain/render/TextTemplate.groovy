@@ -17,6 +17,7 @@
 package com.sysgears.grain.render
 
 import com.google.inject.assistedinject.Assisted
+import com.sysgears.grain.registry.HeaderParser
 import com.sysgears.grain.registry.ResourceLocator
 
 import javax.annotation.Nullable
@@ -37,26 +38,29 @@ class TextTemplate implements ResourceTemplate {
     /** Template engine */
     @Inject private TemplateEngine engine
 
-    /** Layout used for this template if any */
-    private final String layout
+    /** Source file */
+    private final File file
 
     /** Resource locator */
     @Inject private ResourceLocator locator
 
+    /** Layout header parser */
+    @Inject HeaderParser parser
+
     /**
      * Creates instance of the renderer
      *
+     * @param file source file
      * @param contents resource file contents
      * @param fragments highlighted fragments
-     * @param layout template layout
      */
     @Inject
-    public TextTemplate(@Assisted("contents") final String contents,
-                       @Nullable @Assisted final List<String> fragments,
-                       @Nullable @Assisted("layout") final String layout) {
+    public TextTemplate(@Assisted final File file,
+                        @Assisted final String contents,
+                        @Nullable @Assisted final List<String> fragments) {
+        this.file = file
         this.contents = contents
         this.fragments = fragments
-        this.layout = layout
     }
 
     /**
@@ -64,10 +68,11 @@ class TextTemplate implements ResourceTemplate {
      * as rendered representation of resource. 
      *
      * @param bindings ignored
+     * @param isResourcePart whether rendered template is layout or include
      *
      * @return rendered view of resource
      */
-    public ResourceView render(final Map bindings) {
+    public ResourceView render(final Map bindings, final boolean isResourcePart) {
         def view = new ResourceView()
         int codeIdx = 0
 
@@ -79,23 +84,17 @@ class TextTemplate implements ResourceTemplate {
         view.full = view.content
         view.bytes = view.full.bytes
 
+        final String layout = isResourcePart ? parser.parse(file).layout : bindings?.page?.layout
+
         if (layout) {
             def newView = engine.createTemplate(locator.findLayout(layout)).
-                    render(bindings + [content: view.content])
+                    render(bindings + [content: view.content], true)
             view.full = newView.full
             view.bytes = view.full.bytes
         }
-        
+
         view
     }
 
-    /**
-     * Returns layout of this template
-     *
-     * @return layout
-     */
-    public String getLayout() {
-        layout
-    }
 }
 

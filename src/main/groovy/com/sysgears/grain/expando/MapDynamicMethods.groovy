@@ -39,12 +39,23 @@ class MapDynamicMethods {
     void register() {
 
         /**
-         * Renders resource with meta information provided in map.
+         * Renders resource with meta information provided in map and model
+         * passed as optional argument.
          * 
          * @throws InvalidObjectException in case if meta information doesn't contains location key
          */
         Map.metaClass.render = { Map model = null ->
-            renderer.render(delegate as Map, model)
+            renderer.render(delegate as Map, model, false)
+        }
+
+        /**
+         * Renders included resource with caller resource meta information provided in map,
+         * resource to be included location and optional model map.
+         *
+         * @throws InvalidObjectException in case if meta information doesn't contains location key
+         */
+        Map.metaClass.include = { String location, Map model = null ->
+            renderer.render((delegate as Map) + [location: location], model, true)
         }
     }
 }

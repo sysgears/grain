@@ -31,10 +31,8 @@ interface GroovyTemplateFactory {
      * @param file source file
      * @param source source code of the groovy script
      * @param script compiled groovy script
-     * @param layout resource layout
      */
     public GroovyTemplate create(final File file,
-                                 @Assisted("source") final String source,
-                                 final Script script,
-                                 @Nullable @Assisted("layout") final String layout) 
+                                 @Assisted final String source,
+                                 final Script script)
 }

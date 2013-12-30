@@ -17,6 +17,7 @@
 package com.sysgears.grain.taglib
 
 import com.sysgears.grain.config.Config
+import com.sysgears.grain.registry.HeaderParser
 import com.sysgears.grain.registry.ResourceLocator
 import com.sysgears.grain.render.ResourceView
 import com.sysgears.grain.render.TemplateEngine
@@ -43,27 +44,31 @@ class ResourceRenderer {
 
     /** Template engine */
     @Inject private TemplateEngine templateEngine
+    
+    /** Header parser */
+    @Inject HeaderParser parser
 
     /**
      * Renders resource with a given model.
      * 
      * @param resource resource metadata
      * @param model resource dynamic model
+     * @param isResourcePart whether rendered resource is include 
      *
      * @return result of resource rendering
      */
-    public ResourceView render(Map resource, Map model) {
+    public ResourceView render(Map resource, Map model, boolean isResourcePart) {
         if (!resource.location)
             throw new InvalidObjectException('Not a resource map, the map is missing \'location\' key.')
-
-        def taglib = taglibProvider.get()
 
         def file = locator.findInclude(resource.location)
 
         if (!file)
             throw new AbsentResourceException("Resource was not found: ${resource.location}", resource.lcation)
 
-        def page = resource
+        def taglib = taglibProvider.get()
+
+        def page = isResourcePart ? resource + parser.parse(file) : resource
         if (model) {
             page = (resource as ConfigObject).merge(model as ConfigObject)
         }
@@ -78,6 +83,6 @@ class ResourceRenderer {
             }
         }
 
-        templateEngine.createTemplate(file).render(bindings)        
+        templateEngine.createTemplate(file).render(bindings, isResourcePart)        
     }
 }
