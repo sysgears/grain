@@ -77,6 +77,8 @@ dependencies {
     
     compile 'org.pegdown:pegdown:1.4.2'
     
+    compile 'org.nuiton.jrst:jrst:2.0.1'
+    
     testCompile('org.spockframework:spock-core:0.7-groovy-2.0') {
         exclude module: 'groovy-all'
     }

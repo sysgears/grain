@@ -73,7 +73,7 @@ class RawTemplate implements ResourceTemplate {
      * @return whether file is binary
      */
     private static final isBinary(File resource) {
-        !(resource.getExtension() in ['html', 'rb', 'markdown', 'md', 'css', 'txt', 'xml', 'js']) 
+        !(resource.getExtension() in ['html', 'rb', 'markdown', 'md', 'rst', 'css', 'txt', 'xml', 'js']) 
     }
 
     /**

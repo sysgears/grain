@@ -157,7 +157,7 @@ class Registry implements FileChangeListener, Service {
         log.debug "Adding file ${resourceFile} to registry"
         def location = locator.getLocation(resourceFile)
         def defaultUrl = location.replaceAll(/\/index\.(md|markdown|html)$/, '/')
-        def page = resourceFile.getExtension() in ['html', 'markdown', 'md', 'xml']
+        def page = resourceFile.getExtension() in ['html', 'markdown', 'md', 'xml', 'rst']
         def resourceConfig = [:]
 
         if (page) {

@@ -30,6 +30,7 @@ import com.sysgears.grain.preview.DisabledPreviewModule
 import com.sysgears.grain.registry.RegistryModule
 import com.sysgears.grain.preview.PreviewModule
 import com.sysgears.grain.render.RenderModule
+import com.sysgears.grain.rst.RstModule
 
 /**
  * Main class of Grain application.
@@ -65,6 +66,7 @@ public class Main {
         def injector = Guice.createInjector(
                 new AppModule(settings),
                 new MarkdownModule(),
+                new RstModule(),
                 new HighlightModule(),
                 new CompassModule(),
                 new RegistryModule(),

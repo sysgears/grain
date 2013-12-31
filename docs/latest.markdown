@@ -141,6 +141,19 @@ listed later takes precedence
 Grain has many features provided by different implementations. Concrete implementations are specified in the `features`
 section of the configuration file.
 
+####Markdown markup feature
+
+`markdown` - markdown markup implementation (default is `txtmark`)
+  
+  - `txtmark` - TxtMark Markdown 
+  - `pegdown` - PegDown Markdown
+
+####reStructuredText markup feature
+
+`rst` - reStructuredText implementation (default is `jrst`)
+  
+  - `jrst` - JRst
+
 ####Syntax highlighting feature
 
 `highlight` - code highlighting method (default is `none`):

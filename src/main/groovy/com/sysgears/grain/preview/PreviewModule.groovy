@@ -32,6 +32,7 @@ import com.sysgears.grain.registry.Registry
 import com.sysgears.grain.render.CachedTemplateEngine
 import com.sysgears.grain.render.GrainTemplateEngine
 import com.sysgears.grain.registry.URLRegistry
+import com.sysgears.grain.rst.RstProcessor
 
 /**
  * Package-specific IoC config
@@ -47,9 +48,9 @@ class PreviewModule extends AbstractModule {
     @Provides @javax.inject.Singleton
     public ConfigChangeBroadcaster provideConfigChangeBroadcaster(
             ConfigUpdater configUpdater, Highlighter highlighter,  @Uncached Highlighter uncachedHighlighter,
-            Pygments pygments, Compass compass, MarkdownProcessor markdownProcessor) {
+            Pygments pygments, Compass compass, MarkdownProcessor markdownProcessor, RstProcessor rstProcessor) {
         return new ConfigChangeBroadcaster(configUpdater, highlighter, uncachedHighlighter, pygments, compass,
-                markdownProcessor)
+                markdownProcessor, rstProcessor)
     }
 
     @Provides @javax.inject.Singleton

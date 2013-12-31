@@ -24,6 +24,7 @@ import com.sysgears.grain.registry.HeaderParser
 import com.sysgears.grain.registry.ResourceLocator
 import com.sysgears.grain.registry.ResourceParser
 import com.sysgears.grain.preview.SiteChangeListener
+import com.sysgears.grain.rst.RstProcessor
 import com.sysgears.grain.translator.ScriptTranslator
 
 import javax.inject.Inject
@@ -71,6 +72,9 @@ class GrainTemplateEngine implements TemplateEngine, SiteChangeListener {
     
     /** Markdown processor */
     @Inject private MarkdownProcessor markdownProcessor
+    
+    /** Rst processor */
+    @Inject private RstProcessor rstProcessor
 
     /**
      * Clears Groovy Shell cache on site change event to prevent out of memory. 
@@ -93,7 +97,7 @@ class GrainTemplateEngine implements TemplateEngine, SiteChangeListener {
     public ResourceTemplate createTemplate(File file) throws RenderException {
         long startDocParse = System.currentTimeMillis()
         def extension = file.getExtension()
-        if (!(extension in ['html', 'md', 'markdown', 'xml', 'css'])) {
+        if (!(extension in ['html', 'md', 'markdown', 'xml', 'css', 'rst'])) {
             if (!(extension in ['txt', 'js', 'rb'])) {
                 return rawTemplateFactory.create(file)
             }
@@ -105,7 +109,7 @@ class GrainTemplateEngine implements TemplateEngine, SiteChangeListener {
         def sourceModifier = config.source_modifier
         def text = sourceModifier ? sourceModifier(file) : file.text as String
         def fragments = []
-        if (extension in ['html', 'md', 'markdown']) {
+        if (extension in ['html', 'md', 'markdown', 'rst']) {
             fragments = pageHighlighter.highlight(text)
         }
         text = text.replaceAll(/(?s)```(.*?)```/, '```')
@@ -116,15 +120,19 @@ class GrainTemplateEngine implements TemplateEngine, SiteChangeListener {
             pageConfig = headerParser.parse(file, resourceParser.header)
             text = resourceParser.content
         }
-        boolean isMarkdown = extension in ['markdown', 'md']
+        boolean isMarkup = extension in ['markdown', 'md', 'rst']
 
-        def isScript = pageConfig.script ?: !isMarkdown
+        def isScript = pageConfig.script ?: !isMarkup
 
-        if (isMarkdown) {
+        if (isMarkup) {
             if (text.contains('${') || text.contains('<%')) {
                 isScript = true
             }
-            text = markdownProcessor.process(text)
+            if (extension in ['markdown', 'md']) {
+                text = markdownProcessor.process(text)
+            } else if (extension in ['rst']) {
+                text = rstProcessor.process(text) 
+            }
         }
         
         long startScriptParse = System.currentTimeMillis()
@@ -150,6 +158,7 @@ class GrainTemplateEngine implements TemplateEngine, SiteChangeListener {
                 throw new RenderException("Failed to parse ${file} script: " + sw.toString() + "\nScript source:\n${src}")
             }
         } else {
+            println "file: ${file}, text: ${text}"
             template = textTemplateFactory.create(file, text, fragments)
         }
         
