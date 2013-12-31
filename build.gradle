@@ -75,6 +75,8 @@ dependencies {
 
     compile 'javax.inject:javax.inject:1'
     
+    compile 'org.pegdown:pegdown:1.4.2'
+    
     testCompile('org.spockframework:spock-core:0.7-groovy-2.0') {
         exclude module: 'groovy-all'
     }

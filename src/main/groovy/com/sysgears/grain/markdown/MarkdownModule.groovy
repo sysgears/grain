@@ -12,9 +12,10 @@ class MarkdownModule extends AbstractModule {
     
     @Provides @javax.inject.Singleton
     public MarkdownProcessor provideProcessor(Config config,
-                                  TxtMarkProcessor txtmark) {
+                                  TxtMarkProcessor txtmark,
+                                  PegdownProcessor pegdown) {
         new ImplBinder<MarkdownProcessor>(MarkdownProcessor.class, config, 'features.markdown',
-                [default: txtmark, txtmark: txtmark]).proxy
+                [default: txtmark, txtmark: txtmark, pegdown: pegdown]).proxy
     }
 
     @Override
