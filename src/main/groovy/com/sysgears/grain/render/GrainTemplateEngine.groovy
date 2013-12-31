@@ -158,7 +158,6 @@ class GrainTemplateEngine implements TemplateEngine, SiteChangeListener {
                 throw new RenderException("Failed to parse ${file} script: " + sw.toString() + "\nScript source:\n${src}")
             }
         } else {
-            println "file: ${file}, text: ${text}"
             template = textTemplateFactory.create(file, text, fragments)
         }
         
