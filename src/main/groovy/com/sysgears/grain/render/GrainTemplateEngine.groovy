@@ -16,10 +16,10 @@
 
 package com.sysgears.grain.render
 
-import com.github.rjeschke.txtmark.Processor
 import com.sysgears.grain.PerfMetrics
 import com.sysgears.grain.config.Config
 import com.sysgears.grain.highlight.PageHighlighter
+import com.sysgears.grain.markdown.MarkdownProcessor
 import com.sysgears.grain.registry.HeaderParser
 import com.sysgears.grain.registry.ResourceLocator
 import com.sysgears.grain.registry.ResourceParser
@@ -68,6 +68,9 @@ class GrainTemplateEngine implements TemplateEngine, SiteChangeListener {
 
     /** Groovy script-based template factory */
     @Inject private GroovyTemplateFactory groovyTemplateFactory
+    
+    /** Markdown processor */
+    @Inject private MarkdownProcessor markdownProcessor
 
     /**
      * Clears Groovy Shell cache on site change event to prevent out of memory. 
@@ -121,7 +124,7 @@ class GrainTemplateEngine implements TemplateEngine, SiteChangeListener {
             if (text.contains('${') || text.contains('<%')) {
                 isScript = true
             }
-            text = Processor.process(text)
+            text = markdownProcessor.process(text)
         }
         
         long startScriptParse = System.currentTimeMillis()

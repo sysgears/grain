@@ -8,7 +8,7 @@ version = '0.6.0-SNAPSHOT'
 defaultTasks 'build'
 
 def mainClassName = 'com.sysgears.grain.Main'
-def compatibilityVersion = 1.5
+def compatibilityVersion = 1.6
 sourceCompatibility = compatibilityVersion
 targetCompatibility = compatibilityVersion
 
@@ -36,6 +36,9 @@ configurations {
 
 repositories {
     mavenCentral()
+    maven {
+        url 'http://repo.sysgears.com/releases/'
+    }
 }
 
 dependencies {
@@ -71,7 +74,7 @@ dependencies {
     compile 'com.google.inject.extensions:guice-assistedinject:4.0-beta'
 
     compile 'javax.inject:javax.inject:1'
-
+    
     testCompile('org.spockframework:spock-core:0.7-groovy-2.0') {
         exclude module: 'groovy-all'
     }

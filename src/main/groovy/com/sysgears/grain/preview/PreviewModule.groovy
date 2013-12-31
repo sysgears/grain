@@ -26,6 +26,7 @@ import com.sysgears.grain.compass.Compass
 import com.sysgears.grain.config.ConfigUpdater
 import com.sysgears.grain.highlight.Highlighter
 import com.sysgears.grain.highlight.pygments.Pygments
+import com.sysgears.grain.markdown.MarkdownProcessor
 import com.sysgears.grain.registry.CachedHeaderParser
 import com.sysgears.grain.registry.Registry
 import com.sysgears.grain.render.CachedTemplateEngine
@@ -46,8 +47,9 @@ class PreviewModule extends AbstractModule {
     @Provides @javax.inject.Singleton
     public ConfigChangeBroadcaster provideConfigChangeBroadcaster(
             ConfigUpdater configUpdater, Highlighter highlighter,  @Uncached Highlighter uncachedHighlighter,
-            Pygments pygments, Compass compass) {
-        return new ConfigChangeBroadcaster(configUpdater, highlighter, uncachedHighlighter, pygments, compass)
+            Pygments pygments, Compass compass, MarkdownProcessor markdownProcessor) {
+        return new ConfigChangeBroadcaster(configUpdater, highlighter, uncachedHighlighter, pygments, compass,
+                markdownProcessor)
     }
 
     @Provides @javax.inject.Singleton

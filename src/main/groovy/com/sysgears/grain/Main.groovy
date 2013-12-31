@@ -25,6 +25,7 @@ import com.sysgears.grain.init.GrainSettings
 import com.sysgears.grain.init.InitModule
 import com.sysgears.grain.init.Initializer
 import com.sysgears.grain.init.ToolsExtractor
+import com.sysgears.grain.markdown.MarkdownModule
 import com.sysgears.grain.preview.DisabledPreviewModule
 import com.sysgears.grain.registry.RegistryModule
 import com.sysgears.grain.preview.PreviewModule
@@ -63,6 +64,7 @@ public class Main {
         // Create main dependency injector
         def injector = Guice.createInjector(
                 new AppModule(settings),
+                new MarkdownModule(),
                 new HighlightModule(),
                 new CompassModule(),
                 new RegistryModule(),
