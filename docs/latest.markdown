@@ -174,6 +174,27 @@ section of the configuration file.
 
   - `true` - cache highlighting results
   - `false` - do not cache highlighting results
+
+#####Python command selection
+
+If you're getting errors like this:
+```
+  File "mentos.py", line 11, in <module>
+    import pygments
+  File "/.../.grain/tools/.../pygments-main/pygments/__init__.py", line 46
+    except TypeError, err:
+```
+then your system probably defaults to Python 3, which is incompatible with the bundled version of Pygments.
+
+By default, `python` and `python2.7` are tried, in that order. To try other python command names first, add a `python`
+section in the `features` section with a `cmd_candidates` list of python interpreters, like so:
+```
+features {
+    python {
+        cmd_candidates = ['python2', 'some-other-python', 'yet-another-python']
+    }
+}
+```
   
 ####SASS/Compass feature
 
