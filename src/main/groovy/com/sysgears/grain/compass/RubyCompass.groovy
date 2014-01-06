@@ -43,6 +43,8 @@ class RubyCompass extends AbstractCompass {
 
     /** Stream logger factory */
     @Inject private StreamLoggerFactory streamLoggerFactory
+
+    @Inject private RubyFinder rubyFinder
     
     /** Process streams logger */
     private StreamLogger streamLogger
@@ -77,7 +79,7 @@ class RubyCompass extends AbstractCompass {
                     gemIncludes += ['-I', new File(it, 'lib').canonicalPath]
                 }
 
-                def cmdline = [RubyFinder.rubyCmd] + gemIncludes +
+                def cmdline = [rubyFinder.cmd] + gemIncludes +
                         [new File(compassDir, 'bin/compass').canonicalPath, mode] as List<String>
                 
                 log.info cmdline.join(' ')

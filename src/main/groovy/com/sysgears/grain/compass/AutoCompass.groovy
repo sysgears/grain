@@ -32,6 +32,8 @@ class AutoCompass extends AbstractCompass {
     /** Compass as a JRuby process integration implementation */
     @Inject private JRubyCompass jrubyCompass
 
+    @Inject private RubyFinder rubyFinder
+
     /** Currently used compass integration implementation */
     private Compass compass
     
@@ -43,7 +45,7 @@ class AutoCompass extends AbstractCompass {
      * @param mode compass mode
      */
     public void launchCompass(String mode) {
-        compass = RubyFinder.rubyCmd != null ? rubyCompass : jrubyCompass
+        compass = rubyFinder.cmd != null ? rubyCompass : jrubyCompass
         compass.launchCompass(mode)
     }
 

@@ -50,7 +50,7 @@ class AutoPygments extends Pygments {
      */
     @Override
     public void start() {
-        pygments = pythonFinder.pythonCmd != null ? pythonPygments : jythonPygments
+        pygments = pythonFinder.cmd != null ? pythonPygments : jythonPygments
         pygments.start()
     }
  
