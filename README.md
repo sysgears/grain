@@ -86,17 +86,6 @@ certifies the following:
         and approved by the Open Source Initiative(OSI)
         at http://www.opensource.org.
 
-Sign off Tip
-------------
-
-If you would like to Sign-Off on all of your commits to this repostitory
-automatically, you can simply alias
-`git commit` to include the option:
-
-    $ git config alias.commit 'commit -s'
-
-Now all of your commits will have the Sign-Off line.
-
 License
 =======
 
