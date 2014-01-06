@@ -5,10 +5,13 @@ import com.sysgears.grain.preview.ConfigChangeListener
 
 import javax.annotation.Nullable
 import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * Finder of most appropriate Python version in the system
  */
+@Named
+@javax.inject.Singleton
 public class PythonFinder implements ConfigChangeListener {
 
     /** Python command candidates to check */
@@ -22,7 +25,7 @@ public class PythonFinder implements ConfigChangeListener {
     @Inject
     PythonFinder(Config config) {
         this.config = config
-        calculateCandidate()
+        findCandidate()
     }
 
     /**
@@ -33,14 +36,14 @@ public class PythonFinder implements ConfigChangeListener {
         currentCandidate
     }
 
-    private String calculateCandidate() {
+    private String findCandidate() {
         def candidates = []
 
         if (config.features?.python?.cmd_candidates) {
-            candidates.addAll((List)config.python.cmd_candidates)
+            candidates += config.python.cmd_candidates as List 
         }
 
-        candidates.addAll(DEFAULT_PYTHON_CANDIDATES)
+        candidates += DEFAULT_PYTHON_CANDIDATES
         candidates = isWindows() ? candidates.collect { it + ".exe" } : candidates
         currentCandidate = candidates.find {
             try {
@@ -57,6 +60,6 @@ public class PythonFinder implements ConfigChangeListener {
 
     @Override
     void configChanged() {
-        calculateCandidate()
+        findCandidate()
     }
 }

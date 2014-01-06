@@ -61,6 +61,5 @@ class HighlightModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(PythonFinder).in(Scopes.SINGLETON)
     }
 }
