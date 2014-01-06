@@ -1,9 +1,36 @@
 ##Overview
 
 ###Description
-Grain is a static website building framework for Groovy that makes demanding static website implementation
-an intuitive and enjoyable. The framework provides a complete development mode with reload of changed
-resources on the fly and website generation mode.
+
+Grain framework is an open source static website generator for Groovy that provides extensible mechanisms for
+implementing custom static sites or generating software documentation.
+
+####Grain features
+
+Grain comes with the following high-level features:
+
+ - preview mode that allows to make and see changes on the fly
+ - support of embedded Groovy code for any content files
+ - conventions that allow to process content sources using Groovy code
+ - support of Markdown and reStructuredText
+ - support of SASS/SCSS
+ - code highlighting via Pygments
+ - sources compression and minification
+
+####Grain themes
+
+Grain website project is called *theme*. Theme defines site structure, appearance and content arrangement.
+Typically, Grain theme ships with:
+
+ - website and Grain features configuration
+ - HTML page templates, called *layouts*
+ - stylesheets, javascripts and images
+ - code sources to process site pages (for instance, apply pagination)
+ - samples of raw content files
+
+Grain has ready-made themes that can be found [here](http://sysgears.com/grain/themes/).
+It is not required to know Groovy or any other programming language to use these themes, you still can easily
+manage content and set up your site.
 
 ###Requirements
 
@@ -12,9 +39,10 @@ Download and install the appropriate JDK for your operating system.
 
 ###Installation
 
-No installation required. Grain is loaded as a JAR dependency by a Grain theme.
+No installation required. Just download one of the [themes](http://sysgears.com/grain/themes/) and Grain will be
+loaded automatically as a JAR dependency.
 
-If you are new to Grain, we recommend to start with Grain [Octopress](http://sysgears.com/grain/themes/octopress/) theme,
+If you are new to Grain, we recommend to start with ready-made Grain [Octopress](http://sysgears.com/grain/themes/octopress/) theme,
 it would give you a good overview on how to efficiently use Grain features.
 To build website from scratch, download Grain theme [template](http://sysgears.com/grain/themes/template/).
 
@@ -22,7 +50,8 @@ To build website from scratch, download Grain theme [template](http://sysgears.c
 
 ###Create website
 
-In order to start creating your website, download the theme [template](http://sysgears.com/grain/themes/template/) and unpack it to the location of your choice.
+In order to start creating your website, download one of the [themes](http://sysgears.com/grain/themes/) and unpack it
+to the location of your choice.
 
 ###Preview website
 Navigate to the location of your newly created website `cd /path/to/your_site` and run the command
@@ -32,7 +61,7 @@ Navigate to the location of your newly created website `cd /path/to/your_site` a
 
 to launch your website in preview mode.
 
-**Note:** here and further command-line snippets work for Unix-like systems only. In case you are running Grain from
+> Here and further command-line snippets work for Unix-like systems only. In case you are running Grain from
 Windows simply use `grainw` command instead of `./grainw`.
 
 After that you can view your website by pointing a web browser to `http://localhost:4000`, then you can add/change/delete
