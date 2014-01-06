@@ -16,7 +16,7 @@ Contributing
 ============
 
 Any person or company wanting to contribute to Grain Framework should follow
-the following rules to increase the chance of the contribution being accepted.
+the following rules in order to their contribution being accepted.
 
 Sign your Work
 --------------
