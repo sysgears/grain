@@ -162,7 +162,7 @@ class PythonPygments extends Pygments {
                 if (bundledPygments) {
                     env += ["PYGMENTS_HOME=${new File(settings.toolsHome, 'pygments-main').canonicalPath}"]
                 }
-                def process = Runtime.runtime.exec([pythonFinder.pythonCmd, "mentos.py"] as String[],
+                def process = Runtime.runtime.exec([pythonFinder.cmd, "mentos.py"] as String[],
                         env as String[],
                         new File(settings.toolsHome, 'mentos'))
                 bos = new BufferedOutputStream(process.out)

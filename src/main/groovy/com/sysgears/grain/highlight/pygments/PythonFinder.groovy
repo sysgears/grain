@@ -1,9 +1,8 @@
 package com.sysgears.grain.highlight.pygments
 
 import com.sysgears.grain.config.Config
-import com.sysgears.grain.preview.ConfigChangeListener
+import com.sysgears.grain.util.ShellCommandFinder
 
-import javax.annotation.Nullable
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -12,54 +11,29 @@ import javax.inject.Named
  */
 @Named
 @javax.inject.Singleton
-public class PythonFinder implements ConfigChangeListener {
-
-    /** Python command candidates to check */
-    private static final def DEFAULT_PYTHON_CANDIDATES = ['python2', "python", "python2.7"]
-
-    @Nullable
-    private String currentCandidate
-
-    private final Config config
+public class PythonFinder extends ShellCommandFinder {
 
     @Inject
-    PythonFinder(Config config) {
-        this.config = config
-        findCandidate()
-    }
-
-    /**
-     * Finds most appropriate Python command in the system.
-     */
-    @Nullable
-    public String getPythonCmd() {
-        currentCandidate
-    }
-
-    private String findCandidate() {
-        def candidates = []
-
-        if (config.features?.python?.cmd_candidates) {
-            candidates += config.python.cmd_candidates as List 
-        }
-
-        candidates += DEFAULT_PYTHON_CANDIDATES
-        candidates = isWindows() ? candidates.collect { it + ".exe" } : candidates
-        currentCandidate = candidates.find {
-            try {
-                [it, '-v'].execute()
-            } catch (Throwable ignored) {
-                false
-            }
-        }
-    }
-
-    private static boolean isWindows() {
-        System.getProperty("os.name").toLowerCase().contains('win')
+    protected PythonFinder(Config config) {
+        super(config)
     }
 
     @Override
-    void configChanged() {
-        findCandidate()
+    List<String> getDefaultCandidates() {
+        ['python2', "python", "python2.7"]
+    }
+
+    @Override
+    List<String> getUserConfiguredCandidates() {
+        if (config.features?.python?.cmd_candidates) {
+            return config.features.python.cmd_candidates
+        }
+
+        []
+    }
+
+    @Override
+    String getArg() {
+        '-v'
     }
 }
