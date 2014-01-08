@@ -46,12 +46,12 @@ Developer's Certificate of Origin
 
 To help track the author of a patch as well as the submission chain,
 and be clear that the developer has authority to submit a patch for
-inclusion in Grain Framework please sign off your work.  The sign off
+inclusion into this project please sign off your work.  The sign off
 certifies the following:
 
     Developer's Certificate of Origin 1.1
 
-    By making a contribution to Grain framework project, I certify that:
+    By making a contribution to the project, I certify that:
 
     (a) The contribution was created in whole or in part by me and I
         have the right to submit it under the open source license
@@ -85,16 +85,6 @@ certifies the following:
         work or other appropriate open source license specified by the Project
         and approved by the Open Source Initiative(OSI)
         at http://www.opensource.org.
-
-Sign Off Alternative
---------------------
-For people who find signing off their code inconvenient for any reasons, there
-is an option to sign Developer Certificate of Origin one time in paper
-and send to us scanned copy.
-
-Please read carefully, complete and sign, then scan and email a pdf
-file of this [Developer Certificate of Origin][Developer Certificate of Origin]
-to info@sysgears.com.
 
 License
 =======
