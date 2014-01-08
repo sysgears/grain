@@ -46,12 +46,12 @@ Developer's Certificate of Origin
 
 To help track the author of a patch as well as the submission chain,
 and be clear that the developer has authority to submit a patch for
-inclusion in openvswitch please sign off your work.  The sign off
+inclusion in Grain Framework please sign off your work.  The sign off
 certifies the following:
 
     Developer's Certificate of Origin 1.1
 
-    By making a contribution to this project, I certify that:
+    By making a contribution to Grain framework project, I certify that:
 
     (a) The contribution was created in whole or in part by me and I
         have the right to submit it under the open source license
@@ -86,6 +86,16 @@ certifies the following:
         and approved by the Open Source Initiative(OSI)
         at http://www.opensource.org.
 
+Sign Off Alternative
+--------------------
+For people who find signing off their code inconvenient for any reasons, there
+is an option to sign Developer Certificate of Origin one time in paper
+and send to us scanned copy.
+
+Please read carefully, complete and sign, then scan and email a pdf
+file of this [Developer Certificate of Origin][Developer Certificate of Origin]
+to info@sysgears.com.
+
 License
 =======
 
@@ -94,4 +104,4 @@ Grain is licensed under the terms of the [Apache License, Version 2.0][Apache Li
 [Grain]: http://sysgears.com/grain/
 [Groovy]: http://groovy.codehaus.org/
 [Apache License, Version 2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
-
+[Developer Certificate of Origin]: http://sysgears.com/grain/DCO
