@@ -206,15 +206,6 @@ section of the configuration file.
 
 #####Python command selection
 
-If you're getting errors like this:
-```
-  File "mentos.py", line 11, in <module>
-    import pygments
-  File "/.../.grain/tools/.../pygments-main/pygments/__init__.py", line 46
-    except TypeError, err:
-```
-then your system probably defaults to Python 3, which is incompatible with the bundled version of Pygments.
-
 By default, `python` and `python2.7` are tried, in that order. To try other python command names first, add a `python`
 section in the `features` section with a `cmd_candidates` list of python interpreters, like so:
 ```
@@ -224,7 +215,20 @@ features {
     }
 }
 ```
+
+#####Ruby command selection
   
+By default, "ruby", "ruby1.8.7", "ruby1.9.3", "user.home/.rvm/bin/ruby"  are tried, in that order.
+To try other ruby command names first, add a `ruby` section in the `features` section with a `cmd_candidates`
+list of ruby interpreters, like so:
+```
+features {
+  ruby {
+      cmd_candidates = ['ruby1.8', 'some-other-ruby']
+  }
+}
+```
+
 ####SASS/Compass feature
 
 Grain supports defining stylesheets using SASS or SCSS files. This is done by launching external Compass process

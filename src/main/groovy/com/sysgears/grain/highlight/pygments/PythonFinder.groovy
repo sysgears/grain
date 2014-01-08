@@ -11,27 +11,37 @@ import javax.inject.Inject
 @javax.inject.Singleton
 public class PythonFinder extends ShellCommandFinder {
 
-    @Inject
-    protected PythonFinder(Config config) {
-        super(config)
-    }
+    /** Site config */
+    @Inject private Config config
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    List<String> getDefaultCandidates() {
+    public List<String> getDefaultCandidates() {
         ['python2', "python", "python2.7"]
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    List<String> getUserConfiguredCandidates() {
-        if (config.features?.python?.cmd_candidates) {
-            return config.features.python.cmd_candidates
-        }
-
-        []
+    public List<String> getUserConfiguredCandidates() {
+        config.features?.python?.cmd_candidates ?: []
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    String getArg() {
-        '-v'
+    public boolean checkCandidate(String name) { 
+        try {
+            def proc = [name, '--version'].execute()
+            def err = new StringWriter()
+            proc.consumeProcessErrorStream(err).join()
+            err.toString().startsWith('Python 2')
+        } catch (Throwable ignored) {
+            false
+        }
     }
 }

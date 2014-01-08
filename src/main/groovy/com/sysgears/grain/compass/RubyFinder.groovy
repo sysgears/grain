@@ -10,29 +10,36 @@ import javax.inject.Inject
  */
 @javax.inject.Singleton
 public class RubyFinder extends ShellCommandFinder {
+    
+    /** Site config */
+    @Inject private Config config
 
-    @Inject
-    protected RubyFinder(Config config) {
-        super(config)
-    }
-
+    /**
+     * @inheritDoc
+     */
     @Override
     List<String> getDefaultCandidates() {
-        return ["ruby", "ruby1.8.7", "ruby1.9.3", "${System.getProperty('user.home')}/.rvm/bin/ruby"]
+        ["ruby", "ruby1.8.7", "ruby1.9.3", "${System.getProperty('user.home')}/.rvm/bin/ruby"]
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
     List<String> getUserConfiguredCandidates() {
-        if (config.features?.ruby?.cmd_candidates) {
-            return config.features.ruby.cmd_candidates
-        }
-
-        []
+        config.features?.ruby?.cmd_candidates ?: []
     }
 
+    /**
+     * @inheritDoc
+     */
     @Override
-    String getArg() {
-        return '-v'
+    public boolean checkCandidate(String name) {
+        try {
+            [name, '--version'].execute()
+            true
+        } catch (Throwable ignored) {
+            false
+        }
     }
-
 }

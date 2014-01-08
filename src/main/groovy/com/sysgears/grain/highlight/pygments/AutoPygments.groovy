@@ -30,6 +30,7 @@ class AutoPygments extends Pygments {
     /** Pygments as a Jython process integration implementation */
     private @Inject JythonPygments jythonPygments
 
+    /** Python system command finder */
     private @Inject PythonFinder pythonFinder
 
     /** Currently used Pygments integration implementation */

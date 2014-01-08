@@ -42,7 +42,11 @@ class RubyCompass extends AbstractCompass {
     /** Stream logger factory */
     @Inject private StreamLoggerFactory streamLoggerFactory
 
+    /** Ruby system command finder */
     @Inject private RubyFinder rubyFinder
+    
+    /** Memorize Ruby command, to restart service when ruby command changes */
+    private String rubyCmd
     
     /** Process streams logger */
     private StreamLogger streamLogger
@@ -76,8 +80,10 @@ class RubyCompass extends AbstractCompass {
                 gemDir.eachFile(FileType.DIRECTORIES) {
                     gemIncludes += ['-I', new File(it, 'lib').canonicalPath]
                 }
+                
+                rubyCmd = rubyFinder.cmd
 
-                def cmdline = [rubyFinder.cmd] + gemIncludes +
+                def cmdline = [rubyCmd] + gemIncludes +
                         [new File(compassDir, 'bin/compass').canonicalPath, mode] as List<String>
                 
                 log.info cmdline.join(' ')
@@ -123,6 +129,20 @@ class RubyCompass extends AbstractCompass {
             streamLogger?.interrupt()
             thread.join()
             latch = null
+        }
+    }
+
+    /**
+     * Restart Ruby when ruby command changes
+     */
+    @Override
+    public void configChanged() {
+        if (latch) {
+            latch.await()
+            if (rubyCmd != rubyFinder.cmd) {
+                stop()
+                start()
+            }
         }
     }
 }

@@ -50,6 +50,7 @@ class PythonPygments extends Pygments {
     /** Grain settings */
     @Inject private GrainSettings settings
 
+    /** Python system command finder */
     @Inject private PythonFinder pythonFinder
 
     /** Process streams logger */
@@ -57,6 +58,9 @@ class PythonPygments extends Pygments {
 
     /** Mutex for pygments starting and using */
     private CountDownLatch latch
+
+    /** Memorize Python command, to restart service when python command changes */
+    private String pythonCmd
 
     /**
      * Creates an instance of pygments code highlighter
@@ -202,6 +206,20 @@ class PythonPygments extends Pygments {
             streamLogger?.interrupt()
             thread.join()
             latch = null
+        }
+    }
+
+    /**
+     * Restart Python when python command changes
+     */
+    @Override
+    public void configChanged() {
+        if (latch) {
+            latch.await()
+            if (pythonCmd != pythonFinder.cmd) {
+                stop()
+                start()
+            }
         }
     }
 }
