@@ -23,7 +23,6 @@ import javax.inject.Named
 /**
  * Site config
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class Config implements Map {

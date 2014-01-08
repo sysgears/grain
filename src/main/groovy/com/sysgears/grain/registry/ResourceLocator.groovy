@@ -25,7 +25,6 @@ import javax.inject.Named
 /**
  * Provides mechanism for locating site resources
  */
-@Named
 @javax.inject.Singleton
 class ResourceLocator {
     

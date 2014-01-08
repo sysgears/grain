@@ -24,7 +24,6 @@ import javax.inject.Named
 /**
  * Resource file text contents reader.
  */
-@Named
 @javax.inject.Singleton
 class ResourceReader {
     

@@ -29,7 +29,6 @@ import java.util.concurrent.CountDownLatch
 /**
  * Pygments code highlighter integration as external Python process.
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class PythonPygments extends Pygments {

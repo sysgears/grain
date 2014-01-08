@@ -28,7 +28,6 @@ import javax.inject.Named
 /**
  * Site facade exposed to resource code.
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class Site {

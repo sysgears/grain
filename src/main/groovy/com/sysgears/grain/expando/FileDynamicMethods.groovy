@@ -25,7 +25,6 @@ import javax.inject.Named
 /**
  * File class additional dynamic methods.
  */
-@Named
 @javax.inject.Singleton
 class FileDynamicMethods {
 

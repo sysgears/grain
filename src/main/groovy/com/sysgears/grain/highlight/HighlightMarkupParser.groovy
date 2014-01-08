@@ -21,7 +21,6 @@ import javax.inject.Named
 /**
  * Parses highlighting block and returns its components.
  */
-@Named
 @javax.inject.Singleton
 class HighlightMarkupParser {
     /**

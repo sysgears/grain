@@ -22,7 +22,6 @@ import javax.inject.Named
 /**
  * Tries to use shell compass with fallback to JRuby if shell compass is unavailable.  
  */
-@Named
 @javax.inject.Singleton
 class AutoCompass extends AbstractCompass {
 

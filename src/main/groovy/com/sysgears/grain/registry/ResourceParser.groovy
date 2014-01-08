@@ -29,7 +29,6 @@ import javax.inject.Named
  * <p>
  * Does all the parsing on demand.
  */
-@Named
 @CompileStatic
 @Slf4j
 class ResourceParser {

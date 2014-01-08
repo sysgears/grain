@@ -24,7 +24,6 @@ import javax.inject.Named
 /**
  * Resource YAML header parser. 
  */
-@Named
 @javax.inject.Singleton
 class YAMLHeaderParser implements HeaderParser {
 

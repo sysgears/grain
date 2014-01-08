@@ -30,7 +30,6 @@ import javax.inject.Named
  * <p>
  * Class responsible for maintaining URL map of the site
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class URLRegistry implements SiteChangeListener {

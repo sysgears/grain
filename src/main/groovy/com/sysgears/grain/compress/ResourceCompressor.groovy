@@ -31,7 +31,6 @@ import java.util.zip.GZIPOutputStream
  * Resource compressor. Compresses resources in accordance with compression techniques
  * specified in site config.
  */
-@Named
 @javax.inject.Singleton
 class ResourceCompressor {
     

@@ -6,7 +6,6 @@ import javax.inject.Named
 /**
  * Application initializer, responsible for preparation for Grain launch.
  */
-@Named
 @javax.inject.Singleton
 public class Initializer {
 

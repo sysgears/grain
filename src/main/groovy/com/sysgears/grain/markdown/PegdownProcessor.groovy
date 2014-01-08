@@ -9,7 +9,6 @@ import javax.inject.Named
 /**
  * Markdown processor which uses PegDown implementation.
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class PegdownProcessor implements MarkdownProcessor {

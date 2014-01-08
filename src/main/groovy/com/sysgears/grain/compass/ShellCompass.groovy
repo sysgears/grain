@@ -28,7 +28,6 @@ import java.util.concurrent.CountDownLatch
 /**
  * Utilization of Compass as a shell process
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class ShellCompass extends AbstractCompass {

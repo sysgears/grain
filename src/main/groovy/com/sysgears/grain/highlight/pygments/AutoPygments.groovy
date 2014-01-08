@@ -22,7 +22,6 @@ import javax.inject.Named
 /**
  * Tries to use Python with fallback to JPython for utilizing Pygments  
  */
-@Named
 @javax.inject.Singleton
 class AutoPygments extends Pygments {
 

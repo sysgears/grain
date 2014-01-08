@@ -26,7 +26,6 @@ import javax.inject.Named
 /**
  * Basic tag lib exposed to each resource code.
  */
-@Named
 @Slf4j
 class GrainTagLib {
 

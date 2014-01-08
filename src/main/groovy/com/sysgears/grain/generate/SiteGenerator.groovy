@@ -33,7 +33,6 @@ import javax.inject.Named
 /**
  * Grain static web site generator.
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class SiteGenerator {

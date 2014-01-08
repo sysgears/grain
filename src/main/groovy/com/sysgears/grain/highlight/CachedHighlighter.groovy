@@ -28,7 +28,6 @@ import javax.inject.Named
  * Cached highlighter stores and reuses highlighting results in a Site cache,
  * each highlighter has its own sub-folder where the results are cached for a later use. 
  */
-@Named
 @javax.inject.Singleton
 class CachedHighlighter implements Highlighter {
     

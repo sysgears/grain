@@ -32,7 +32,6 @@ import java.util.concurrent.CountDownLatch
  * <p>
  * This class is thread-safe.     
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class JythonPygments extends Pygments {

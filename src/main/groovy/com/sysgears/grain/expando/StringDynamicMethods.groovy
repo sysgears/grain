@@ -23,7 +23,6 @@ import java.util.regex.Pattern
 /**
  * String class additional dynamic methods.
  */
-@Named
 @javax.inject.Singleton
 class StringDynamicMethods {
 

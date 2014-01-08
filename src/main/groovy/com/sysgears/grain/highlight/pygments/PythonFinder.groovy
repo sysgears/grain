@@ -9,7 +9,6 @@ import javax.inject.Named
 /**
  * Finder of most appropriate Python version in the system
  */
-@Named
 @javax.inject.Singleton
 public class PythonFinder extends ShellCommandFinder {
 

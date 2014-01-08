@@ -23,7 +23,6 @@ import javax.inject.Named
 /**
  * Output stream implementation that writes all output to the log 
  */
-@Named
 @Slf4j
 class LoggingOutputStream extends OutputStream {
     private StringBuilder sb = new StringBuilder()

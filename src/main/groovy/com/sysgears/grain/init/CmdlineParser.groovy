@@ -24,7 +24,6 @@ import java.util.jar.Manifest
  * <p>
  * In case of facing wrong cmdline arguments dumps help and shutdowns the application
  */
-@Named
 @javax.inject.Singleton
 class CmdlineParser {
 

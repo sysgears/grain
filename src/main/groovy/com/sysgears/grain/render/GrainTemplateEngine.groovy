@@ -33,7 +33,6 @@ import javax.inject.Named
 /**
  * Grain template engine.
  */
-@Named
 @javax.inject.Singleton
 class GrainTemplateEngine implements TemplateEngine, SiteChangeListener {
     

@@ -12,7 +12,6 @@ import javax.inject.Named
 /**
  * reStructuredText processor which uses JRst implementation.
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class JRstProcessor implements RstProcessor {

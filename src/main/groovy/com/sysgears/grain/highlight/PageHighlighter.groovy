@@ -22,7 +22,6 @@ import javax.inject.Named
 /**
  * Page highlighter highlights all the source code fragments of a given page
  */
-@Named
 @javax.inject.Singleton
 public class PageHighlighter {
     

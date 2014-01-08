@@ -22,7 +22,6 @@ import javax.inject.Named
  * Site change broadcaster is responsible for propagating site changes
  * to all the classes that listen to them.
  */
-@Named
 @javax.inject.Singleton
 class SiteChangeBroadcaster implements SiteChangeListener {
 

@@ -26,7 +26,6 @@ import javax.inject.Named
 /**
  * Site deployer.
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class SiteDeployer {

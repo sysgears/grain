@@ -26,7 +26,6 @@ import javax.inject.Provider
 /**
  * Grain script code to Groovy source code translator.
  */
-@Named
 public class ScriptTranslator {
 
     /** ScriptWriter factory */

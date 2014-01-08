@@ -9,7 +9,6 @@ import javax.inject.Named
 /**
  * Finder of most appropriate Ruby version in the system
  */
-@Named
 @javax.inject.Singleton
 public class RubyFinder extends ShellCommandFinder {
 

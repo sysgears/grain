@@ -25,7 +25,6 @@ import javax.inject.Named
 /**
  * Interruptible unblocking multiple stream logger
  */
-@Named
 @Slf4j
 class StreamLogger {
     

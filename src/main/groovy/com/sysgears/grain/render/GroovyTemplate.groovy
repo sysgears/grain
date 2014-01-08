@@ -30,7 +30,6 @@ import javax.inject.Named
  * Represents template that renders resource by executing
  * Groovy script translated from resource.
  */
-@Named
 class GroovyTemplate implements ResourceTemplate {
     
     /** Performance metrics */

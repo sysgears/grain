@@ -29,7 +29,6 @@ import javax.inject.Named
 /**
  * Grain resource registry
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class Registry implements FileChangeListener, Service {

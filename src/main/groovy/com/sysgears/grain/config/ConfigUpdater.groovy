@@ -27,7 +27,6 @@ import javax.inject.Named
 /**
  * Listens for file system changes in config file and updates config accordingly
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class ConfigUpdater implements ConfigChangeListener {

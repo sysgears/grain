@@ -32,7 +32,6 @@ import javax.inject.Named
 /**
  * Top level logic of the Grain application.
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class Application {

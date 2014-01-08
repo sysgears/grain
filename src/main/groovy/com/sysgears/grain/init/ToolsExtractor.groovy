@@ -12,7 +12,6 @@ import java.util.jar.JarFile
  * Grain initialization.
  */
 @Slf4j
-@Named
 @javax.inject.Singleton
 class ToolsExtractor {
 

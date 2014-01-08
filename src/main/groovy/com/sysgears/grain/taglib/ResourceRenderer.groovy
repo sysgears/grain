@@ -29,7 +29,6 @@ import javax.inject.Provider
 /**
  * Resource renderer
  */
-@Named
 @javax.inject.Singleton
 class ResourceRenderer {
 

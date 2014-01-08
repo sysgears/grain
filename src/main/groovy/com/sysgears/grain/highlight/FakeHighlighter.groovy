@@ -22,7 +22,6 @@ import javax.inject.Named
 /**
  * Highlighter that only wraps the code into <pre> element.
  */
-@Named
 @javax.inject.Singleton
 class FakeHighlighter implements Highlighter {
 

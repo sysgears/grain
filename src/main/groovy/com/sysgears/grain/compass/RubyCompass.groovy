@@ -30,7 +30,6 @@ import java.util.concurrent.CountDownLatch
 /**
  * Compass integration as external Ruby process.
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class RubyCompass extends AbstractCompass {

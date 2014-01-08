@@ -30,7 +30,6 @@ import java.util.concurrent.CountDownLatch
 /**
  * Utilization of Compass as a JRuby process
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class JRubyCompass extends AbstractCompass {

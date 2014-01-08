@@ -8,7 +8,6 @@ import javax.inject.Named
 /**
  * Markdown processor which uses TxtMark implementation.
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class TxtMarkProcessor implements MarkdownProcessor {

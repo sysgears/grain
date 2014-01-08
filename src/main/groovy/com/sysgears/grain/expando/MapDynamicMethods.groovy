@@ -25,7 +25,6 @@ import javax.inject.Named
 /**
  * Map class additional dynamic methods.
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class MapDynamicMethods {

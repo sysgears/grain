@@ -29,7 +29,6 @@ import javax.inject.Named
  * <p>
  * Monitors for site file changes and propagates them to the listeners.
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class FileWatcher extends Thread {
