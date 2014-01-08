@@ -6,7 +6,7 @@ import javax.annotation.Nonnull
 import javax.annotation.Nullable
 
 /**
- * Search for a commaand among a user-configurable list of candidates.
+ * Search for a command among a user-configurable list of candidates.
  */
 abstract class ShellCommandFinder implements ConfigChangeListener {
 
