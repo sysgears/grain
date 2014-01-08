@@ -26,61 +26,71 @@ import java.security.MessageDigest
 class GrainUtils {
 
     /**
-     * Strips all HTML tags from the string
+     * Removes all XML like tags from a string:
+     * <code>assert stripHtml('<em>emphasis</em>') == 'emphasis'</code>.
+     *
+     * @attr html string to strip
+     *
+     * @return the resulting string
      */
     static def stripHtml = { String html ->
         html.replaceAll('\\<.*?\\>', '')
     }
 
     /**
-     * Calculates md5 hash of byte array
+     * Calculates md5 hash of a byte array.
+     *
+     * @attr bytes to calculate a hash
+     *
+     * @return the md5 hash
      */
     static def md5 = { byte[] bytes ->
         MessageDigest md5 = MessageDigest.getInstance('MD5')
         md5.update(bytes)
-        def messageDigest = md5.digest()
-        def sb = new StringBuilder()
-        messageDigest.each {
+        md5.digest().inject(new StringBuffer()) { sb, it ->
             sb.append(String.format('%02x', it))
-        }
-        sb.toString()
+        } .toString()
     }
 
     /**
-     * Truncates string to the given word count
+     * Truncates string to the given word count.
+     *
+     * @attr string the string to truncate
+     * @attr wordCount the number of words to left
+     *
+     * @return the resulting string
      */
-    static def truncateWords = { String str, int wordCount ->
-        def result = new StringBuilder()
-        str.split('\\s+').take(wordCount).each { word ->
-            result += word + ' '
-        }
-        result.toString().trim()
+    static def truncateWords = { String string, int wordCount ->
+        string.split('\\s+').take(wordCount).inject(new StringBuilder()) { result, word ->
+            result.append(word).append(' ')
+        } .toString().trim()
     }
 
     /**
-     * Converts title to start principal words from capital letters 
+     * Converts title by applying Title Case capitalizing convention (capitalizes all principal words).
+     *
+     * @attr title the title to convert
+     *
+     * @return title-case string
      */
-    static def titlecase = { String str ->
-        def words = str.split(' ')
-        def small_words = 'a an and as at but by en for if in of on or the to v v. via vs vs.'.split(' ')
-        StringBuilder result = new StringBuilder()
-        words.each { word ->
-            if (word in small_words) {
-                result.append(word)
-            } else {
-                result.append(StringUtils.capitalize(word))
-            }
+    static def titlecase = { String title ->
+        def nonPrincipalWords = ['a', 'an', 'and', 'as', 'at', 'but', 'by', 'en', 'for', 'if', 'in',
+                'of', 'on', 'or', 'the', 'to', 'v', 'v.', 'via', 'vs', 'vs.']
+        title.split(' ').inject(new StringBuilder()) {result, word ->
+            word in nonPrincipalWords ? result.append(word) : result.append(StringUtils.capitalize(word))
             result.append(' ')
-        }
-
-        result.toString().trim()
+        } .toString().trim()
     }
 
     /**
-     * Converts date to XML time format  
+     * Converts a date to XML date time format.
+     *
+     * @attr date the date to convert
+     *
+     * @return XML date time representation of the date, for instance 2013-12-31T12:49:00+07:00
      */
-    static def toXmlTime = { it ->
-        def tz = String.format('%tz', it)
-        String.format("%tFT%<tT${tz.substring(0, 3)}:${tz.substring(3)}", it)
+    static def toXmlTime = { Date date ->
+        def tz = String.format('%tz', date)
+        String.format("%tFT%<tT${tz.substring(0, 3)}:${tz.substring(3)}", date)
     }
 }
