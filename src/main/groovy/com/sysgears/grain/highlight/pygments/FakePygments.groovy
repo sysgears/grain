@@ -15,13 +15,9 @@
  */
 
 package com.sysgears.grain.highlight.pygments
-
-import javax.inject.Named
-
 /**
  * Fake pygments integration, i.e. does nothing
  */
-@Named
 @javax.inject.Singleton
 class FakePygments extends Pygments {
 

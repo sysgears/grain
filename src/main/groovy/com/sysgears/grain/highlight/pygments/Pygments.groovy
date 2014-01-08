@@ -16,10 +16,10 @@
 
 package com.sysgears.grain.highlight.pygments
 
+import com.sysgears.grain.config.Service
 import com.sysgears.grain.highlight.Highlighter
 import com.sysgears.grain.init.GrainSettings
 import com.sysgears.grain.preview.ConfigChangeListener
-import com.sysgears.grain.config.Service
 import com.sysgears.grain.taglib.Site
 import groovy.util.logging.Slf4j
 

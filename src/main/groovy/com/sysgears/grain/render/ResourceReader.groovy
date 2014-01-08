@@ -19,12 +19,10 @@ package com.sysgears.grain.render
 import com.sysgears.grain.config.Config
 
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Resource file text contents reader.
  */
-@Named
 @javax.inject.Singleton
 class ResourceReader {
     

@@ -20,20 +20,18 @@ import com.sysgears.grain.PerfMetrics
 import com.sysgears.grain.config.Config
 import com.sysgears.grain.highlight.PageHighlighter
 import com.sysgears.grain.markdown.MarkdownProcessor
+import com.sysgears.grain.preview.SiteChangeListener
 import com.sysgears.grain.registry.HeaderParser
 import com.sysgears.grain.registry.ResourceLocator
 import com.sysgears.grain.registry.ResourceParser
-import com.sysgears.grain.preview.SiteChangeListener
 import com.sysgears.grain.rst.RstProcessor
 import com.sysgears.grain.translator.ScriptTranslator
 
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Grain template engine.
  */
-@Named
 @javax.inject.Singleton
 class GrainTemplateEngine implements TemplateEngine, SiteChangeListener {
     

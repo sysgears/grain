@@ -28,12 +28,10 @@ import com.sysgears.grain.util.FileUtils
 import groovy.util.logging.Slf4j
 
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Grain static web site generator.
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class SiteGenerator {

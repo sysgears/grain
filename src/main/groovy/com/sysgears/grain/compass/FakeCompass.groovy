@@ -15,13 +15,9 @@
  */
 
 package com.sysgears.grain.compass
-
-import javax.inject.Named
-
 /**
  * Fake implementation of Compass integration - does nothing. 
  */
-@Named
 @javax.inject.Singleton
 class FakeCompass extends AbstractCompass {
 

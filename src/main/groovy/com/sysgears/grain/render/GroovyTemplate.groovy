@@ -22,15 +22,12 @@ import com.sysgears.grain.registry.HeaderParser
 import com.sysgears.grain.registry.ResourceLocator
 import org.codehaus.groovy.runtime.InvokerHelper
 
-import javax.annotation.Nullable
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Represents template that renders resource by executing
  * Groovy script translated from resource.
  */
-@Named
 class GroovyTemplate implements ResourceTemplate {
     
     /** Performance metrics */

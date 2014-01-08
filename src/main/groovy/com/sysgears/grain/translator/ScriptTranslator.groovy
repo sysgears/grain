@@ -20,13 +20,11 @@ import com.sysgears.grain.translator.writer.ScriptWriter
 import com.sysgears.grain.translator.writer.StatementType
 
 import javax.inject.Inject
-import javax.inject.Named
 import javax.inject.Provider
 
 /**
  * Grain script code to Groovy source code translator.
  */
-@Named
 public class ScriptTranslator {
 
     /** ScriptWriter factory */

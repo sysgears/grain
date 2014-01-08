@@ -1,25 +1,37 @@
 package com.sysgears.grain.highlight.pygments
 
+import com.sysgears.grain.config.Config
+import com.sysgears.grain.util.ShellCommandFinder
+
+import javax.inject.Inject
+
 /**
  * Finder of most appropriate Python version in the system
  */
-public class PythonFinder {
-    
-    /** Python command candidates to check */
-    private static final def PYTHON_CANDIDATES = ["python", "python2.7"] 
-    
-    /**
-     * Finds most appropriate Ruby command in the system.
-     */
-    public static String getPythonCmd() {
-        def candidates = System.getProperty("os.name").toLowerCase().contains('win') ?
-            PYTHON_CANDIDATES.collect { it + ".exe" } : PYTHON_CANDIDATES
-        candidates.find {
-            try {
-                [it, '-v'].execute()
-            } catch (Throwable ignored) {
-                false
-            }
+@javax.inject.Singleton
+public class PythonFinder extends ShellCommandFinder {
+
+    @Inject
+    protected PythonFinder(Config config) {
+        super(config)
+    }
+
+    @Override
+    List<String> getDefaultCandidates() {
+        ['python2', "python", "python2.7"]
+    }
+
+    @Override
+    List<String> getUserConfiguredCandidates() {
+        if (config.features?.python?.cmd_candidates) {
+            return config.features.python.cmd_candidates
         }
+
+        []
+    }
+
+    @Override
+    String getArg() {
+        '-v'
     }
 }

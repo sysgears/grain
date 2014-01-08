@@ -32,7 +32,6 @@ import javax.inject.Named
 /**
  * Grain web server service that shows static site in preview mode with hot rereading of file system changes.
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class SitePreviewer implements Service {

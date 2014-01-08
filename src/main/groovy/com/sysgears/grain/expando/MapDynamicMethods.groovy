@@ -20,12 +20,10 @@ import com.sysgears.grain.taglib.ResourceRenderer
 import groovy.util.logging.Slf4j
 
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Map class additional dynamic methods.
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class MapDynamicMethods {

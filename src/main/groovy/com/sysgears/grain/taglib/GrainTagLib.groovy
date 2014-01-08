@@ -21,12 +21,10 @@ import com.sysgears.grain.render.ResourceView
 import groovy.util.logging.Slf4j
 
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Basic tag lib exposed to each resource code.
  */
-@Named
 @Slf4j
 class GrainTagLib {
 

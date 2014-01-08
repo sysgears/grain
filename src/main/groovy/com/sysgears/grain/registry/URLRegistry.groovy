@@ -23,14 +23,12 @@ import com.sysgears.grain.preview.SiteChangeListener
 import groovy.util.logging.Slf4j
 
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Site URL registry
  * <p>
  * Class responsible for maintaining URL map of the site
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class URLRegistry implements SiteChangeListener {

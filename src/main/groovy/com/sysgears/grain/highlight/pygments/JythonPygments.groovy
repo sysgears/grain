@@ -24,7 +24,6 @@ import org.python.core.PyUnicode
 import org.python.util.PythonInterpreter
 
 import javax.inject.Inject
-import javax.inject.Named
 import java.util.concurrent.CountDownLatch
 
 /**
@@ -32,7 +31,6 @@ import java.util.concurrent.CountDownLatch
  * <p>
  * This class is thread-safe.     
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class JythonPygments extends Pygments {

@@ -15,13 +15,9 @@
  */
 
 package com.sysgears.grain.highlight
-
-import javax.inject.Named
-
 /**
  * Formats highlighted code into pretty HTML table with caption and line numbers 
  */
-@Named
 @javax.inject.Singleton
 class HighlightingFormatter {
 

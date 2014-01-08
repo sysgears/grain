@@ -16,22 +16,16 @@
 
 package com.sysgears.grain.compress
 
-import com.googlecode.htmlcompressor.compressor.Compressor
-import com.googlecode.htmlcompressor.compressor.HtmlCompressor
-import com.googlecode.htmlcompressor.compressor.XmlCompressor
-import com.googlecode.htmlcompressor.compressor.YuiCssCompressor
-import com.googlecode.htmlcompressor.compressor.YuiJavaScriptCompressor
+import com.googlecode.htmlcompressor.compressor.*
 import com.sysgears.grain.taglib.Site
 
 import javax.inject.Inject
-import javax.inject.Named
 import java.util.zip.GZIPOutputStream
 
 /**
  * Resource compressor. Compresses resources in accordance with compression techniques
  * specified in site config.
  */
-@Named
 @javax.inject.Singleton
 class ResourceCompressor {
     

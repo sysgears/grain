@@ -24,13 +24,11 @@ import groovy.io.FileType
 import groovy.util.logging.Slf4j
 
 import javax.inject.Inject
-import javax.inject.Named
 import java.util.concurrent.CountDownLatch
 
 /**
  * Compass integration as external Ruby process.
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class RubyCompass extends AbstractCompass {
@@ -43,6 +41,8 @@ class RubyCompass extends AbstractCompass {
 
     /** Stream logger factory */
     @Inject private StreamLoggerFactory streamLoggerFactory
+
+    @Inject private RubyFinder rubyFinder
     
     /** Process streams logger */
     private StreamLogger streamLogger
@@ -77,7 +77,7 @@ class RubyCompass extends AbstractCompass {
                     gemIncludes += ['-I', new File(it, 'lib').canonicalPath]
                 }
 
-                def cmdline = [RubyFinder.rubyCmd] + gemIncludes +
+                def cmdline = [rubyFinder.cmd] + gemIncludes +
                         [new File(compassDir, 'bin/compass').canonicalPath, mode] as List<String>
                 
                 log.info cmdline.join(' ')

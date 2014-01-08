@@ -21,12 +21,10 @@ import com.sysgears.grain.log.StreamLoggerFactory
 import groovy.util.logging.Slf4j
 
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Site deployer.
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class SiteDeployer {

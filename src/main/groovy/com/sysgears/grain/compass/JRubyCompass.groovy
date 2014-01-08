@@ -24,13 +24,11 @@ import org.jruby.RubyInstanceConfig
 import org.jruby.exceptions.RaiseException
 
 import javax.inject.Inject
-import javax.inject.Named
 import java.util.concurrent.CountDownLatch
 
 /**
  * Utilization of Compass as a JRuby process
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class JRubyCompass extends AbstractCompass {

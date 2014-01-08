@@ -1,15 +1,11 @@
 package com.sysgears.grain.markdown
 
-import com.github.rjeschke.txtmark.Processor
 import groovy.util.logging.Slf4j
 import org.pegdown.PegDownProcessor
-
-import javax.inject.Named
 
 /**
  * Markdown processor which uses PegDown implementation.
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class PegdownProcessor implements MarkdownProcessor {

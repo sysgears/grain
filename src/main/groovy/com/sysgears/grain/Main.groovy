@@ -17,18 +17,15 @@
 package com.sysgears.grain
 
 import com.google.inject.Guice
-import com.sun.org.apache.xml.internal.security.Init
 import com.sysgears.grain.compass.CompassModule
 import com.sysgears.grain.highlight.HighlightModule
-import com.sysgears.grain.init.CmdlineParser
 import com.sysgears.grain.init.GrainSettings
 import com.sysgears.grain.init.InitModule
 import com.sysgears.grain.init.Initializer
-import com.sysgears.grain.init.ToolsExtractor
 import com.sysgears.grain.markdown.MarkdownModule
 import com.sysgears.grain.preview.DisabledPreviewModule
-import com.sysgears.grain.registry.RegistryModule
 import com.sysgears.grain.preview.PreviewModule
+import com.sysgears.grain.registry.RegistryModule
 import com.sysgears.grain.render.RenderModule
 import com.sysgears.grain.rst.RstModule
 

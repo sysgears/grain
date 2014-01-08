@@ -18,12 +18,9 @@ package com.sysgears.grain.config
 
 import groovy.util.logging.Slf4j
 
-import javax.inject.Named
-
 /**
  * Site config
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class Config implements Map {

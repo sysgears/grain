@@ -24,12 +24,10 @@ import groovy.io.FileType
 import groovy.util.logging.Slf4j
 
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Grain resource registry
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class Registry implements FileChangeListener, Service {

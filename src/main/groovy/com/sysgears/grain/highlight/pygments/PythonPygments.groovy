@@ -23,13 +23,11 @@ import groovy.util.logging.Slf4j
 import net.sf.json.JSONObject
 
 import javax.inject.Inject
-import javax.inject.Named
 import java.util.concurrent.CountDownLatch
 
 /**
  * Pygments code highlighter integration as external Python process.
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class PythonPygments extends Pygments {
@@ -51,6 +49,8 @@ class PythonPygments extends Pygments {
 
     /** Grain settings */
     @Inject private GrainSettings settings
+
+    @Inject private PythonFinder pythonFinder
 
     /** Process streams logger */
     private StreamLogger streamLogger
@@ -151,7 +151,6 @@ class PythonPygments extends Pygments {
     /**
      * @inheritDoc
      */
-    @Override
     public void launchPygments() {
         latch = new CountDownLatch(1)
         thread = Thread.start {
@@ -161,7 +160,7 @@ class PythonPygments extends Pygments {
                 if (bundledPygments) {
                     env += ["PYGMENTS_HOME=${new File(settings.toolsHome, 'pygments-main').canonicalPath}"]
                 }
-                def process = Runtime.runtime.exec([PythonFinder.pythonCmd, "mentos.py"] as String[],
+                def process = Runtime.runtime.exec([pythonFinder.cmd, "mentos.py"] as String[],
                         env as String[],
                         new File(settings.toolsHome, 'mentos'))
                 bos = new BufferedOutputStream(process.out)

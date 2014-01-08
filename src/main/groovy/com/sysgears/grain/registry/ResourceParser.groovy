@@ -22,14 +22,12 @@ import groovy.util.logging.Slf4j
 import org.apache.commons.io.IOUtils
 
 import javax.annotation.Nullable
-import javax.inject.Named
 
 /**
  * Low-level resource parser. Returns resource header and resource content below.
  * <p>
  * Does all the parsing on demand.
  */
-@Named
 @CompileStatic
 @Slf4j
 class ResourceParser {

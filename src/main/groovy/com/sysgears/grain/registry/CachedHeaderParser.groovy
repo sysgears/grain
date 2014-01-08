@@ -20,12 +20,10 @@ import com.sysgears.grain.annotations.Uncached
 import com.sysgears.grain.preview.FileChangeListener
 
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Header parser, that maintains header cache and parses unmodified file only once
  */
-@Named
 @javax.inject.Singleton
 class CachedHeaderParser implements HeaderParser, FileChangeListener {
 

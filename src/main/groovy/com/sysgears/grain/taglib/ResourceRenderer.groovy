@@ -23,13 +23,11 @@ import com.sysgears.grain.render.ResourceView
 import com.sysgears.grain.render.TemplateEngine
 
 import javax.inject.Inject
-import javax.inject.Named
 import javax.inject.Provider
 
 /**
  * Resource renderer
  */
-@Named
 @javax.inject.Singleton
 class ResourceRenderer {
 

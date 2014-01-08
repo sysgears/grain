@@ -15,13 +15,9 @@
  */
 
 package com.sysgears.grain.translator.writer
-
-import javax.inject.Named
-
 /**
  * Builds a sequence of out.write() statements that have arbitrary groovy code between them.
  */
-@Named
 class ScriptWriter {
 
     /**

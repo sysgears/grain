@@ -7,12 +7,9 @@ import org.nuiton.jrst.JRSTGenerator
 import org.nuiton.jrst.legacy.JRSTReader
 import org.nuiton.util.Resource
 
-import javax.inject.Named
-
 /**
  * reStructuredText processor which uses JRst implementation.
  */
-@Named
 @javax.inject.Singleton
 @Slf4j
 class JRstProcessor implements RstProcessor {
