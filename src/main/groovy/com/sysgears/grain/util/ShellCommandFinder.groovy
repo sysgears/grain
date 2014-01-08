@@ -47,9 +47,7 @@ abstract class ShellCommandFinder implements ConfigChangeListener {
         def candidates = userConfiguredCandidates + defaultCandidates
 
         candidates = isWindows() ? candidates.collect { it + ".exe" } : candidates
-        def res = candidates.find { checkCandidate(it.toString()) }
-        println "Current candidate: " + res 
-        res
+        candidates.find { checkCandidate(it.toString()) }
     }
 
     /**
