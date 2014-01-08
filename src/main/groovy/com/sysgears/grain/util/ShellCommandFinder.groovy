@@ -6,7 +6,7 @@ import javax.annotation.Nonnull
 import javax.annotation.Nullable
 
 /**
- * Search for a commaand among a user-configurable list of candidates.
+ * Search for a command among a user-configurable list of candidates.
  */
 abstract class ShellCommandFinder implements ConfigChangeListener {
 
@@ -47,9 +47,7 @@ abstract class ShellCommandFinder implements ConfigChangeListener {
         def candidates = userConfiguredCandidates + defaultCandidates
 
         candidates = isWindows() ? candidates.collect { it + ".exe" } : candidates
-        def res = candidates.find { checkCandidate(it.toString()) }
-        println "Current candidate: " + res 
-        res
+        candidates.find { checkCandidate(it.toString()) }
     }
 
     /**
