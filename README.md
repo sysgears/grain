@@ -104,4 +104,4 @@ Grain is licensed under the terms of the [Apache License, Version 2.0][Apache Li
 [Grain]: http://sysgears.com/grain/
 [Groovy]: http://groovy.codehaus.org/
 [Apache License, Version 2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
-[Developer Certificate of Origin]: http://sysgears.com/grain/DCO
+[Developer Certificate of Origin]: https://raw.github.com/sysgears/grain/master/DCO
