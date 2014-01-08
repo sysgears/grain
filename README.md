@@ -41,6 +41,15 @@ By doing this you certify the below:
 
     Developer's Certificate of Origin 1.1
 
+If you wish to add the signoff to the commit message on your every commit
+without the need to specify -s or --signoff, rename
+.git/hooks/commit-msg.sample to .git/hooks/commit-msg and uncomment the lines:
+
+``` sh
+SOB=$(git var GIT_AUTHOR_IDENT | sed -n 's/^\(.*>\).*$/Signed-off-by: \1/p')
+grep -qs "^$SOB" "$1" || echo "$SOB" >> "$1"
+```
+
 Developer's Certificate of Origin
 ---------------------------------
 
