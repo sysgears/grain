@@ -23,7 +23,6 @@ import com.sysgears.grain.preview.SiteChangeListener
 import groovy.util.logging.Slf4j
 
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Site URL registry

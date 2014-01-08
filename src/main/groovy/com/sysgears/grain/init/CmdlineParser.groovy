@@ -16,7 +16,6 @@
 
 package com.sysgears.grain.init
 
-import javax.inject.Named
 import java.util.jar.Manifest
 
 /**

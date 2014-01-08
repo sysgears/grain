@@ -17,12 +17,11 @@
 package com.sysgears.grain.highlight
 
 import com.sysgears.grain.annotations.Uncached
-import com.sysgears.grain.taglib.Site
 import com.sysgears.grain.taglib.GrainUtils
+import com.sysgears.grain.taglib.Site
 
 import javax.annotation.Nullable
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Cached highlighter stores and reuses highlighting results in a Site cache,

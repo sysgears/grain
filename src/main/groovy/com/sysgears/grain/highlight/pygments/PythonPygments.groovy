@@ -23,7 +23,6 @@ import groovy.util.logging.Slf4j
 import net.sf.json.JSONObject
 
 import javax.inject.Inject
-import javax.inject.Named
 import java.util.concurrent.CountDownLatch
 
 /**

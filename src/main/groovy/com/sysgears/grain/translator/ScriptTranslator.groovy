@@ -20,7 +20,6 @@ import com.sysgears.grain.translator.writer.ScriptWriter
 import com.sysgears.grain.translator.writer.StatementType
 
 import javax.inject.Inject
-import javax.inject.Named
 import javax.inject.Provider
 
 /**

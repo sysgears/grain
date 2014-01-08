@@ -15,9 +15,6 @@
  */
 
 package com.sysgears.grain.preview
-
-import javax.inject.Named
-
 /**
  * File change broadcaster is responsible for propagating file changes
  * to all the classes that listen to them.

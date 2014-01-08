@@ -16,7 +16,6 @@
 
 package com.sysgears.grain.expando
 
-import javax.inject.Named
 import java.text.Normalizer
 import java.util.regex.Pattern
 

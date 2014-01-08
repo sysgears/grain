@@ -1,7 +1,6 @@
 package com.sysgears.grain.init
 
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Application initializer, responsible for preparation for Grain launch.

@@ -4,7 +4,6 @@ import com.sysgears.grain.config.Config
 import com.sysgears.grain.util.ShellCommandFinder
 
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Finder of most appropriate Ruby version in the system

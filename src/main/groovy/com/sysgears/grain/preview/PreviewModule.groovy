@@ -29,9 +29,9 @@ import com.sysgears.grain.highlight.pygments.Pygments
 import com.sysgears.grain.markdown.MarkdownProcessor
 import com.sysgears.grain.registry.CachedHeaderParser
 import com.sysgears.grain.registry.Registry
+import com.sysgears.grain.registry.URLRegistry
 import com.sysgears.grain.render.CachedTemplateEngine
 import com.sysgears.grain.render.GrainTemplateEngine
-import com.sysgears.grain.registry.URLRegistry
 import com.sysgears.grain.rst.RstProcessor
 
 /**

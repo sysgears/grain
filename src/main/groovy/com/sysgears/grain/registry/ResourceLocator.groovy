@@ -20,7 +20,6 @@ import com.sysgears.grain.config.Config
 import com.sysgears.grain.init.GrainSettings
 
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Provides mechanism for locating site resources

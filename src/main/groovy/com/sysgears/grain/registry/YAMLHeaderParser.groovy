@@ -19,7 +19,6 @@ package com.sysgears.grain.registry
 import org.yaml.snakeyaml.Yaml
 
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Resource YAML header parser. 

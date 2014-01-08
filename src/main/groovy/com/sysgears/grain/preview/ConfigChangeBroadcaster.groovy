@@ -15,9 +15,6 @@
  */
 
 package com.sysgears.grain.preview
-
-import javax.inject.Named
-
 /**
  * Config change broadcaster is responsible for propagating site config changes
  * to all the classes that listen to them.

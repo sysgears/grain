@@ -22,7 +22,6 @@ import com.sysgears.grain.taglib.Site
 import groovy.util.logging.Slf4j
 
 import javax.inject.Inject
-import javax.inject.Named
 import java.util.concurrent.CountDownLatch
 
 /**

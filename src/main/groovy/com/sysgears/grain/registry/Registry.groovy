@@ -24,7 +24,6 @@ import groovy.io.FileType
 import groovy.util.logging.Slf4j
 
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Grain resource registry

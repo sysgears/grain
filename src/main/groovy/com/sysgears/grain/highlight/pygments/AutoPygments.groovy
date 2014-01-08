@@ -17,7 +17,6 @@
 package com.sysgears.grain.highlight.pygments
 
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Tries to use Python with fallback to JPython for utilizing Pygments  

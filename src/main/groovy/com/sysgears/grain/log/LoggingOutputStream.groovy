@@ -18,8 +18,6 @@ package com.sysgears.grain.log
 
 import groovy.util.logging.Slf4j
 
-import javax.inject.Named
-
 /**
  * Output stream implementation that writes all output to the log 
  */

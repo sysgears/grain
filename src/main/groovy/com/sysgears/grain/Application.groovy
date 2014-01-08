@@ -21,13 +21,12 @@ import com.sysgears.grain.deploy.SiteDeployer
 import com.sysgears.grain.expando.GrainDynamicMethods
 import com.sysgears.grain.generate.SiteGenerator
 import com.sysgears.grain.init.GrainSettings
-import com.sysgears.grain.preview.SitePreviewer
 import com.sysgears.grain.preview.ConfigChangeBroadcaster
+import com.sysgears.grain.preview.SitePreviewer
 import com.sysgears.grain.util.FileUtils
 import groovy.util.logging.Slf4j
 
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Top level logic of the Grain application.

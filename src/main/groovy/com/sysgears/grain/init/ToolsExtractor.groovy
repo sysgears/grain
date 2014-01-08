@@ -3,7 +3,6 @@ package com.sysgears.grain.init
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.IOUtils
 
-import javax.inject.Named
 import java.util.jar.JarEntry
 import java.util.jar.JarFile
 

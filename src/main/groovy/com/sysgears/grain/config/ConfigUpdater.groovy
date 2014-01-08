@@ -22,7 +22,6 @@ import com.sysgears.grain.taglib.Site
 import groovy.util.logging.Slf4j
 
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Listens for file system changes in config file and updates config accordingly

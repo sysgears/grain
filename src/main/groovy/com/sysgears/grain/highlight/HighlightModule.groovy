@@ -20,13 +20,8 @@ import com.google.inject.AbstractModule
 import com.google.inject.Provides
 import com.sysgears.grain.annotations.Uncached
 import com.sysgears.grain.config.Config
-import com.sysgears.grain.highlight.pygments.AutoPygments
-import com.sysgears.grain.highlight.pygments.FakePygments
-import com.sysgears.grain.highlight.pygments.JythonPygments
-import com.sysgears.grain.highlight.pygments.Pygments
-import com.sysgears.grain.highlight.pygments.PythonPygments
-import com.sysgears.grain.highlight.pygments.ShellPygments
 import com.sysgears.grain.config.ImplBinder
+import com.sysgears.grain.highlight.pygments.*
 
 /**
  * Package-specific IoC config 

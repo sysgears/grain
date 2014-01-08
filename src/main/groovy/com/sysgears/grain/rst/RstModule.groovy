@@ -4,9 +4,6 @@ import com.google.inject.AbstractModule
 import com.google.inject.Provides
 import com.sysgears.grain.config.Config
 import com.sysgears.grain.config.ImplBinder
-import com.sysgears.grain.markdown.MarkdownProcessor
-import com.sysgears.grain.markdown.PegdownProcessor
-import com.sysgears.grain.markdown.TxtMarkProcessor
 
 /**
  * Package-specific IoC config

@@ -20,7 +20,6 @@ import com.google.inject.assistedinject.Assisted
 import groovy.util.logging.Slf4j
 
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Interruptible unblocking multiple stream logger

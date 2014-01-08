@@ -18,8 +18,6 @@ package com.sysgears.grain.render
 
 import com.google.inject.assistedinject.Assisted
 
-import javax.annotation.Nullable
-
 /**
  * GroovyTemplate factory.
  */

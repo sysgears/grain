@@ -16,8 +16,8 @@
 
 package com.sysgears.grain.compass
 
-import com.sysgears.grain.preview.ConfigChangeListener
 import com.sysgears.grain.config.Service
+import com.sysgears.grain.preview.ConfigChangeListener
 
 /**
  * Interface for Compass integration.

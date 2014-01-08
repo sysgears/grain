@@ -24,7 +24,6 @@ import org.python.core.PyUnicode
 import org.python.util.PythonInterpreter
 
 import javax.inject.Inject
-import javax.inject.Named
 import java.util.concurrent.CountDownLatch
 
 /**

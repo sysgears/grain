@@ -17,7 +17,6 @@
 package com.sysgears.grain.compass
 
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Tries to use shell compass with fallback to JRuby if shell compass is unavailable.  

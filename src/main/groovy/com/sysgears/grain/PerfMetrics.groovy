@@ -18,8 +18,6 @@ package com.sysgears.grain
 
 import groovy.transform.ToString
 
-import javax.inject.Named
-
 /**
  * Various performance metrics gathered in the Grain code
  */

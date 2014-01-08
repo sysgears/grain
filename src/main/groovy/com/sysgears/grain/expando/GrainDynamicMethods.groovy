@@ -17,7 +17,6 @@
 package com.sysgears.grain.expando
 
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Grain extension methods to standard Groovy classes registrar.  
