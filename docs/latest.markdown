@@ -635,6 +635,14 @@ The standard tags are:
     ***Example***
     ``` grain:nl
 ${include 'tags.html', [tags: post.categories]} ```
+1. **`md5`** - calculates md5 hash of a byte array
+
+    ***Parameters***
+      1. Byte array
+
+    ***Example***
+    ``` grain:nl
+md5(resource.render().bytes) ```
 
 ###Custom tag libraries
 You can add your own tags in your website theme. This can be made by implementing your tags as Groovy closures.
