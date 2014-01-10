@@ -95,8 +95,10 @@ class GrainTemplateEngine implements TemplateEngine, SiteChangeListener {
     public ResourceTemplate createTemplate(File file) throws RenderException {
         long startDocParse = System.currentTimeMillis()
         def extension = file.getExtension()
-        if (!(extension in ['html', 'md', 'markdown', 'xml', 'css', 'rst'])) {
-            if (!(extension in ['txt', 'js', 'rb'])) {
+        def codeEnabledFiles = config.code_enabled_files
+        def codeAllowedFiles = config.code_allowed_files
+        if (!codeEnabledFiles || !(codeEnabledFiles instanceof List) || !(extension in codeEnabledFiles)) {
+            if (!codeAllowedFiles || !(codeAllowedFiles instanceof List) || !(extension in codeAllowedFiles)) {
                 return rawTemplateFactory.create(file)
             }
             def firstLine = new BufferedReader(new FileReader(file)).readLine().trim()
