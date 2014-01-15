@@ -6,7 +6,7 @@
     </encoder>
   </appender>
 
-  <!-- logger name="com.sysgears.grain.highlight.pygments" level="DEBUG"/ -->
+  <!--logger name="com.sysgears.grain.service" level="TRACE"/-->
 
   <root level="INFO">
     <appender-ref ref="STDOUT" />

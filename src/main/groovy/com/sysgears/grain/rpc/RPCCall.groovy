@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package com.sysgears.grain.config
+package com.sysgears.grain.rpc
 
 /**
- * Service interface. 
+ * Container of RPC call information.
  */
-interface Service {
+public class RPCCall {
 
-    /**
-     * Starts the service.
-     */
-    void start()
-
-    /**
-     * Stops the service.
-     */
-    void stop()
+    /** Module name */
+    public String moduleName
+    
+    /** Procedure name */
+    public String procName
+    
+    /** Procedure arguments */
+    public List<String> args    
 }

@@ -14,26 +14,19 @@
  * limitations under the License.
  */
 
-package com.sysgears.grain.compass
+package com.sysgears.grain.rpc.ruby
 
 import com.sysgears.grain.service.Service
 import com.sysgears.grain.preview.ConfigChangeListener
+import com.sysgears.grain.rpc.RPCDispatcher
 
 /**
- * Interface for Compass integration.
+ * Interface for Ruby integration.
  */
-public interface Compass extends ConfigChangeListener, Service {
+public interface Ruby extends ConfigChangeListener, Service {
 
     /**
-     * Configures and launches Compass process
-     *
-     * @param mode compass mode
+     * Return RPC implementation.
      */
-    public void configureAndLaunch(String mode)
-
-    /**
-     * Awaits termination of Compass process
-     */
-    public void awaitTermination()
-
+    public RPCDispatcher getRpc()
 }

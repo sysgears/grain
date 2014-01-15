@@ -16,6 +16,8 @@
 
 package com.sysgears.grain.highlight.pygments
 
+import com.sysgears.grain.annotations.Manual
+
 import javax.inject.Inject
 
 /**
@@ -24,14 +26,14 @@ import javax.inject.Inject
 @javax.inject.Singleton
 class AutoPygments extends Pygments {
 
-    /** Pygments as a Python process integration implementation */ 
-    private @Inject PythonPygments pythonPygments
+    /** Pygments as a Python process integration implementation */
+    @Inject @Manual private PythonPygments pythonPygments
 
     /** Pygments as a Jython process integration implementation */
-    private @Inject JythonPygments jythonPygments
+    @Inject @Manual private JythonPygments jythonPygments
 
     /** Python system command finder */
-    private @Inject PythonFinder pythonFinder
+    @Inject private PythonFinder pythonFinder
 
     /** Currently used Pygments integration implementation */
     private Pygments pygments
@@ -60,6 +62,5 @@ class AutoPygments extends Pygments {
      */
     @Override
     public void stop() {
-        pygments.stop()
     }    
 }

@@ -17,7 +17,10 @@
 package com.sysgears.grain
 
 import com.google.inject.Guice
+import com.google.inject.spi.ConstructorBinding
+import com.google.inject.spi.DefaultElementVisitor
 import com.sysgears.grain.compass.CompassModule
+import com.sysgears.grain.service.Service
 import com.sysgears.grain.highlight.HighlightModule
 import com.sysgears.grain.init.GrainSettings
 import com.sysgears.grain.init.InitModule
@@ -27,6 +30,8 @@ import com.sysgears.grain.preview.DisabledPreviewModule
 import com.sysgears.grain.preview.PreviewModule
 import com.sysgears.grain.registry.RegistryModule
 import com.sysgears.grain.render.RenderModule
+import com.sysgears.grain.rpc.RPCModule
+import com.sysgears.grain.rpc.ruby.RubyModule
 import com.sysgears.grain.rst.RstModule
 
 /**
@@ -58,10 +63,12 @@ public class Main {
             t.printStackTrace()
             System.exit(1)
         }
-        
+
         // Create main dependency injector
         def injector = Guice.createInjector(
                 new AppModule(settings),
+                new RubyModule(),
+                new RPCModule(),
                 new MarkdownModule(),
                 new RstModule(),
                 new HighlightModule(),

@@ -23,6 +23,7 @@ import com.sysgears.grain.generate.SiteGenerator
 import com.sysgears.grain.init.GrainSettings
 import com.sysgears.grain.preview.ConfigChangeBroadcaster
 import com.sysgears.grain.preview.SitePreviewer
+import com.sysgears.grain.service.ServiceManager
 import com.sysgears.grain.util.FileUtils
 import groovy.util.logging.Slf4j
 
@@ -55,6 +56,9 @@ class Application {
 
     /** Grain dynamic methods registrar */
     @Inject private GrainDynamicMethods grainDynamicMethods
+    
+    /** Service manager */
+    @Inject private ServiceManager serviceManager
 
     /**
      * Prepares Grain engine to launch a command: binds additional methods
@@ -64,6 +68,9 @@ class Application {
 
         // Register Grain extension methods to Groovy classes
         grainDynamicMethods.register()
+        
+        // Start service manager
+        serviceManager.start()
         
         // Trigger config changed event to read Site config
         // and select implementations for Site features specified in config
@@ -79,6 +86,8 @@ class Application {
                 config.source_dir.collect { new File(it as String) }.findAll { !it.exists() })
         FileUtils.createDirs(dirs)
     }
+    
+    @Inject private ServiceManager manager
 
     /**
      * Launches the command specified in command line arguments. 

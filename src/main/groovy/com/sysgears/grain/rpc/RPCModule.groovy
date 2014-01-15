@@ -14,26 +14,24 @@
  * limitations under the License.
  */
 
-package com.sysgears.grain.compass
+package com.sysgears.grain.rpc
 
-import com.sysgears.grain.service.Service
-import com.sysgears.grain.preview.ConfigChangeListener
+import com.google.inject.AbstractModule
+import com.google.inject.assistedinject.FactoryModuleBuilder
 
 /**
- * Interface for Compass integration.
+ * Package-specific IoC config 
  */
-public interface Compass extends ConfigChangeListener, Service {
+class RPCModule extends AbstractModule {
+    
+    @Override
+    protected void configure() {
+        install(new FactoryModuleBuilder()
+                .implement(RPCDispatcher.class, RPCDispatcher.class)
+                .build(RPCDispatcherFactory.class))
 
-    /**
-     * Configures and launches Compass process
-     *
-     * @param mode compass mode
-     */
-    public void configureAndLaunch(String mode)
-
-    /**
-     * Awaits termination of Compass process
-     */
-    public void awaitTermination()
-
+        install(new FactoryModuleBuilder()
+                .implement(RPCExecutor.class, RPCExecutor.class)
+                .build(RPCExecutorFactory.class))
+    }
 }

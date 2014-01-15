@@ -16,105 +16,70 @@
 
 package com.sysgears.grain.compass
 
+import com.sysgears.grain.config.Config
 import com.sysgears.grain.init.GrainSettings
-import com.sysgears.grain.log.StreamLogger
-import com.sysgears.grain.log.StreamLoggerFactory
-import com.sysgears.grain.taglib.Site
+import com.sysgears.grain.rpc.ruby.Ruby
+import com.sysgears.grain.rpc.ruby.RubyFinder
 import groovy.io.FileType
 import groovy.util.logging.Slf4j
 
 import javax.inject.Inject
-import java.util.concurrent.CountDownLatch
+import javax.inject.Named
 
 /**
- * Compass integration as external Ruby process.
+ * Implementation of Compass integration.
  */
-@javax.inject.Singleton
 @Slf4j
-class RubyCompass extends AbstractCompass {
-
-    /** Site */
-    @Inject private Site site
+@javax.inject.Singleton
+public class RubyCompass extends AbstractCompass {
+    
+    /** Site config */
+    @Inject private Config config
+    
+    /** Rendering mutex */
+    @Inject @Named("renderMutex") private Object mutex
 
     /** Grain settings */
     @Inject private GrainSettings settings
-
-    /** Stream logger factory */
-    @Inject private StreamLoggerFactory streamLoggerFactory
-
-    /** Ruby system command finder */
-    @Inject private RubyFinder rubyFinder
     
+    /** Ruby implementation */
+    @Inject private Ruby ruby
+
+    /** Ruby command finder */
+    @Inject private RubyFinder rubyFinder
+
     /** Memorize Ruby command, to restart service when ruby command changes */
     private String rubyCmd
     
-    /** Process streams logger */
-    private StreamLogger streamLogger
-
-    /** Mutex for Compass starting */
-    private CountDownLatch latch
-    
-    /** Compass process thread */
-    private Thread thread
-    
     /**
-     * Launches compass in a separate thread.
+     * Launches compass in a separate Ruby thread 
      * <p>
      * If the thread is interrupted the process will be destroyed.
      *
      * @param mode compass mode
      */
-    public void launchCompass(String mode) {
-        latch = new CountDownLatch(1)
-        thread = Thread.start {
-            try {
-                log.info "Launching bundled Ruby Compass process in ${mode} mode..."
-                File gemDir = new File(settings.toolsHome, 'compass/gems')
-                File compassDir
-                def gemIncludes = [] as List<String>
+    protected void launchCompass(String mode) {
+        log.info 'Launching Ruby Compass process...'
 
-                gemDir.eachFileMatch(~'compass.*') { f ->
-                    compassDir = f
-                }
-
-                gemDir.eachFile(FileType.DIRECTORIES) {
-                    gemIncludes += ['-I', new File(it, 'lib').canonicalPath]
-                }
-                
-                rubyCmd = rubyFinder.cmd
-
-                def cmdline = [rubyCmd] + gemIncludes +
-                        [new File(compassDir, 'bin/compass').canonicalPath, mode] as List<String>
-                
-                log.info cmdline.join(' ')
-
-                def process = cmdline.execute([], new File(site.cache_dir.toString()))
-                streamLogger = streamLoggerFactory.create(process.in, process.err)
-                streamLogger.start()
-                latch.countDown()
-                def watcher = Thread.start {
-                    process.waitFor()
-                    streamLogger.interrupt()
-                }
-                streamLogger.join()
-                process.destroy()
-                watcher.join()
-                log.info 'Bundled Ruby Compass finished'
-            } catch (t) {
-                log.error("Error launching Compass", t)
-                latch.countDown()
-            }
+        rubyCmd = rubyFinder.cmd
+        
+        def rpc = ruby.rpc
+        
+        File gemDir = new File(settings.toolsHome, 'compass/gems')
+        gemDir.eachFile(FileType.DIRECTORIES) {
+            rpc.Ipc.add_lib_path new File(it, 'lib').canonicalPath
         }
+        rpc.Ipc.add_lib_path new File(settings.toolsHome, 'compass-bridge').canonicalPath
+
+        rpc.Ipc.require('compass_bridge')
+        rpc.CompassBridge.start(mode, "${config.cache_dir}")
     }
 
     /**
      * Awaits termination of Compass process
      */
     public void awaitTermination() {
-        if (latch) {
-            latch.await()
-            thread.join()
-        }
+        ruby.rpc.CompassBridge.await()
     }
 
     /**
@@ -124,25 +89,19 @@ class RubyCompass extends AbstractCompass {
      */
     @Override
     public void stop() {
-        if (latch) {
-            latch.await()
-            streamLogger?.interrupt()
-            thread.join()
-            latch = null
-        }
+        log.info 'Stopping Ruby Compass process...'
+        ruby.rpc.CompassBridge.stop()
+        log.info 'Ruby Compass process finished.'
     }
 
     /**
-     * Restart Ruby when ruby command changes
+     * @inheritDoc
      */
     @Override
     public void configChanged() {
-        if (latch) {
-            latch.await()
-            if (rubyCmd != rubyFinder.cmd) {
-                stop()
-                start()
-            }
-        }
+        /* if (rubyCmd != rubyFinder.cmd) {
+            stop()
+            start()
+        } */
     }
 }

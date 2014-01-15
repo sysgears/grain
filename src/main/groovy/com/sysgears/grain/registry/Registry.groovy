@@ -17,7 +17,7 @@
 package com.sysgears.grain.registry
 
 import com.sysgears.grain.config.Config
-import com.sysgears.grain.config.Service
+import com.sysgears.grain.service.Service
 import com.sysgears.grain.preview.FileChangeListener
 import com.sysgears.grain.render.TemplateEngine
 import groovy.io.FileType

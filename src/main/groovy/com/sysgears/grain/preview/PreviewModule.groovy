@@ -24,7 +24,6 @@ import com.google.inject.name.Names
 import com.sysgears.grain.annotations.Uncached
 import com.sysgears.grain.compass.Compass
 import com.sysgears.grain.compass.RubyCompass
-import com.sysgears.grain.compass.RubyFinder
 import com.sysgears.grain.config.ConfigUpdater
 import com.sysgears.grain.highlight.Highlighter
 import com.sysgears.grain.highlight.pygments.Pygments
@@ -36,6 +35,8 @@ import com.sysgears.grain.registry.Registry
 import com.sysgears.grain.registry.URLRegistry
 import com.sysgears.grain.render.CachedTemplateEngine
 import com.sysgears.grain.render.GrainTemplateEngine
+import com.sysgears.grain.rpc.ruby.Ruby
+import com.sysgears.grain.rpc.ruby.RubyFinder
 import com.sysgears.grain.rst.RstProcessor
 
 /**
@@ -52,11 +53,12 @@ class PreviewModule extends AbstractModule {
     @Provides @javax.inject.Singleton
     public ConfigChangeBroadcaster provideConfigChangeBroadcaster(
             ConfigUpdater configUpdater, Highlighter highlighter,  @Uncached Highlighter uncachedHighlighter,
-            Pygments pygments, Compass compass, MarkdownProcessor markdownProcessor, RstProcessor rstProcessor,
-            PythonFinder pythonFinder, RubyFinder rubyFinder, PythonPygments pythonPygments,
-            RubyCompass rubyCompass) {
-        return new ConfigChangeBroadcaster(configUpdater, highlighter, uncachedHighlighter, pygments, compass,
-                markdownProcessor, rstProcessor, pythonFinder, rubyFinder, pythonPygments, rubyCompass)
+            Pygments pygments, MarkdownProcessor markdownProcessor, RstProcessor rstProcessor,
+            PythonFinder pythonFinder, RubyFinder rubyFinder, PythonPygments pythonPygments, Ruby ruby,
+            RubyCompass rubyCompass, Compass compass) {
+        return new ConfigChangeBroadcaster(configUpdater, highlighter, uncachedHighlighter, pygments,
+                markdownProcessor, rstProcessor, pythonFinder, rubyFinder, pythonPygments,
+                ruby, rubyCompass, compass)
     }
 
     @Provides @javax.inject.Singleton

@@ -14,26 +14,20 @@
  * limitations under the License.
  */
 
-package com.sysgears.grain.compass
+package com.sysgears.grain.rpc
 
-import com.sysgears.grain.service.Service
-import com.sysgears.grain.preview.ConfigChangeListener
+import groovyx.gpars.actor.DefaultActor
 
 /**
- * Interface for Compass integration.
+ * RPCExecutor factory
  */
-public interface Compass extends ConfigChangeListener, Service {
+public interface RPCExecutorFactory {
 
     /**
-     * Configures and launches Compass process
+     * Creates an instance of RPCExecutor
      *
-     * @param mode compass mode
+     * @param is IPC input stream
+     * @param os IPC output stream
      */
-    public void configureAndLaunch(String mode)
-
-    /**
-     * Awaits termination of Compass process
-     */
-    public void awaitTermination()
-
+    public RPCExecutor create(final InputStream is, final OutputStream os)
 }

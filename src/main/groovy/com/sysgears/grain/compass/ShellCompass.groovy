@@ -96,6 +96,7 @@ class ShellCompass extends AbstractCompass {
     @Override
     public void stop() {
         if (latch) {
+            log.info 'Stopping Shell Compass process...'
             latch.await()
             streamLogger.interrupt()
             thread.join()

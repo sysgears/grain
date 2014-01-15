@@ -22,6 +22,7 @@ import com.google.inject.assistedinject.FactoryModuleBuilder
 import com.sysgears.grain.init.GrainSettings
 import com.sysgears.grain.log.StreamLogger
 import com.sysgears.grain.log.StreamLoggerFactory
+import com.sysgears.grain.service.Service
 import org.codehaus.groovy.control.CompilerConfiguration
 import org.yaml.snakeyaml.Yaml
 

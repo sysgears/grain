@@ -16,7 +16,7 @@
 
 package com.sysgears.grain.highlight.pygments
 
-import com.sysgears.grain.config.Service
+import com.sysgears.grain.service.Service
 import com.sysgears.grain.highlight.Highlighter
 import com.sysgears.grain.init.GrainSettings
 import com.sysgears.grain.preview.ConfigChangeListener

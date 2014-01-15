@@ -46,15 +46,12 @@ abstract class AbstractCompass implements Compass {
     public void configureAndLaunch(String mode) {
         def compassConfig
 
-        synchronized (mutex) {
-            compassConfig = [location: '/config.rb'].render().full
+        compassConfig = [location: '/config.rb'].render().full
 
-            def configFile = new File(config.cache_dir as String, 'config.rb')
-            if (!configFile.exists() || configFile.text != compassConfig) {
-                configFile.write(compassConfig)
-            }
+        def configFile = new File(config.cache_dir as String, 'config.rb')
+        if (!configFile.exists() || configFile.text != compassConfig) {
+            configFile.write(compassConfig)
         }
-
 
         launchCompass(mode)
     }
@@ -66,7 +63,7 @@ abstract class AbstractCompass implements Compass {
      *
      * @param mode compass mode
      */
-    abstract void launchCompass(String mode)
+    abstract protected void launchCompass(String mode)
 
     /**
      * @inheritDoc

@@ -27,7 +27,7 @@ public class PythonFinder extends ShellCommandFinder {
      */
     @Override
     public List<String> getUserConfiguredCandidates() {
-        config.features?.python?.cmd_candidates ?: []
+        config.python?.cmd_candidates ?: []
     }
 
     /**

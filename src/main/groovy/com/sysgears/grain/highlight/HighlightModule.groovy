@@ -17,6 +17,7 @@
 package com.sysgears.grain.highlight
 
 import com.google.inject.AbstractModule
+import com.google.inject.Injector
 import com.google.inject.Provides
 import com.sysgears.grain.annotations.Uncached
 import com.sysgears.grain.config.Config
@@ -29,27 +30,27 @@ import com.sysgears.grain.highlight.pygments.*
 class HighlightModule extends AbstractModule {
 
     @Provides @javax.inject.Singleton
-    public Pygments providePygments(Config config,
+    public Pygments providePygments(Injector injector,
             PythonPygments python, JythonPygments jython,
             ShellPygments shell, AutoPygments auto, FakePygments fake) {
-        new ImplBinder<Pygments>(Pygments.class, config, 'features.pygments', 
+        new ImplBinder<Pygments>(Pygments.class, 'features.pygments', 
                 [python: python, jython: jython,
-                 shell: shell, default: auto, none: fake]).proxy
+                 shell: shell, default: auto, none: fake], injector).proxy
     }
 
     @Provides @javax.inject.Singleton @Uncached
-    public Highlighter provideUncachedHighlighter(Config config,
+    public Highlighter provideUncachedHighlighter(Injector injector,
             Pygments pygments, FakeHighlighter fake) {
-        new ImplBinder<Highlighter>(Highlighter.class, config, 'features.highlight',
-                [pygments: pygments, default: fake]).proxy
+        new ImplBinder<Highlighter>(Highlighter.class, 'features.highlight',
+                [pygments: pygments, default: fake], injector).proxy
     }
 
     @Provides @javax.inject.Singleton
-    public Highlighter provideHighlighter(Config config,
+    public Highlighter provideHighlighter(Injector injector,
             @Uncached Highlighter uncachedHighlighter,
             CachedHighlighter cachedHighlighter) {
-        new ImplBinder<Highlighter>(Highlighter.class, config, 'features.cache_highlight',
-                [default: cachedHighlighter, false: uncachedHighlighter]).proxy
+        new ImplBinder<Highlighter>(Highlighter.class, 'features.cache_highlight',
+                [default: cachedHighlighter, false: uncachedHighlighter], injector).proxy
     }
 
     @Override

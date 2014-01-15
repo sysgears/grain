@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.sysgears.grain.compass
+package com.sysgears.grain.rpc.ruby
 
 import com.google.inject.AbstractModule
 import com.google.inject.Injector
@@ -25,13 +25,13 @@ import com.sysgears.grain.config.ImplBinder
 /**
  * Package-specific IoC config 
  */
-class CompassModule extends AbstractModule {
+class RubyModule extends AbstractModule {
 
     @Provides @javax.inject.Singleton
-    public Compass provideCompass(Injector injector,
-            FakeCompass fake, RubyCompass ruby, ShellCompass shell) {
-        new ImplBinder<Compass>(Compass.class, 'features.compass',
-                [default: fake, auto: ruby, jruby: ruby, ruby: ruby, shell: shell], injector).proxy
+    public Ruby provideRuby(Injector injector,
+            AutoRuby auto, RMIRuby rmi, JRuby jruby) {
+        new ImplBinder<Ruby>(Ruby.class, 'features.ruby',
+                [default: auto, auto: auto, ruby: rmi, jruby: jruby], injector).proxy
     }
 
     @Override

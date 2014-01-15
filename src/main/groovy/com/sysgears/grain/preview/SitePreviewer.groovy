@@ -18,7 +18,7 @@ package com.sysgears.grain.preview
 
 import com.sysgears.grain.compress.ResourceCompressor
 import com.sysgears.grain.config.Config
-import com.sysgears.grain.config.Service
+import com.sysgears.grain.service.Service
 import com.sysgears.grain.registry.Registry
 import com.sysgears.grain.registry.URLRegistry
 import groovy.util.logging.Slf4j
@@ -77,7 +77,6 @@ class SitePreviewer implements Service {
         } catch (t) {
             t.printStackTrace()
         }
-    
     
         def jetty = new Server(jettyPort)
     

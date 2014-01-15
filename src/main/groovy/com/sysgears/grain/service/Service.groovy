@@ -14,26 +14,20 @@
  * limitations under the License.
  */
 
-package com.sysgears.grain.compass
-
-import com.sysgears.grain.service.Service
-import com.sysgears.grain.preview.ConfigChangeListener
+package com.sysgears.grain.service
 
 /**
- * Interface for Compass integration.
+ * Service interface. 
  */
-public interface Compass extends ConfigChangeListener, Service {
+interface Service {
 
     /**
-     * Configures and launches Compass process
-     *
-     * @param mode compass mode
+     * Starts the service.
      */
-    public void configureAndLaunch(String mode)
+    void start()
 
     /**
-     * Awaits termination of Compass process
+     * Stops the service.
      */
-    public void awaitTermination()
-
+    void stop()
 }

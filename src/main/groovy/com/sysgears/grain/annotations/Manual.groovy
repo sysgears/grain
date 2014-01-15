@@ -14,26 +14,19 @@
  * limitations under the License.
  */
 
-package com.sysgears.grain.compass
 
-import com.sysgears.grain.service.Service
-import com.sysgears.grain.preview.ConfigChangeListener
+
+package com.sysgears.grain.annotations
+
+import java.lang.annotation.Retention
+import java.lang.annotation.Target
+
+import static java.lang.annotation.ElementType.*
+import static java.lang.annotation.RetentionPolicy.RUNTIME
 
 /**
- * Interface for Compass integration.
+ * Annotation to specify that service should be started only when one of its method is used.
  */
-public interface Compass extends ConfigChangeListener, Service {
-
-    /**
-     * Configures and launches Compass process
-     *
-     * @param mode compass mode
-     */
-    public void configureAndLaunch(String mode)
-
-    /**
-     * Awaits termination of Compass process
-     */
-    public void awaitTermination()
-
-}
+@Target([FIELD])
+@Retention(RUNTIME)
+public @interface Manual {}

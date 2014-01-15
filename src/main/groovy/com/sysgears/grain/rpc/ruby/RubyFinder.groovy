@@ -1,4 +1,4 @@
-package com.sysgears.grain.compass
+package com.sysgears.grain.rpc.ruby
 
 import com.sysgears.grain.config.Config
 import com.sysgears.grain.util.ShellCommandFinder
@@ -27,7 +27,7 @@ public class RubyFinder extends ShellCommandFinder {
      */
     @Override
     List<String> getUserConfiguredCandidates() {
-        config.features?.ruby?.cmd_candidates ?: []
+        config.ruby?.cmd_candidates ?: []
     }
 
     /**
