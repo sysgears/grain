@@ -20,6 +20,7 @@ import com.google.inject.Guice
 import com.google.inject.spi.ConstructorBinding
 import com.google.inject.spi.DefaultElementVisitor
 import com.sysgears.grain.compass.CompassModule
+import com.sysgears.grain.rpc.python.PythonModule
 import com.sysgears.grain.service.Service
 import com.sysgears.grain.highlight.HighlightModule
 import com.sysgears.grain.init.GrainSettings
@@ -68,6 +69,7 @@ public class Main {
         def injector = Guice.createInjector(
                 new AppModule(settings),
                 new RubyModule(),
+                new PythonModule(),
                 new RPCModule(),
                 new MarkdownModule(),
                 new RstModule(),

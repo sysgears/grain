@@ -52,8 +52,8 @@ dependencies {
     compile 'org.yaml:snakeyaml:1.11'
     compile 'org.codehaus.gpars:gpars:1.0.0'
     compile 'com.github.rjeschke:txtmark:0.9'
-    compile 'org.python:jython-standalone:2.7-b1'
-    compile 'org.jruby:jruby-complete:1.7.9'
+    compile 'org.python:jython:2.5.2'
+    compile 'org.jruby:jruby:1.7.9'
     compile 'com.googlecode.htmlcompressor:htmlcompressor:1.5.2'
     compile('com.yahoo.platform.yui:yuicompressor:2.4.7') {
         exclude group: 'rhino'

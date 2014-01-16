@@ -1,4 +1,4 @@
-package com.sysgears.grain.highlight.pygments
+package com.sysgears.grain.rpc.python
 
 import com.sysgears.grain.config.Config
 import com.sysgears.grain.util.ShellCommandFinder

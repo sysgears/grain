@@ -26,27 +26,18 @@ public class TCPUtils {
      * 
      * @return first available TCP port number  
      */
-    public static Integer getFirstAvailablePort() {
+    public static ServerSocket getFirstAvailablePort() {
         def port = 65535
 
         while (port > 1024) {
-            def socket = null
             try {
-                socket = new ServerSocket(port);
-                break
+                return new ServerSocket(port);
             } catch (IOException ignored) {
                 port--
-                continue
-            } finally {
-                if (socket != null) {
-                    try {
-                        socket.close();
-                    } catch (IOException ignored) {}
-                }
-            }
+            } 
         }
 
-        port == 1024 ? null : port
+        return null
     }
 
 }

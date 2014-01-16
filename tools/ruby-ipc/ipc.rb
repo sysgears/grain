@@ -61,6 +61,7 @@ class Ipc
 end
 
 # Instantiate IPC implementation and launch processing loop
+STDERR.puts "Starting Ruby IPC on port " + ARGV[0]
 socket = TCPSocket.open('localhost', ARGV[0])
 ipc = Ipc.new(socket)
 ipc.run

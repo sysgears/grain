@@ -20,7 +20,6 @@ import com.google.inject.AbstractModule
 import com.google.inject.Injector
 import com.google.inject.Provides
 import com.sysgears.grain.annotations.Uncached
-import com.sysgears.grain.config.Config
 import com.sysgears.grain.config.ImplBinder
 import com.sysgears.grain.highlight.pygments.*
 
@@ -31,11 +30,11 @@ class HighlightModule extends AbstractModule {
 
     @Provides @javax.inject.Singleton
     public Pygments providePygments(Injector injector,
-            PythonPygments python, JythonPygments jython,
-            ShellPygments shell, AutoPygments auto, FakePygments fake) {
+            PythonPygments python, ShellPygments shell,
+            FakePygments fake) {
         new ImplBinder<Pygments>(Pygments.class, 'features.pygments', 
-                [python: python, jython: jython,
-                 shell: shell, default: auto, none: fake], injector).proxy
+                [python: python, jython: python,
+                 shell: shell, default: python, none: fake], injector).proxy
     }
 
     @Provides @javax.inject.Singleton @Uncached

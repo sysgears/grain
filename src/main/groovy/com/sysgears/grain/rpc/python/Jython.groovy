@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.sysgears.grain.rpc.ruby
+package com.sysgears.grain.rpc.python
 
 import com.sysgears.grain.init.GrainSettings
 import com.sysgears.grain.log.LoggingOutputStream
@@ -23,19 +23,23 @@ import com.sysgears.grain.rpc.RPCDispatcherFactory
 import com.sysgears.grain.rpc.RPCExecutorFactory
 import com.sysgears.grain.rpc.TCPUtils
 import groovy.util.logging.Slf4j
-import org.jruby.Ruby
-import org.jruby.RubyInstanceConfig
-import org.jruby.exceptions.RaiseException
+import org.python.core.Py
+import org.python.core.PyObject
+import org.python.core.PyString
+import org.python.core.PySystemState
+import org.python.util.InteractiveConsole
+import org.python.util.PythonInterpreter
+import org.python.util.jython
 
 import javax.inject.Inject
 import java.util.concurrent.CountDownLatch
 
 /**
- * JRuby launcher.
+ * Jython launcher.
  */
 @javax.inject.Singleton
 @Slf4j
-public class JRuby implements com.sysgears.grain.rpc.ruby.Ruby {
+public class Jython implements Python {
 
     /** Grain settings */
     @Inject private GrainSettings settings
@@ -46,86 +50,66 @@ public class JRuby implements com.sysgears.grain.rpc.ruby.Ruby {
     /** RPC dispatcher factory */
     @Inject private RPCDispatcherFactory dispatcherFactory
 
-    /** JRuby interpreter instance */
-    private Ruby ruby
+    /** Jython interpreter instance */
+    private PythonInterpreter python
 
-    /** JRuby RPC implementation */
+    /** Jython RPC implementation */
     private RPCDispatcher rpc
 
-    /** Mutex for JRuby starting */
+    /** Mutex for Jython starting */
     private CountDownLatch latch
 
-    /** JRuby thread */
+    /** Jython thread */
     private Thread thread
-    
-    /** Whether stop is in process */
-    private volatile stopInProcess = false
 
     /**
-     * Starts JRuby process 
+     * Starts Jython process 
      */
     public void start() {
         latch = new CountDownLatch(1)
         thread = Thread.start {
             ServerSocket serverSocket = null
             try {
-                log.info "Launching JRuby process..."
-
-                System.setProperty('jruby.compile.fastest', 'true')
-
-                def config = new RubyInstanceConfig()
+                log.info "Launching Jython process..."
 
                 serverSocket = TCPUtils.firstAvailablePort
                 if (!serverSocket)
                     throw new RuntimeException("Unable to allocate socket for IPC, all TCP ports are busy")
                 def port = serverSocket.getLocalPort()
-                
-                def args = ["${settings.toolsHome}/ruby-ipc/ipc.rb", port] as String[]
-                
+
+                def args = ["${settings.toolsHome}/python-ipc/ipc.py", port] as String[]
+
                 log.info args.join(' ')
-                
-                config.processArguments(args)
 
-                config.setOutput(new PrintStream(new LoggingOutputStream()))
-                config.setError(new PrintStream(new LoggingOutputStream()))
+                PySystemState.initialize(new Properties(), new Properties(), args)
 
-                ruby = Ruby.newInstance(config)
-
-                def inp = config.getScriptSource();
-                config.processArguments(config.parseShebangOptions(inp));
-                def filename = config.displayedFileName();
+                python = new PythonInterpreter()
+                python.setIn(new ByteArrayInputStream())
+                python.setOut(new LoggingOutputStream())
+                python.setErr(new LoggingOutputStream())
                 
                 Thread.start {
                     def socket = serverSocket.accept()
 
                     def executor = executorFactory.create(socket.inputStream, socket.outputStream)
                     executor.start()
-                    
+
                     rpc = dispatcherFactory.create(executor)
 
                     latch.countDown()
                 }
-                
+
                 try {
-                    ruby.runFromMain(inp, filename)
-                } catch (RaiseException re) {
-                    if (re.exception.toString() != "exit" && re.exception.toString() != "Interrupt") {
-                        log.error("Error while running JRuby", re)
-                    } else if (re.exception.toString() == "exit" && !stopInProcess) {
-                        // User pressed CTRL-C which was intercepted by JRuby, terminating Grain
-                        Thread.startDaemon {
-                            System.exit(0)
-                        }
-                    }
+                    jython.run(args)
                 } catch (t) {
-                    log.error("Error while running JRuby", t)
+                    log.error("Error while running Jython", t)
                 } finally {
                     if (serverSocket != null)
                         serverSocket.close()
                 }
-                log.info 'JRuby process finished...'
+                log.info 'Jython process finished...'
             } catch (t) {
-                log.error("Error launching JRuby", t)
+                log.error("Error launching Jython", t)
                 latch.countDown()
             }
         }
@@ -139,12 +123,10 @@ public class JRuby implements com.sysgears.grain.rpc.ruby.Ruby {
     @Override
     public void stop() {
         if (latch) {
-            log.info 'Stopping JRuby process...'
+            log.info 'Stopping Jython process...'
             latch.await()
-            stopInProcess = true
-            ruby?.threadService?.mainThread?.internalRaise(ruby?.interrupt)
-            thread.join()
-            stopInProcess = false
+            python?.cleanup()
+            python = null
             latch = null
         }
     }
@@ -161,5 +143,5 @@ public class JRuby implements com.sysgears.grain.rpc.ruby.Ruby {
     @Override
     void configChanged() {
     }
-
-}    
+    
+}

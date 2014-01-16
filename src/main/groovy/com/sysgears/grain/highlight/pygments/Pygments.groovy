@@ -32,9 +32,6 @@ import javax.inject.Inject
 @Slf4j
 abstract class Pygments implements Highlighter, ConfigChangeListener, Service {
 
-    /** Pygments thread */
-    protected Thread thread
-
     /** Site instance */
     private @Inject Site site
 
@@ -42,16 +39,16 @@ abstract class Pygments implements Highlighter, ConfigChangeListener, Service {
     private @Inject GrainSettings settings
 
     /**
-     * Launches pygments in a separate thread 
-     * <p>
-     * If the thread is interrupted the process will be destroyed.
+     * Launches pygments 
      */
-    public abstract void start()
+    public void start() {
+    }
 
     /**
-     * Terminates pygments thread 
+     * Terminates pygments  
      */
-    public abstract void stop()
+    public void stop() {
+    }
 
     /**
      * Highlights code using Pygments 

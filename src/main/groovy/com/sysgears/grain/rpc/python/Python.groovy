@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package com.sysgears.grain.highlight.pygments
+package com.sysgears.grain.rpc.python
+
+import com.sysgears.grain.preview.ConfigChangeListener
+import com.sysgears.grain.rpc.RPCDispatcher
+import com.sysgears.grain.service.Service
+
 /**
- * Fake pygments integration, i.e. does nothing
+ * Interface for Python integration.
  */
-@javax.inject.Singleton
-class FakePygments extends Pygments {
+public interface Python extends ConfigChangeListener, Service {
 
     /**
-     * @inheritDoc
+     * Return RPC implementation.
      */
-    @Override
-    String highlight(String code, String language) {
-        code
-    }
+    public RPCDispatcher getRpc()
 }

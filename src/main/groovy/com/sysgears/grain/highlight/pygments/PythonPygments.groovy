@@ -17,50 +17,26 @@
 package com.sysgears.grain.highlight.pygments
 
 import com.sysgears.grain.init.GrainSettings
-import com.sysgears.grain.log.StreamLogger
-import com.sysgears.grain.log.StreamLoggerFactory
+import com.sysgears.grain.rpc.python.Python
 import groovy.util.logging.Slf4j
-import net.sf.json.JSONObject
 
 import javax.inject.Inject
-import java.util.concurrent.CountDownLatch
 
 /**
- * Pygments code highlighter integration as external Python process.
+ * Implementation of Pygments highlighter integration.
  */
-@javax.inject.Singleton
 @Slf4j
-class PythonPygments extends Pygments {
-
-    /** Random number generator */
-    protected @Inject Random random
-
-    /** Mentos standard output writer */
-    protected BufferedOutputStream bos
-
-    /** Mentos standard input reader */
-    protected DataInputStream dis
-
-    /** Whether use bundled pygments or system-supplied pygments */
-    protected boolean bundledPygments
-
-    /** Stream logger factory */
-    @Inject private StreamLoggerFactory streamLoggerFactory
+@javax.inject.Singleton
+public class PythonPygments extends Pygments {
 
     /** Grain settings */
     @Inject private GrainSettings settings
 
-    /** Python system command finder */
-    @Inject private PythonFinder pythonFinder
+    /** Python implementation */
+    @Inject private Python python
 
-    /** Process streams logger */
-    private StreamLogger streamLogger
-
-    /** Mutex for pygments starting and using */
-    private CountDownLatch latch
-
-    /** Memorize Python command, to restart service when python command changes */
-    private String pythonCmd
+    /** Whether use bundled pygments or system-supplied pygments */
+    protected boolean bundledPygments
 
     /**
      * Creates an instance of pygments code highlighter
@@ -87,139 +63,11 @@ class PythonPygments extends Pygments {
      * @return highlighted code HTML
      */
     public String highlight(String code, String language) {
-        try {
-            if (latch == null) {
-                launchPygments()
-            }
-            latch.await()
-            // Generate random ID for Mentos which is used to check that input and output are in sync
-            def id = new String((1..8).collect { (65 + random.nextInt(25)) as char } as char[])
-            // Encode source code
-            def sourceBytes = "${id}  ${code.replace('\r', '')}  ${id}".bytes
-            // Pass various options to highlight pygments method
-            def kwargs = [id: id, bytes: sourceBytes.length, options: [outencoding: 'utf-8'], lexer: language]
-            // Create header for Mentos
-            def hdrBytes = JSONObject.fromObject([method: 'highlight', args: null, kwargs: kwargs]).toString().bytes
-            // Format size of the header as binary string
-            def sizeBytes = String.format("%32s", Integer.toBinaryString(hdrBytes.length)).replace(' ', '0').bytes
-
-            // Write request to Mentos
-            bos.write(sizeBytes)
-            bos.write(hdrBytes)
-            bos.write(sourceBytes)
-            bos.flush()
-            
-            if (log.debugEnabled) {
-                log.debug(new String(sizeBytes) + new String(hdrBytes) + new String(sourceBytes))
-            }
-
-            // Parse response from Mentos
-
-            // Get header size
-            def headerSizeData = new byte[33]
-            dis.readFully(headerSizeData)
-            def headerSize = Integer.parseInt(new String(headerSizeData).trim(), 2) + 1
-            log.debug new String(headerSizeData) + " >> " + headerSize
-
-            // Get header
-            def headerData = new byte[headerSize]
-            dis.readFully(headerData)
-            log.debug new String(headerData)
-            def header = JSONObject.fromObject(new String(headerData))
-
-            if (header.error) {
-                throw new RuntimeException("Error from mentos: [${header.error}]")
-            }
-
-            // Get highlighted code
-            def codeData = new byte[header.bytes]
-            dis.readFully(codeData)
-            def str = new String(codeData).trim()
-            log.debug str
-
-            // Check that ID's match and hence input and output are in sync
-            if (str[-8..-1] != id) {
-                throw new RuntimeException("ID mismatch with Mentos, expected ID: ${id}, actual: ${str[-8..-1]}")
-            }
-
-            // Return highlighted code
-            def highligting = str[10..str.length() - 11]
-
-            highligting.trim()
-        } catch (t) {
-            log.error("Error highlighting code:\n ${code}", t)
-            null
+        def rpc = python.rpc
+        if (bundledPygments) {
+            rpc.ipc.add_lib_path new File(settings.toolsHome, 'pygments-main').canonicalPath
         }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public void launchPygments() {
-        latch = new CountDownLatch(1)
-        thread = Thread.start {
-            try {
-                log.info 'Launching Python pygments...'
-                def env = ["SIMPLEJSON_HOME=${new File(settings.toolsHome, 'simplejson').canonicalPath}"]
-                if (bundledPygments) {
-                    env += ["PYGMENTS_HOME=${new File(settings.toolsHome, 'pygments-main').canonicalPath}"]
-                }
-                def process = Runtime.runtime.exec([pythonFinder.cmd, "mentos.py"] as String[],
-                        env as String[],
-                        new File(settings.toolsHome, 'mentos'))
-                bos = new BufferedOutputStream(process.out)
-                dis = new DataInputStream(process.in)
-                latch.countDown()
-                streamLogger = streamLoggerFactory.create(process.err)
-                streamLogger.start()
-                def watcher = Thread.start {
-                    process.waitFor()
-                    streamLogger.interrupt()
-                }
-                streamLogger.join()
-                process.destroy()
-                watcher.join()
-                bos.close()
-                dis.close()
-                log.info 'Python pygments finished'
-            } catch (t) {
-                log.error("Error launching Pygments", t)
-                latch.countDown()
-            }
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Override
-    public void start() {
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Override
-    public void stop() {
-        if (latch) {
-            latch.await()
-            streamLogger?.interrupt()
-            thread.join()
-            latch = null
-        }
-    }
-
-    /**
-     * Restart Python when python command changes
-     */
-    @Override
-    public void configChanged() {
-        if (latch) {
-            latch.await()
-            if (pythonCmd != pythonFinder.cmd) {
-                stop()
-                start()
-            }
-        }
+        rpc.ipc.add_lib_path new File(settings.toolsHome, 'pygments-bridge').canonicalPath
+        rpc.pygments_bridge.highlight(code, language)
     }
 }

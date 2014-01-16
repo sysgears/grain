@@ -27,7 +27,8 @@ import com.sysgears.grain.compass.RubyCompass
 import com.sysgears.grain.config.ConfigUpdater
 import com.sysgears.grain.highlight.Highlighter
 import com.sysgears.grain.highlight.pygments.Pygments
-import com.sysgears.grain.highlight.pygments.PythonFinder
+import com.sysgears.grain.rpc.python.Python
+import com.sysgears.grain.rpc.python.PythonFinder
 import com.sysgears.grain.highlight.pygments.PythonPygments
 import com.sysgears.grain.markdown.MarkdownProcessor
 import com.sysgears.grain.registry.CachedHeaderParser
@@ -54,11 +55,12 @@ class PreviewModule extends AbstractModule {
     public ConfigChangeBroadcaster provideConfigChangeBroadcaster(
             ConfigUpdater configUpdater, Highlighter highlighter,  @Uncached Highlighter uncachedHighlighter,
             Pygments pygments, MarkdownProcessor markdownProcessor, RstProcessor rstProcessor,
-            PythonFinder pythonFinder, RubyFinder rubyFinder, PythonPygments pythonPygments, Ruby ruby,
+            PythonFinder pythonFinder, Python python, RubyFinder rubyFinder, Ruby ruby,
+            PythonPygments pythonPygments, 
             RubyCompass rubyCompass, Compass compass) {
         return new ConfigChangeBroadcaster(configUpdater, highlighter, uncachedHighlighter, pygments,
-                markdownProcessor, rstProcessor, pythonFinder, rubyFinder, pythonPygments,
-                ruby, rubyCompass, compass)
+                markdownProcessor, rstProcessor, pythonFinder, python, rubyFinder, ruby, pythonPygments,
+                rubyCompass, compass)
     }
 
     @Provides @javax.inject.Singleton

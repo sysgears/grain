@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.sysgears.grain.rpc.ruby
+package com.sysgears.grain.rpc.python
 
 import com.sysgears.grain.init.GrainSettings
 import com.sysgears.grain.log.StreamLogger
@@ -29,20 +29,20 @@ import javax.inject.Inject
 import java.util.concurrent.CountDownLatch
 
 /**
- * RMI Ruby process launcher.
+ * CPython process launcher.
  */
 @javax.inject.Singleton
 @Slf4j
-public class RMIRuby implements Ruby {
-
-    /** Grain settings */
-    @Inject private GrainSettings settings
+public class CPython implements Python {
 
     /** Stream logger factory */
     @Inject private StreamLoggerFactory streamLoggerFactory
 
-    /** Ruby system command finder */
-    @Inject private RubyFinder rubyFinder
+    /** Grain settings */
+    @Inject private GrainSettings settings
+
+    /** Python system command finder */
+    @Inject private PythonFinder pythonFinder
 
     /** RPC executor factory */
     @Inject private RPCExecutorFactory executorFactory
@@ -50,39 +50,39 @@ public class RMIRuby implements Ruby {
     /** RPC dispatcher factory */
     @Inject private RPCDispatcherFactory dispatcherFactory
 
-    /** Memorize Ruby command, to restart service when ruby command changes */
-    private String rubyCmd
-
-    /** Ruby RPC implementation */
+    /** Python RPC implementation */
     private RPCDispatcher rpc
+
+    /** CPython thread */
+    private Thread thread
 
     /** Process streams logger */
     private StreamLogger streamLogger
 
-    /** Mutex for RMI Ruby starting */
+    /** Mutex for pygments starting and using */
     private CountDownLatch latch
 
-    /** RMI Ruby process thread */
-    private Thread thread
+    /** Memorize Python command, to restart service when python command changes */
+    private String pythonCmd
 
     /**
-     * Starts RMI Ruby process
+     * Starts CPython process.
      */
     public void start() {
         latch = new CountDownLatch(1)
         thread = Thread.start {
             def serverSocket = null
             try {
-                log.info "Launching RMI Ruby process..."
-                
-                rubyCmd = rubyFinder.cmd
+                log.info 'Launching Python process...'
+
+                pythonCmd = pythonFinder.cmd
 
                 serverSocket = TCPUtils.firstAvailablePort
                 if (!serverSocket)
                     throw new RuntimeException("Unable to allocate socket for IPC, all TCP ports are busy")
                 def port = serverSocket.getLocalPort()
-                
-                def cmdline = [rubyCmd, "${settings.toolsHome}/ruby-ipc/ipc.rb", port]
+
+                def cmdline = [pythonCmd, "${settings.toolsHome}/python-ipc/ipc.py", port]
 
                 log.info cmdline.join(' ')
 
@@ -90,9 +90,9 @@ public class RMIRuby implements Ruby {
 
                 def socket = serverSocket.accept()
 
-                def executor = executorFactory.create(socket.inputStream, socket.outputStream) 
+                def executor = executorFactory.create(socket.inputStream, socket.outputStream)
                 executor.start()
-                
+
                 rpc = dispatcherFactory.create(executor)
                 streamLogger = streamLoggerFactory.create(process.in, process.err)
                 streamLogger.start()
@@ -104,9 +104,9 @@ public class RMIRuby implements Ruby {
                 streamLogger.join()
                 process.destroy()
                 watcher.join()
-                log.info 'RMI Ruby process finished...'
+                log.info 'Python process finished...'
             } catch (t) {
-                log.error("Error running RMI Ruby", t)
+                log.error("Error running Python", t)
                 latch.countDown()
             } finally {
                 if (serverSocket != null)
@@ -116,14 +116,14 @@ public class RMIRuby implements Ruby {
     }
 
     /**
-     * Shuts down RMI Ruby process 
+     * Shuts down CPython process 
      *
      * @throws Exception in case some error occur
      */
     @Override
     public void stop() {
         if (latch) {
-            log.info 'Stopping RMI Ruby process...'
+            log.info 'Stopping Python process...'
             latch.await()
             streamLogger?.interrupt()
             thread.join()
@@ -132,7 +132,7 @@ public class RMIRuby implements Ruby {
     }
 
     /**
-     * @inheritDoc
+     * @inheritDoc 
      */
     @Override
     public RPCDispatcher getRpc() {
@@ -144,13 +144,13 @@ public class RMIRuby implements Ruby {
     }
 
     /**
-     * Restart Ruby when ruby command changes
+     * Restart Python when python command changes
      */
     @Override
     public void configChanged() {
         if (latch) {
             latch.await()
-            if (rubyCmd != rubyFinder.cmd) {
+            if (pythonCmd != pythonFinder.cmd) {
                 stop()
                 start()
             }

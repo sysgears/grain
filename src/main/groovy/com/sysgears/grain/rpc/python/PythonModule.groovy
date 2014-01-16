@@ -14,18 +14,26 @@
  * limitations under the License.
  */
 
-package com.sysgears.grain.highlight.pygments
-/**
- * Fake pygments integration, i.e. does nothing
- */
-@javax.inject.Singleton
-class FakePygments extends Pygments {
+package com.sysgears.grain.rpc.python
 
-    /**
-     * @inheritDoc
-     */
+import com.google.inject.AbstractModule
+import com.google.inject.Injector
+import com.google.inject.Provides
+import com.sysgears.grain.config.ImplBinder
+
+/**
+ * Package-specific IoC config 
+ */
+class PythonModule extends AbstractModule {
+
+    @Provides @javax.inject.Singleton
+    public Python providePython(Injector injector,
+            AutoPython auto, CPython cPython, Jython jython) {
+        new ImplBinder<Python>(Python.class, 'features.python',
+                [default: auto, auto: auto, python: cPython, jython: jython], injector).proxy
+    }
+
     @Override
-    String highlight(String code, String language) {
-        code
+    protected void configure() {
     }
 }

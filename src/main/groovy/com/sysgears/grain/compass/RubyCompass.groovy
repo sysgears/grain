@@ -19,12 +19,10 @@ package com.sysgears.grain.compass
 import com.sysgears.grain.config.Config
 import com.sysgears.grain.init.GrainSettings
 import com.sysgears.grain.rpc.ruby.Ruby
-import com.sysgears.grain.rpc.ruby.RubyFinder
 import groovy.io.FileType
 import groovy.util.logging.Slf4j
 
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Implementation of Compass integration.
@@ -36,21 +34,12 @@ public class RubyCompass extends AbstractCompass {
     /** Site config */
     @Inject private Config config
     
-    /** Rendering mutex */
-    @Inject @Named("renderMutex") private Object mutex
-
     /** Grain settings */
     @Inject private GrainSettings settings
     
     /** Ruby implementation */
     @Inject private Ruby ruby
 
-    /** Ruby command finder */
-    @Inject private RubyFinder rubyFinder
-
-    /** Memorize Ruby command, to restart service when ruby command changes */
-    private String rubyCmd
-    
     /**
      * Launches compass in a separate Ruby thread 
      * <p>
@@ -61,8 +50,6 @@ public class RubyCompass extends AbstractCompass {
     protected void launchCompass(String mode) {
         log.info 'Launching Ruby Compass process...'
 
-        rubyCmd = rubyFinder.cmd
-        
         def rpc = ruby.rpc
         
         File gemDir = new File(settings.toolsHome, 'compass/gems')
@@ -99,9 +86,5 @@ public class RubyCompass extends AbstractCompass {
      */
     @Override
     public void configChanged() {
-        /* if (rubyCmd != rubyFinder.cmd) {
-            stop()
-            start()
-        } */
     }
 }
