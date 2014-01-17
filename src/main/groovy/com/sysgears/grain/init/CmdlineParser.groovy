@@ -105,6 +105,8 @@ Options:
             validateGrainVersion(grainVersion)
 
         opts.grainVersion = grainVersion
+        
+        opts.grainHome = new File(System.getProperty('user.home'), ".grain").canonicalFile
 
         opts.toolsHome = getToolsHome()
 

@@ -29,6 +29,9 @@ class GrainSettings {
     
     /** Location of directory with external tools files */ 
     File toolsHome
+    
+    /** Grain home location */
+    File grainHome
 
     /** Environment of the site (dev, prod, ..) */
     String env
