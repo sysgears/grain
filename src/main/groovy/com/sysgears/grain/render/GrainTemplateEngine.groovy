@@ -17,6 +17,7 @@
 package com.sysgears.grain.render
 
 import com.sysgears.grain.PerfMetrics
+import com.sysgears.grain.asciidoc.AsciiDoctorProcessor
 import com.sysgears.grain.config.Config
 import com.sysgears.grain.highlight.PageHighlighter
 import com.sysgears.grain.markdown.MarkdownProcessor
@@ -74,6 +75,9 @@ class GrainTemplateEngine implements TemplateEngine, SiteChangeListener {
     /** Rst processor */
     @Inject private RstProcessor rstProcessor
 
+    /** AsciiDoctor processor */
+    @Inject private AsciiDoctorProcessor adocProcessor
+
     /**
      * Clears Groovy Shell cache on site change event to prevent out of memory. 
      */
@@ -109,7 +113,7 @@ class GrainTemplateEngine implements TemplateEngine, SiteChangeListener {
         def sourceModifier = config.source_modifier
         def text = sourceModifier ? sourceModifier(file) : file.text as String
         def fragments = []
-        if (extension in ['html', 'md', 'markdown', 'rst']) {
+        if (extension in ['html', 'md', 'markdown', 'rst', 'adoc', 'asciidoctor']) {
             fragments = pageHighlighter.highlight(text)
         }
         text = text.replaceAll(/(?s)```(.*?)```/, '```')
@@ -120,7 +124,7 @@ class GrainTemplateEngine implements TemplateEngine, SiteChangeListener {
             pageConfig = headerParser.parse(file, resourceParser.header)
             text = resourceParser.content
         }
-        boolean isMarkup = extension in ['markdown', 'md', 'rst']
+        boolean isMarkup = extension in ['markdown', 'md', 'rst', 'adoc', 'asciidoctor']
 
         def isScript = pageConfig.script ?: !isMarkup
 
@@ -132,6 +136,8 @@ class GrainTemplateEngine implements TemplateEngine, SiteChangeListener {
                 text = markdownProcessor.process(text)
             } else if (extension in ['rst']) {
                 text = rstProcessor.process(text) 
+            } else if (extension in ['adoc', 'asciidoctor']) {
+                text = adocProcessor.process(text)
             }
         }
         
