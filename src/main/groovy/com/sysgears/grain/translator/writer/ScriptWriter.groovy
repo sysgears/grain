@@ -16,7 +16,7 @@
 
 package com.sysgears.grain.translator.writer
 /**
- * Builds a sequence of out.write() statements that have arbitrary groovy code between them.
+ * Builds a sequence of output.write() statements that have arbitrary groovy code between them.
  */
 class ScriptWriter {
 
@@ -98,9 +98,9 @@ class ScriptWriter {
     }
     
     /**
-     * Returns sequence of out.write statements intermixed with groovy code as a string 
+     * Returns sequence of output.write statements intermixed with groovy code as a string
      * 
-      * @return sequence of out.write statements intermixed with groovy code as a string
+      * @return sequence of output.write statements intermixed with groovy code as a string
      */
     public String toString() {
         if (curStatement != StatementType.PLAIN_CODE) {
