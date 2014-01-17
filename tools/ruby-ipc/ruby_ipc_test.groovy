@@ -3,6 +3,9 @@ import com.sysgears.grain.rpc.RPCExecutor
 import com.sysgears.grain.rpc.TCPUtils
 
 def example = { RPCDispatcher rpc ->
+    rpc.Ipc.set_gem_home('/home/victor/.grain/gems')
+    println rpc.Ipc.install_gem('asciidoctor')
+    
     def html = rpc.with {
         Ipc.require('asciidoctor')
         Asciidoctor.render('*This* is it ляля.')

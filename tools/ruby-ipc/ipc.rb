@@ -1,10 +1,33 @@
 require 'socket'
+require 'rubygems'
+require 'rubygems/dependency_installer'
 
 # Inter process communication protocol between Groovy and Ruby implementation   
 class Ipc
   
   def initialize(socket)
     @socket = socket
+  end
+
+  # Checks if gem installed
+  def self.gem_installed(name, version = Gem::Requirement.default)
+    version = Gem::Requirement.create version unless version.is_a? Gem::Requirement
+    Gem::Specification.each.any? { |spec| name == spec.name and version.satisfied_by? spec.version }
+  end
+
+  # Installs gem
+  def self.install_gem(name, version = Gem::Requirement.default)
+    return if gem_installed name, version
+
+    STDERR.puts "Installing gem #{name} #{version}"
+    
+    Gem::DependencyInstaller.new.install name, version
+  end
+
+  # Adds gem path to the search path list for looking up gems
+  def self.set_gem_home gempath
+    ENV['GEM_HOME']=gempath 
+    ENV['GEM_PATH']=ENV['GEM_PATH'] || gempath 
   end
   
   # Adds library directory to load path

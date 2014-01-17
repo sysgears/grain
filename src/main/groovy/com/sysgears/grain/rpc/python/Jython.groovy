@@ -81,7 +81,7 @@ public class Jython implements Python {
 
                 log.info args.join(' ')
 
-                PySystemState.initialize(new Properties(), new Properties(), args)
+                //PySystemState.initialize(new Properties(), new Properties(), args)
 
                 python = new PythonInterpreter()
                 python.setIn(new ByteArrayInputStream())

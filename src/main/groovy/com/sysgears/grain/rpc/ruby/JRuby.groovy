@@ -71,6 +71,8 @@ public class JRuby implements com.sysgears.grain.rpc.ruby.Ruby {
             try {
                 log.info "Launching JRuby process..."
 
+                System.setProperty('jruby.gem.home', "${settings.grainHome}/gems")
+                System.setProperty('jruby.bindir', "${settings.grainHome}/gems/bin")
                 System.setProperty('jruby.compile.fastest', 'true')
 
                 def config = new RubyInstanceConfig()
@@ -101,8 +103,11 @@ public class JRuby implements com.sysgears.grain.rpc.ruby.Ruby {
                     def executor = executorFactory.create(socket.inputStream, socket.outputStream)
                     executor.start()
                     
-                    rpc = dispatcherFactory.create(executor)
+                    def rpc = dispatcherFactory.create(executor)
 
+                    rpc.Ipc.set_gem_home("${settings.grainHome}/gems")
+
+                    this.rpc = rpc
                     latch.countDown()
                 }
                 

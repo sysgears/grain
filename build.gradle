@@ -52,7 +52,7 @@ dependencies {
     compile 'org.yaml:snakeyaml:1.11'
     compile 'org.codehaus.gpars:gpars:1.0.0'
     compile 'com.github.rjeschke:txtmark:0.9'
-    compile 'org.python:jython:2.7-b1'
+    compile 'org.python:jython-standalone:2.7-b1'
     compile 'org.jruby:jruby-core:1.7.10'
     compile 'org.jruby:jruby-stdlib:1.7.10'
     compile 'com.googlecode.htmlcompressor:htmlcompressor:1.5.2'
@@ -77,8 +77,6 @@ dependencies {
     compile 'javax.inject:javax.inject:1'
     
     compile 'org.pegdown:pegdown:1.4.2'
-    
-    compile 'org.nuiton.jrst:jrst:2.0.1'
     
     testCompile('org.spockframework:spock-core:0.7-groovy-2.0') {
         exclude module: 'groovy-all'

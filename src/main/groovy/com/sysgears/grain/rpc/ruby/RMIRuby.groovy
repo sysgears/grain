@@ -93,10 +93,16 @@ public class RMIRuby implements Ruby {
                 def executor = executorFactory.create(socket.inputStream, socket.outputStream) 
                 executor.start()
                 
-                rpc = dispatcherFactory.create(executor)
+                def rpc = dispatcherFactory.create(executor)
+
                 streamLogger = streamLoggerFactory.create(process.in, process.err)
                 streamLogger.start()
+
+                rpc.Ipc.set_gem_home("${settings.grainHome}/gems")
+
+                this.rpc = rpc
                 latch.countDown()
+
                 def watcher = Thread.start {
                     process.waitFor()
                     streamLogger.interrupt()

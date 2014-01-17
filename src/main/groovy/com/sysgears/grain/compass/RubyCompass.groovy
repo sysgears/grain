@@ -51,14 +51,12 @@ public class RubyCompass extends AbstractCompass {
         log.info 'Launching Ruby Compass process...'
 
         def rpc = ruby.rpc
-        
-        File gemDir = new File(settings.toolsHome, 'compass/gems')
-        gemDir.eachFile(FileType.DIRECTORIES) {
-            rpc.Ipc.add_lib_path new File(it, 'lib').canonicalPath
-        }
-        rpc.Ipc.add_lib_path new File(settings.toolsHome, 'compass-bridge').canonicalPath
 
+        rpc.Ipc.install_gem('compass')        
+        
+        rpc.Ipc.add_lib_path new File(settings.toolsHome, 'compass-bridge').canonicalPath
         rpc.Ipc.require('compass_bridge')
+        
         rpc.CompassBridge.start(mode, "${config.cache_dir}")
     }
 
