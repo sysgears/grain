@@ -28,6 +28,7 @@ class Ipc
   def self.set_gem_home gempath
     ENV['GEM_HOME']=gempath 
     ENV['GEM_PATH']=ENV['GEM_PATH'] || gempath 
+    Gem.clear_paths
   end
   
   # Adds library directory to load path

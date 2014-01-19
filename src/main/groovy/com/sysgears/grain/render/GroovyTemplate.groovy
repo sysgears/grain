@@ -91,7 +91,7 @@ class GroovyTemplate implements ResourceTemplate {
             if (!binding.hasVariable('content')) {
                 scriptObject.setProperty('content', '')
             }
-            scriptObject.setProperty('out', writer)
+            scriptObject.setProperty('output', writer)
             scriptObject.run()
             String content = writer.toString()
             view = new ResourceView()

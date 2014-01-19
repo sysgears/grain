@@ -21,10 +21,10 @@ package com.sysgears.grain.translator.writer
  */
 enum StatementType {
 
-    /** out.write('''....''') statement */  
+    /** output.write('''....''') statement */
     STRING_WRITE("'''"),
 
-    /** out.write("""...""") statement */
+    /** output.write("""...""") statement */
     GSTRING_WRITE('"""'),
 
     /** Groovy code without wrapping into any statement */ 
@@ -49,7 +49,7 @@ enum StatementType {
      */
     public String getOpenStr() {
         if (quoteChars) {
-            "out.write(" + quoteChars
+            "output.write(" + quoteChars
         } else {
             ""
         }

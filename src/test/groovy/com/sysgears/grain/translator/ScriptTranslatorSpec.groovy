@@ -13,38 +13,38 @@ class ScriptTranslatorSpec extends Specification {
 
     def 'check $ block translation'() {
         expect: '$ block should be translated unmodified'
-        translator.translate('abc${2 + 3}def').trim() == 'out.write("""abc${2 + 3}def""");' 
+        translator.translate('abc${2 + 3}def').trim() == 'output.write("""abc${2 + 3}def""");' 
     }
 
     def 'check <%= block translation'() {
         expect: '<%= block should be translated unmodified'
-        translator.translate('klm<%= 2 + 3 %>nop').trim() == 'out.write("""klm${2 + 3}nop""");'
+        translator.translate('klm<%= 2 + 3 %>nop').trim() == 'output.write("""klm${2 + 3}nop""");'
     }
 
     def 'check <% block translation'() {
         expect: '<% block should be translated to groovy code block'
-        translator.translate('abc<% def a = 1 %>def').trim() == 'out.write("""abc""");\ndef a = 1;\nout.write("""def""");'
+        translator.translate('abc<% def a = 1 %>def').trim() == 'output.write("""abc""");\ndef a = 1;\noutput.write("""def""");'
     }
 
     def 'check highlighted block translation'() {
         expect: 'highlighted block should be translated into statements that disallow groovy expressions'
         translator.translate('abc```def', ['$xyz']).trim() ==
-                'out.write("""abc""");\nout.write(\'\'\'$xyz\'\'\');\nout.write("""def""");'
+                'output.write("""abc""");\noutput.write(\'\'\'$xyz\'\'\');\noutput.write("""def""");'
     }
     
     def 'check long lines truncation'() {
-        def stLen = 'out.write("""""");'.length()
+        def stLen = 'output.write("""""");'.length()
         expect: 'very long line should be automatically truncated'
         translator.translate('a' * 30000).trim() ==
-                'out.write("""' + ('a' * (30000 - stLen)) + '""");\n' + 'out.write("""' + ('a' * stLen) + '""");'
+                'output.write("""' + ('a' * (30000 - stLen)) + '""");\n' + 'output.write("""' + ('a' * stLen) + '""");'
     }
 
     def 'check translation of text with indivisible block'() {
-        def stLen = 'out.write("""""");'.length()
+        def stLen = 'output.write("""""");'.length()
         def block = '${r "/patch/to/some/icon.png"}' // indivisible block
         def text = ('a' * (30000 - stLen - (block.length() / 2))).trim() + block
         expect: 'indivisible block should not be automatically truncated'
-        translator.translate(text).trim() == 'out.write("""' + ('a' * (30000 - stLen - (block.length() / 2))) +
-                '""");\n' + 'out.write("""' + block + '""");'
+        translator.translate(text).trim() == 'output.write("""' + ('a' * (30000 - stLen - (block.length() / 2))) +
+                '""");\n' + 'output.write("""' + block + '""");'
     }
 }
