@@ -19,7 +19,7 @@ class Ipc
   def self.install_gem(name, version = Gem::Requirement.default)
     return if gem_installed name, version
 
-    STDERR.puts "Installing gem #{name} #{version}"
+    STDERR.puts "Downloading gem #{name} #{version}"
     
     Gem::DependencyInstaller.new.install name, version
   end
