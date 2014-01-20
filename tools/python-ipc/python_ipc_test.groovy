@@ -3,18 +3,22 @@ import com.sysgears.grain.rpc.RPCExecutor
 import com.sysgears.grain.rpc.TCPUtils
 
 def example = { RPCDispatcher rpc ->
-    def html = rpc.with {
-        ipc.add_lib_path('../pygments-bridge')
-        pygments_bridge.highlight('int a = 10;', 'java')
-    }
 
+    def html = rpc.with {
+        ipc.install_setup_tools()
+        ipc.install_package('docutils')
+        ipc.add_lib_path('../docutils-bridge')
+        docutils_bridge.process('*my text, ляля*')
+    }
+    
     println html
-} 
+}
 
 def serverSocket = TCPUtils.firstAvailablePort
 
-def proc = "python ipc.py ${serverSocket.localPort}".execute()
-def thread = proc.consumeProcessErrorStream(System.err)
+def proc = "/usr/bin/python ipc.py ${serverSocket.localPort}".execute(['PYTHONUSERBASE=/home/victor/.grain/packages/python/'], new File('.'))
+def err = proc.consumeProcessErrorStream(System.err)
+def out = proc.consumeProcessOutputStream(System.out)
 
 try {
     def socket = serverSocket.accept()
@@ -27,4 +31,5 @@ try {
     serverSocket.close()
 }
 
-thread.join()
+out.join()
+err.join()
