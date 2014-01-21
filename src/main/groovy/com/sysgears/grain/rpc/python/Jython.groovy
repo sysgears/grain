@@ -24,10 +24,9 @@ import com.sysgears.grain.rpc.RPCExecutorFactory
 import com.sysgears.grain.rpc.TCPUtils
 import groovy.util.logging.Slf4j
 import org.python.core.Py
-import org.python.core.PyObject
-import org.python.core.PyString
+import org.python.core.PyException
+import org.python.core.PyInteger
 import org.python.core.PySystemState
-import org.python.util.InteractiveConsole
 import org.python.util.PythonInterpreter
 import org.python.util.jython
 
@@ -81,9 +80,11 @@ public class Jython implements Python {
 
                 log.info args.join(' ')
 
-                //PySystemState.initialize(new Properties(), new Properties(), args)
+                def preProperties = PySystemState.getBaseProperties()
+                PySystemState.initialize(preProperties, new Properties(), args);
+                def systemState = Py.getSystemState()
 
-                python = new PythonInterpreter()
+                python = new PythonInterpreter(null, systemState)
                 python.setIn(new ByteArrayInputStream())
                 python.setOut(new LoggingOutputStream())
                 python.setErr(new LoggingOutputStream())
@@ -100,7 +101,10 @@ public class Jython implements Python {
                 }
 
                 try {
-                    jython.run(args)
+                    python.execfile(new FileInputStream(args[0]), args[0])                    
+                } catch (PyException pe) {
+                    pe.printStackTrace()
+                    log.error("Error while running Jython", pe)
                 } catch (t) {
                     log.error("Error while running Jython", t)
                 } finally {

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import os, sys, site, struct, socket, traceback, urllib2, errno, tempfile
+import os, sys, struct, socket, traceback, urllib2, errno, tempfile
 
 def _read_integer(sf):
     return struct.unpack('>i', sf.read(4))[0]
@@ -28,8 +28,15 @@ def _mkdir_p(path):
 
 def add_lib_path(path):
     sys.path.insert(1, path)
-
+    
+def set_user_base(user_base):
+    os.environ['PYTHONUSERBASE'] = user_base
+    import site
+    site.USER_BASE = user_base 
+    site.addsitedir(user_base + '/lib/python2.7/site-packages/')
+    
 def install_setup_tools():
+    import site
     _mkdir_p(site.USER_BASE)
     
     if not os.path.isfile(site.USER_BASE + 'bin/easy_install'):
@@ -39,25 +46,31 @@ def install_setup_tools():
     
         sys.argv = [site.USER_BASE + 'ez_setup.py', '--user']
         ez['main']()
-        site.addsitedir(site.USER_BASE)
+        site.addsitedir(site.USER_BASE + '/lib/python2.7/site-packages/')
 
 def install_package(pkg_name):
-    import setuptools, pkg_resources
+    import setuptools, pkg_resources, site
     try:
         pkg_resources.require(pkg_name)
     except:
+        sys.stdout.write(str(site.ENABLE_USER_SITE) + "\n")
+        sys.stdout.flush()
+        sys.stdout.write(str(site.USER_BASE) + "\n")
+        sys.stdout.flush()
+        sys.stdout.write(os.environ['PYTHONUSERBASE'] + "\n")
+        sys.stdout.flush()        
         from setuptools.command import easy_install
         easy_install.main(['--user', '-U', pkg_name])
 
         pkg_resources.get_distribution(pkg_name).activate()
     
-def main():
+def main(port):
 
-    sys.stderr.write("Starting Python IPC on port: %s\n"%((sys.argv[1])))
+    sys.stderr.write("Starting Python IPC on port: %s\n"%((port)))
     sys.stderr.flush()
 
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.connect(("localhost", int(sys.argv[1])))
+    s.connect(("localhost", port))
     sf = s.makefile()
 
     while True:
@@ -75,8 +88,8 @@ def main():
             func = getattr(module, func_name)
             result = func(*args)
 
-            #sys.stderr.write("%s.%s(%s):\n%s\n"%((module, func, args, result)))
-            #sys.stderr.flush()
+            sys.stderr.write("%s.%s(%s):\n%s\n"%((module, func, args, unicode(result).encode('utf-8'))))
+            sys.stderr.flush()
 
             _write_string(sf, result)
         except IOError:
@@ -85,4 +98,4 @@ def main():
             traceback.print_exc(file=sys.stderr)
 
 if __name__ == "__main__":
-    main()
+    main(int(sys.argv[1]))

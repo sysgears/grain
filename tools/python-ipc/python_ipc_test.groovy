@@ -1,11 +1,16 @@
+import org.python.util.jython
+
 import com.sysgears.grain.rpc.RPCDispatcher
 import com.sysgears.grain.rpc.RPCExecutor
 import com.sysgears.grain.rpc.TCPUtils
 
+def useJython = false
+
 def example = { RPCDispatcher rpc ->
 
     def html = rpc.with {
-        ipc.install_setup_tools()
+        ipc.set_user_base('/home/victor/.grain/packages/python/')
+        //ipc.install_setup_tools()
         ipc.install_package('docutils')
         ipc.add_lib_path('../docutils-bridge')
         docutils_bridge.process('*my text, ляля*')
@@ -16,9 +21,17 @@ def example = { RPCDispatcher rpc ->
 
 def serverSocket = TCPUtils.firstAvailablePort
 
-def proc = "/usr/bin/python ipc.py ${serverSocket.localPort}".execute(['PYTHONUSERBASE=/home/victor/.grain/packages/python/'], new File('.'))
-def err = proc.consumeProcessErrorStream(System.err)
-def out = proc.consumeProcessOutputStream(System.out)
+Thread err = null, out = null
+if (useJython) {
+    Thread.start {
+        jython.run(['ipc.py', "${serverSocket.localPort}"] as String[])
+    }
+} else {
+    def proc = "/usr/bin/python ipc.py ${serverSocket.localPort}".execute()
+    // ['PYTHONUSERBASE=/home/victor/.grain/packages/python/'], new File('.'))
+    err = proc.consumeProcessErrorStream(System.err)
+    out = proc.consumeProcessOutputStream(System.out)
+}
 
 try {
     def socket = serverSocket.accept()
@@ -31,5 +44,7 @@ try {
     serverSocket.close()
 }
 
-out.join()
-err.join()
+if (!useJython) {
+    out?.join()
+    err?.join()
+}
