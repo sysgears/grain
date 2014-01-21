@@ -42,6 +42,7 @@ public class AsciiDoctorProcessor implements Service {
     /** Ruby implementation */
     @Inject private Ruby ruby
     
+    /** Latch for AsciiDoctor initialization */
     private CountDownLatch latch
 
     /**

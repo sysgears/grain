@@ -13,7 +13,11 @@ def _write_string(sf, result):
         sf.write(struct.pack('>i', -1))
         sf.flush()
     else:
-        ret = unicode(result).encode('utf-8')
+        try:
+            result.decode('utf-8')
+            ret = result
+        except UnicodeError:
+            ret = result.encode('utf-8')
         sf.write(struct.pack('>i', len(ret)))
         sf.write(ret)
         sf.flush()
@@ -86,16 +90,22 @@ def main(port):
 
             module =  __import__ (module_name)
             func = getattr(module, func_name)
-            result = func(*args)
+            result = None
+            try:
+                result = func(*args)
+            except:
+                traceback.print_exc(file=sys.stderr)
+                sys.stderr.flush()
 
-            sys.stderr.write("%s.%s(%s):\n%s\n"%((module, func, args, unicode(result).encode('utf-8'))))
-            sys.stderr.flush()
+            #sys.stderr.write("%s.%s(%s):\n%s\n"%((module, func, args, unicode(result).encode('utf-8'))))
+            #sys.stderr.flush()
 
             _write_string(sf, result)
         except IOError:
             raise
         except:
             traceback.print_exc(file=sys.stderr)
+            sys.stderr.flush()
 
 if __name__ == "__main__":
     main(int(sys.argv[1]))

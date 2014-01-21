@@ -7,6 +7,7 @@
   </appender>
 
   <!--logger name="com.sysgears.grain.service" level="TRACE"/-->
+  <!--logger name="com.sysgears.grain.rpc" level="TRACE"/-->
 
   <root level="INFO">
     <appender-ref ref="STDOUT" />

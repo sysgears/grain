@@ -53,6 +53,7 @@ class RPCExecutor extends DefaultActor {
     public void act() {
         loop {
             react { RPCCall call ->
+                log.trace("Executing RPC call ${call.moduleName}.${call.procName}(${call.args})")
                 writeString(os, call.moduleName)
                 writeString(os, call.procName)
                 writeInt(os, call.args.size())
@@ -61,6 +62,7 @@ class RPCExecutor extends DefaultActor {
                 }
                 os.flush()
                 def result = readString(is)
+                log.trace("Finished executing RPC call ${call.moduleName}.${call.procName}")
                 reply result
             }
         }
