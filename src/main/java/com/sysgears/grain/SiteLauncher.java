@@ -7,6 +7,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.security.MessageDigest;
 import java.util.HashSet;
+import java.util.Scanner;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -83,9 +84,9 @@ public class SiteLauncher {
                 method.invoke(ClassLoader.getSystemClassLoader(), new Object[]{dependency.toURI().toURL()});
             }
         }
-        
+
         if (exitValue == 0 && grainVersion.endsWith("-SNAPSHOT") &&
-                !snapshotsRepoUrl.contains("://") &&
+                snapshotsRepoUrl.contains("://") &&
                 !grainJar.getPath().contains(File.separator + ".m2" + File.separator)) {
             try {
                 String metadata = downloadFromRepo("maven-metadata.xml");
@@ -104,7 +105,7 @@ public class SiteLauncher {
                 System.exit(0);
             }
         }
-        
+
         if (exitValue == 0) {
             Method main = Class.forName("com.sysgears.grain.Main").getMethod("main", String[].class);
             main.invoke(null, (Object)grainArgs);
@@ -188,10 +189,19 @@ public class SiteLauncher {
                 printUsage();
                 System.exit(1);
             }
-            if (args.length > 1 && !args[1].equals("--")) {
-                snapshotsRepoUrl = args[1];
-            } else {
-                snapshotsRepoUrl = "http://repo.sysgears.com/snapshots/";
+            if (grainVersion.endsWith("-SNAPSHOT")) {
+                if (args.length > 1 && !args[1].equals("--")) {
+                    snapshotsRepoUrl = args[1];
+                } else {
+                    if (!checkForOldSnapshotRepo()) {
+                        snapshotsRepoUrl = "https://oss.sonatype.org/content/groups/public/";
+                    } else {
+                        snapshotsRepoUrl = "http://repo.sysgears.com/snapshots/";
+                        System.err.println("Warning! Using old Grain snapshot repo! Please update your build.gradle:");
+                        System.err.println("Please replace 'http://repo.sysgears.com/snapshots/' with:");
+                        System.err.println("'https://oss.sonatype.org/content/groups/public/'");
+                    }
+                }
             }
             int idx;
             for (idx = 1; idx < args.length; idx++) {
@@ -202,6 +212,22 @@ public class SiteLauncher {
             }
         }
     }
+    
+    private boolean checkForOldSnapshotRepo() {
+        try {
+            File file = new File("build.gradle");
+            Scanner scanner = new Scanner(file);
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (line.contains("http://repo.sysgears.com/snapshots/")) {
+                    return true;
+                }
+            }
+            
+        } catch (Throwable ignored) {}
+        
+        return false;
+    }  
 
     /**
      * Prints command-line usage of SiteLauncher.

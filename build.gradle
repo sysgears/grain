@@ -3,6 +3,7 @@ import java.security.MessageDigest
 apply plugin: 'maven'
 apply plugin: 'groovy'
 apply plugin: 'idea'
+apply plugin: 'signing'
 group = 'com.sysgears.grain'
 version = '0.6.0-SNAPSHOT'
 defaultTasks 'build'
@@ -98,6 +99,10 @@ sourceSets {
     }
 }
 
+signing {
+    sign configurations.archives
+}
+
 task getToolsMD5Checksum {
     def md5 = MessageDigest.getInstance('MD5')
     file('tools').eachFileRecurse { file ->
@@ -145,6 +150,11 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     }
 }
 
+task javadocJar(type: Jar, dependsOn: groovydoc) {
+    classifier = 'javadoc'
+    from groovydoc.destinationDir
+}
+
 task groovydocJar(type: Jar, dependsOn: groovydoc) {
     classifier = 'groovydoc'
     from groovydoc.destinationDir
@@ -152,6 +162,7 @@ task groovydocJar(type: Jar, dependsOn: groovydoc) {
 
 artifacts {
     archives sourcesJar
+    archives javadocJar
     archives groovydocJar
     archives jar
 }
@@ -166,7 +177,7 @@ ext.pomConfiguration = {
     scm {
         url 'https://github.com/sysgears/grain'
         connection 'scm:https://github.com/sysgears/grain.git'
-        developerConnection 'scm:git://github.com/sysgears/grain.git'
+        developerConnection 'scm:git@github.com:sysgears/grain.git'
     }
 
     licenses {
@@ -188,19 +199,15 @@ ext.pomConfiguration = {
 
 uploadArchives {
     repositories.mavenDeployer {
+        beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
         configuration = configurations.deployerJars
-        repository(url: "scp://repo.sysgears.com/mnt/srv/repo/releases") {
-            authentication(
-                userName: 'repo',
-                privateKey: new File(System.properties['user.home'], ".ssh/id_rsa").absolutePath,
-            )
+        repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2') {
+            authentication(userName: sonatypeUsername, password: sonatypePassword)
         }
-        snapshotRepository(url: "scp://repo.sysgears.com/mnt/srv/repo/snapshots") {
-            authentication(
-                userName: 'repo',
-                privateKey: new File(System.properties['user.home'], ".ssh/id_rsa").absolutePath,
-            )
+        snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots') {
+            authentication(userName: sonatypeUsername, password: sonatypePassword)
         }
+        pom.project(pomConfiguration)
     }
 }
 
