@@ -64,7 +64,8 @@ class ConfigUpdater implements ConfigChangeListener {
      * Rereads config when it is modified on the filesystem.
      */
     public void configChanged() {
-        ConfigObject newConfig = new ConfigObject()
+        configParser.binding = defaultConfigBindings
+        ConfigObject newConfig = configParser.parse(gse.groovyClassLoader.loadClass('DefaultConfig'))
 
         for (configFile in [settings.globalConfigFile, settings.configFile]) {
             if (configFile.exists()) {
@@ -72,7 +73,7 @@ class ConfigUpdater implements ConfigChangeListener {
                     log.info "Rereading config ${configFile}"
                 configParser.binding = newConfig + defaultConfigBindings
                 def config = gse.loadScriptByName(configFile.name)
-                newConfig = configParser.parse(config).merge(newConfig) as ConfigObject
+                newConfig = newConfig.merge(configParser.parse(config)) as ConfigObject
             }
         }
 
