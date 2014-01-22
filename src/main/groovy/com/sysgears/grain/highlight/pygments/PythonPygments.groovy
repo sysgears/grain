@@ -21,6 +21,7 @@ import com.sysgears.grain.rpc.python.Python
 import groovy.util.logging.Slf4j
 
 import javax.inject.Inject
+import java.util.concurrent.CountDownLatch
 
 /**
  * Implementation of Pygments highlighter integration.
@@ -37,6 +38,9 @@ public class PythonPygments extends Pygments {
 
     /** Whether use bundled pygments or system-supplied pygments */
     protected boolean bundledPygments
+
+    /** Latch for Pygments initialization */
+    private CountDownLatch latch
 
     /**
      * Creates an instance of pygments code highlighter
@@ -55,6 +59,26 @@ public class PythonPygments extends Pygments {
     }
 
     /**
+     * Launches pygments 
+     */
+    public void start() {
+        latch = new CountDownLatch(1)
+        def rpc = python.rpc
+        if (bundledPygments) {
+            rpc.ipc.add_lib_path new File(settings.toolsHome, 'pygments-main').canonicalPath
+        }
+        rpc.ipc.add_lib_path new File(settings.toolsHome, 'pygments-bridge').canonicalPath
+        latch.countDown()
+    }
+
+    /**
+     * Terminates pygments  
+     */
+    public void stop() {
+        latch = null
+    }
+
+    /**
      * Highlights code using Pygments 
      *
      * @param code a code to highlight
@@ -63,11 +87,10 @@ public class PythonPygments extends Pygments {
      * @return highlighted code HTML
      */
     public String highlight(String code, String language) {
-        def rpc = python.rpc
-        if (bundledPygments) {
-            rpc.ipc.add_lib_path new File(settings.toolsHome, 'pygments-main').canonicalPath
+        if (!latch) {
+            start()
         }
-        rpc.ipc.add_lib_path new File(settings.toolsHome, 'pygments-bridge').canonicalPath
-        rpc.pygments_bridge.highlight(code, language)
+        latch.await()
+        python.rpc.pygments_bridge.highlight(code, language)
     }
 }

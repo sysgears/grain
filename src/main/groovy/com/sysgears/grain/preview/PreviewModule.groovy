@@ -58,9 +58,9 @@ class PreviewModule extends AbstractModule {
             PythonFinder pythonFinder, Python python, RubyFinder rubyFinder, Ruby ruby,
             PythonPygments pythonPygments, 
             RubyCompass rubyCompass, Compass compass) {
-        return new ConfigChangeBroadcaster(configUpdater, highlighter, uncachedHighlighter, pygments,
+        return new ConfigChangeBroadcaster(configUpdater,
                 markdownProcessor, rstProcessor, pythonFinder, python, rubyFinder, ruby, pythonPygments,
-                rubyCompass, compass)
+                rubyCompass, compass, highlighter, uncachedHighlighter, pygments)
     }
 
     @Provides @javax.inject.Singleton
