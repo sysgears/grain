@@ -51,6 +51,8 @@ class SiteDeployer {
                 logger.interrupt()
                 logger.join()
             }
+        } else if (deploy_cmd instanceof Closure) {
+            deploy_cmd()
         } else {
             log.info "Executing deploy command:\n${deploy_cmd}"
             proc = deploy_cmd.execute()
