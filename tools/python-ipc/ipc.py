@@ -2,6 +2,8 @@
 
 import os, sys, struct, socket, traceback, urllib2, errno, tempfile
 
+from distutils import log
+
 def _read_integer(sf):
     return struct.unpack('>i', sf.read(4))[0]
 
@@ -22,10 +24,10 @@ def _write_string(sf, result):
         sf.write(ret)
         sf.flush()
 
-def _mkdir_p(path):
+def mkdir_p(path):
     try:
         os.makedirs(path)
-    except OSError as exc:
+    except OSError, exc:
         if exc.errno == errno.EEXIST and os.path.isdir(path):
             pass
         else: raise
@@ -36,36 +38,19 @@ def add_lib_path(path):
 def set_user_base(user_base):
     os.environ['PYTHONUSERBASE'] = user_base
     import site
-    site.USER_BASE = user_base 
-    site.addsitedir(user_base + '/lib/python2.7/site-packages/')
+    site.USER_BASE = user_base
     
-def install_setup_tools():
-    import site
-    _mkdir_p(site.USER_BASE)
-    
-    if not os.path.isfile(site.USER_BASE + 'bin/easy_install'):
-        ez = {}
-        exec(urllib2.urlopen('https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py'
-            ).read(), ez)
-    
-        sys.argv = [site.USER_BASE + 'ez_setup.py', '--user']
-        ez['main']()
-        site.addsitedir(site.USER_BASE + '/lib/python2.7/site-packages/')
-
 def install_package(pkg_name):
-    import setuptools, pkg_resources, site
+    import setuptools, pkg_resources, site, sysconfig
+    from setuptools.command import easy_install
     try:
         pkg_resources.require(pkg_name)
     except:
-        sys.stdout.write(str(site.ENABLE_USER_SITE) + "\n")
-        sys.stdout.flush()
-        sys.stdout.write(str(site.USER_BASE) + "\n")
-        sys.stdout.flush()
-        sys.stdout.write(os.environ['PYTHONUSERBASE'] + "\n")
-        sys.stdout.flush()        
-        from setuptools.command import easy_install
-        easy_install.main(['--user', '-U', pkg_name])
-
+        easy_install.main(argv = ['-v', '--user', '-U', pkg_name])
+        
+        site.addsitedir(sysconfig.get_path('platlib', os.name + '_user'))
+        reload(pkg_resources)
+        
         pkg_resources.get_distribution(pkg_name).activate()
     
 def main(port):
