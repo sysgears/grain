@@ -385,7 +385,7 @@ Or this
 In both cases 4 will be inserted into the content of the page as the result of evaluation of these Groovy expressions.
 
 To include large blocks of Groovy code one can use notation below:
-``` grain:nl
+``` jsp:nl
 <%
     def foo = 2 + 2
 %>
@@ -413,7 +413,7 @@ These variables are reserved:
 `page` variable provides access to all the keys of pages YAML headers.
 
 For example to get page title one can use the following code snippet:
-``` grain:nl
+``` jsp:nl
 ${page.title}
 ```
 
@@ -437,14 +437,14 @@ they will not be visible to other pages.
 
 `site` variable provides access to all the properties declared in SiteConfig.groovy. For example, in order to get
 configured URL of the site one can use this code:
-``` grain:nl
+``` jsp:nl
 <a href="${site.url}">Home</a>
 ```
 
 `site` also exposes all the pages of the site in `site.pages`, all the asset files of the site
 in `site.assets` and both assets and pages in `site.resources`. For example to dump the value of title
 defined in every site page one could do:
-``` grain:nl
+``` jsp:nl
 <%= site.pages.collect { it.title } %>
 ```
 
@@ -454,7 +454,7 @@ defined in every site page one could do:
 Rendered page content usually wrapped up by layout, where most of the presentation logic is held.
 
 Here is an example of a layout:
-``` grain /theme/layout/default.html
+``` jsp /theme/layout/default.html
 <html>
 <head>
   <meta charset="utf-8">
@@ -475,7 +475,7 @@ Please note that rendered page contents is passed in `content` variable to the l
 
 ###Layout nesting 
 One layout can be based on another layout. For example, here is some page layout, based on default layout above:
-``` grain /theme/layout/page.html
+``` jsp /theme/layout/page.html
 ---
 layout: default
 title: "Default page title"
@@ -493,7 +493,7 @@ Layout nesting can be unlimited.
 Common page presentation parts can be kept in separate files and then included into layouts.
 
 For example in the code below sidebar.html is included into layout:
-``` grain /theme/layout/page.html
+``` jsp /theme/layout/page.html
 ---
 layout: default
 title: "Default page title"
@@ -504,7 +504,7 @@ ${include 'sidebar.html'}
 
 ###Passing custom model
 In some cases you would want to pass some variables to the included parts:
-``` grain /theme/layout/blog.html
+``` jsp /theme/layout/blog.html
 ---
 layout: page
 ---
@@ -609,7 +609,7 @@ The standard tags are:
       1. Resource location
           
     ***Example***
-    ``` grain:nl
+    ``` jsp:nl
 <link href="${r '/favicon.png'}" rel="icon"> ```
 1. **`rs`** - looks up multiple resource URLs by their locations
 
@@ -617,7 +617,7 @@ The standard tags are:
       1. Resource location list
       
     ***Example***
-    ``` grain:nl
+    ``` jsp:nl
 <% rs(['/javascripts/libs/jquery.min.js',
        '/javascripts/modernizr-2.0.js',
        '/javascripts/octopress.js',
@@ -633,7 +633,7 @@ The standard tags are:
       1. *(Optional)* Additional model variables added to `page` map      
 
     ***Example***
-    ``` grain:nl
+    ``` jsp:nl
 ${include 'tags.html', [tags: post.categories]} ```
 1. **`md5`** - calculates md5 hash of a byte array
 
@@ -641,7 +641,7 @@ ${include 'tags.html', [tags: post.categories]} ```
       1. Byte array
 
     ***Example***
-    ``` grain:nl
+    ``` jsp:nl
 md5(resource.render().bytes) ```
 
 ###Custom tag libraries
