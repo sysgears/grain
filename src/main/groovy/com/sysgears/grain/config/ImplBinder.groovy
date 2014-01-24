@@ -86,17 +86,6 @@ class ImplBinder<T extends ConfigChangeListener> {
             }
             this.proxyTarget = impl
             if (isService && proxyTarget != null) {
-                /* def serviceManager = injector.getInstance(ServiceManager.class)
-
-                implMap.values().each {
-                    serviceManager.addServiceDependency(proxy as Service, it as Service)
-                } */
-                /* def serviceManager = injector.getInstance(ServiceManager.class)
-
-                implMap.values().each {
-                    serviceManager.registerServiceDependency(proxy as Service, it as Service)
-                } */
-
                 ((Service)proxy)?.start()
                 ((Service)proxyTarget)?.start()
             }
