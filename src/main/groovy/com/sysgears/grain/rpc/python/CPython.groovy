@@ -50,6 +50,9 @@ public class CPython implements Python {
     /** RPC dispatcher factory */
     @Inject private RPCDispatcherFactory dispatcherFactory
 
+    /** Setup tools installer */
+    @Inject private SetupToolsInstaller installer
+
     /** Python RPC implementation */
     private RPCDispatcher rpc
 
@@ -74,6 +77,8 @@ public class CPython implements Python {
             def serverSocket = null
             try {
                 log.info 'Launching Python process...'
+                
+                def setupToolsPath = installer.install()
 
                 pythonCmd = pythonFinder.cmd
 
@@ -86,17 +91,22 @@ public class CPython implements Python {
 
                 log.info cmdline.join(' ')
 
-                def process = cmdline.execute()
+                def process = cmdline.execute(["PYTHONUSERBASE=${settings.grainHome}/packages/python/"], new File("."))
 
                 def socket = serverSocket.accept()
 
                 def executor = executorFactory.create(socket.inputStream, socket.outputStream)
                 executor.start()
 
-                rpc = dispatcherFactory.create(executor)
+                def rpc = dispatcherFactory.create(executor)
                 streamLogger = streamLoggerFactory.create(process.in, process.err)
                 streamLogger.start()
+                
+                rpc.ipc.add_lib_path(setupToolsPath)                
+                
+                this.rpc = rpc
                 latch.countDown()
+                
                 def watcher = Thread.start {
                     process.waitFor()
                     streamLogger.interrupt()

@@ -36,27 +36,8 @@ public class PythonPygments extends Pygments {
     /** Python implementation */
     @Inject private Python python
 
-    /** Whether use bundled pygments or system-supplied pygments */
-    protected boolean bundledPygments
-
     /** Latch for Pygments initialization */
     private CountDownLatch latch
-
-    /**
-     * Creates an instance of pygments code highlighter
-     *
-     * @param bundledPygments whether use bundled pygments or system-supplied pygments
-     */
-    public PythonPygments(boolean bundledPygments) {
-        this.bundledPygments = bundledPygments
-    }
-
-    /**
-     * Creates an instance of pygments code highlighter that uses bundled pygments
-     */
-    public PythonPygments() {
-        this(true)
-    }
 
     /**
      * Launches pygments 
@@ -64,9 +45,7 @@ public class PythonPygments extends Pygments {
     public void start() {
         latch = new CountDownLatch(1)
         def rpc = python.rpc
-        if (bundledPygments) {
-            rpc.ipc.add_lib_path new File(settings.toolsHome, 'pygments-main').canonicalPath
-        }
+        rpc.ipc.install_package('pygments>=1.6')
         rpc.ipc.add_lib_path new File(settings.toolsHome, 'pygments-bridge').canonicalPath
         latch.countDown()
     }

@@ -39,20 +39,99 @@ def set_user_base(user_base):
     os.environ['PYTHONUSERBASE'] = user_base
     import site
     site.USER_BASE = user_base
-    
+
 def install_package(pkg_name):
+    if sys.platform.startswith('java'):
+        from distutils.command.install import INSTALL_SCHEMES
+        INSTALL_SCHEMES['java_user'] = {
+            'purelib': '$usersite',
+            'platlib': '$usersite',
+            'headers': '$userbase/include/python$py_version_short/$dist_name',
+            'scripts': '$userbase/bin',
+            'data'   : '$userbase',
+        }
+        import setuptools
+        from setuptools import ssl_support
+        ssl_support.is_available = False
+
+        from java.net import URL
+        from java.io import BufferedInputStream
+        from jarray import zeros
+
+        org_urlopen = urllib2.urlopen
+
+        class Headers(dict):
+            def getheaders(self, key):
+                value = self.get(key.lower())
+                if (value == None):
+                    return list()
+                else:
+                    return list(value)
+
+        class ConnReader:
+            def __init__(self, conn):
+                self.conn = conn
+                self.url = conn.getURL().toExternalForm()
+
+                fields = self.conn.getHeaderFields()
+                self.headers = Headers()
+                for key in fields:
+                    if key != None:
+                        self.headers[key.lower()] = conn.getHeaderField(key)
+                self.bs = BufferedInputStream(self.conn.getInputStream())
+
+            def read(self, *args):
+                if len(args) == 1:
+                    size = args[0]
+                    buf = zeros(size, 'b')
+                    off = 0
+                    while size > 0:
+                        count = self.bs.read(buf, off, size)
+                        if count == -1:
+                            buf = buf[:off]
+                            break
+                        off += count
+                        size -= count
+
+                    return buf.tostring()
+                else:
+                    return self.read(int(self.headers['content-length']))
+
+            def info(self):
+                return Headers(self.headers)
+
+            def close(self):
+                self.bs.close()
+
+        def new_urlopen(req):
+            if isinstance(req, str):
+                full_url = req
+            else:
+                full_url = req.get_full_url()
+            if full_url.startswith('https'):
+                u = URL(full_url)
+                conn = u.openConnection()
+                return ConnReader(conn)
+            else:
+                org_urlopen(req)
+
+        urllib2.urlopen = new_urlopen
+
     import setuptools, pkg_resources, site, sysconfig
     from setuptools.command import easy_install
     try:
         pkg_resources.require(pkg_name)
     except:
-        easy_install.main(argv = ['-v', '--user', '-U', pkg_name])
+        log.warn("Downloading package %s...", pkg_name)
+        easy_install.main(argv = ['--user', '-U', pkg_name])
         
         site.addsitedir(sysconfig.get_path('platlib', os.name + '_user'))
         reload(pkg_resources)
         
         pkg_resources.get_distribution(pkg_name).activate()
-    
+    if sys.platform.startswith('java'):
+        urllib2.urlopen = org_urlopen
+
 def main(port):
 
     sys.stderr.write("Starting Python IPC on port: %s\n"%((port)))

@@ -98,7 +98,7 @@ public class RMIRuby implements Ruby {
                 streamLogger = streamLoggerFactory.create(process.in, process.err)
                 streamLogger.start()
 
-                rpc.Ipc.set_gem_home("${settings.grainHome}/gems")
+                rpc.Ipc.set_gem_home("${settings.grainHome}/packages/ruby")
 
                 this.rpc = rpc
                 latch.countDown()

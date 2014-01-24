@@ -30,11 +30,10 @@ class HighlightModule extends AbstractModule {
 
     @Provides @javax.inject.Singleton
     public Pygments providePygments(Injector injector,
-            PythonPygments python, ShellPygments shell,
-            FakePygments fake) {
+            PythonPygments pygments, FakePygments fake) {
         new ImplBinder<Pygments>(Pygments.class, 'features.pygments', 
-                [python: python, jython: python,
-                 shell: shell, default: python, none: fake], injector).proxy
+                [python: pygments, jython: pygments,
+                 shell: pygments, default: pygments, none: fake], injector).proxy
     }
 
     @Provides @javax.inject.Singleton @Uncached

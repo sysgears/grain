@@ -44,6 +44,9 @@ public class Jython implements Python {
 
     /** RPC dispatcher factory */
     @Inject private RPCDispatcherFactory dispatcherFactory
+    
+    /** Setup tools installer */
+    @Inject private SetupToolsInstaller installer
 
     /** Jython interpreter instance */
     private PythonInterpreter python
@@ -56,7 +59,7 @@ public class Jython implements Python {
 
     /** Jython thread */
     private Thread thread
-
+    
     /**
      * Starts Jython process 
      */
@@ -66,6 +69,8 @@ public class Jython implements Python {
             ServerSocket serverSocket = null
             try {
                 log.info "Launching Jython process..."
+                
+                def setupToolsPath = installer.install()
 
                 serverSocket = TCPUtils.firstAvailablePort
                 if (!serverSocket)
@@ -75,6 +80,8 @@ public class Jython implements Python {
                 def args = ["${settings.toolsHome}/python-ipc/ipc.py", port] as String[]
 
                 log.info args.join(' ')
+
+                System.setProperty('python.executable', "${settings.toolsHome}/python-ipc/ipc.py")
 
                 python = new PythonInterpreter()
                 python.setIn(new ByteArrayInputStream())
@@ -93,8 +100,13 @@ public class Jython implements Python {
                 }
 
                 try {
-                    python.exec("import sys\nsys.path.append('${settings.toolsHome}/python-ipc/')\n" + 
-                        "import ipc\nfrom ipc import main\nmain($port)")
+                    python.exec("""
+import sys
+sys.path.append('${settings.toolsHome}/python-ipc/') 
+import ipc
+ipc.set_user_base("${settings.grainHome}/packages/python/")
+ipc.add_lib_path("${setupToolsPath}")
+ipc.main($port)""")
                 } catch (PyException pe) {
                     pe.printStackTrace()
                     log.error("Error while running Jython", pe)
