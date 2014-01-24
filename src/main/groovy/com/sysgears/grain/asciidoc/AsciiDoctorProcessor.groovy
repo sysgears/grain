@@ -76,7 +76,7 @@ public class AsciiDoctorProcessor implements Service {
     void start() {
         latch = new CountDownLatch(1)
         ruby.rpc.with {
-            Ipc.install_gem('asciidoctor')
+            Ipc.install_gem('asciidoctor', '>=0.1.4')
             Ipc.require('asciidoctor')
         }
         latch.countDown()
