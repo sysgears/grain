@@ -43,11 +43,6 @@ public class PythonPygments extends Pygments {
      * Launches pygments 
      */
     public void start() {
-        latch = new CountDownLatch(1)
-        def rpc = python.rpc
-        rpc.ipc.install_package('pygments>=1.6')
-        rpc.ipc.add_lib_path new File(settings.toolsHome, 'pygments-bridge').canonicalPath
-        latch.countDown()
     }
 
     /**
@@ -67,7 +62,11 @@ public class PythonPygments extends Pygments {
      */
     public String highlight(String code, String language) {
         if (!latch) {
-            start()
+            latch = new CountDownLatch(1)
+            def rpc = python.rpc
+            rpc.ipc.install_package('pygments>=1.6')
+            rpc.ipc.add_lib_path new File(settings.toolsHome, 'pygments-bridge').canonicalPath
+            latch.countDown()
         }
         latch.await()
         python.rpc.pygments_bridge.highlight(code, language)
