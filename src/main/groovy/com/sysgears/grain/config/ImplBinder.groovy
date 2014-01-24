@@ -100,7 +100,7 @@ class ImplBinder<T extends ConfigChangeListener> {
                 ((Service)proxy)?.start()
                 ((Service)proxyTarget)?.start()
             }
-            log.info "Using proxy ${proxyTarget?.class?.name} for ${propertyName}"
+            log.debug "Using proxy ${proxyTarget?.class?.name} for ${propertyName}"
         }
         
         proxy = map.asType(ifc)
