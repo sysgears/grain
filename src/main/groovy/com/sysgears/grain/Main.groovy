@@ -33,7 +33,6 @@ import com.sysgears.grain.registry.RegistryModule
 import com.sysgears.grain.render.RenderModule
 import com.sysgears.grain.rpc.RPCModule
 import com.sysgears.grain.rpc.ruby.RubyModule
-import com.sysgears.grain.rst.RstModule
 
 /**
  * Main class of Grain application.
@@ -72,7 +71,6 @@ public class Main {
                 new PythonModule(),
                 new RPCModule(),
                 new MarkdownModule(),
-                new RstModule(),
                 new HighlightModule(),
                 new CompassModule(),
                 new RegistryModule(),

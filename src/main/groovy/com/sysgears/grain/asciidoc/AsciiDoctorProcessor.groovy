@@ -63,14 +63,7 @@ public class AsciiDoctorProcessor implements Service {
     }
 
     /**
-     * Does nothing.
-     */
-    @Override
-    public void configChanged() {
-    }
-
-    /**
-     * Does nothing.
+     * @inheritDoc
      */
     @Override
     void start() {
@@ -83,7 +76,7 @@ public class AsciiDoctorProcessor implements Service {
     }
 
     /**
-     * Does nothing.
+     * @inheritDoc
      */
     @Override
     void stop() {

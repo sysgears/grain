@@ -54,12 +54,12 @@ class PreviewModule extends AbstractModule {
     @Provides @javax.inject.Singleton
     public ConfigChangeBroadcaster provideConfigChangeBroadcaster(
             ConfigUpdater configUpdater, Highlighter highlighter,  @Uncached Highlighter uncachedHighlighter,
-            Pygments pygments, MarkdownProcessor markdownProcessor, RstProcessor rstProcessor,
+            Pygments pygments, MarkdownProcessor markdownProcessor,
             PythonFinder pythonFinder, Python python, RubyFinder rubyFinder, Ruby ruby,
             PythonPygments pythonPygments, 
             RubyCompass rubyCompass, Compass compass) {
         return new ConfigChangeBroadcaster(configUpdater,
-                markdownProcessor, rstProcessor, pythonFinder, python, rubyFinder, ruby, pythonPygments,
+                markdownProcessor, pythonFinder, python, rubyFinder, ruby, pythonPygments,
                 rubyCompass, compass, highlighter, uncachedHighlighter, pygments)
     }
 
