@@ -20,6 +20,7 @@ import com.google.inject.assistedinject.Assisted
 import com.sysgears.grain.PerfMetrics
 import com.sysgears.grain.registry.HeaderParser
 import com.sysgears.grain.registry.ResourceLocator
+import com.sysgears.grain.util.FixedBlock
 import org.codehaus.groovy.runtime.InvokerHelper
 
 import javax.inject.Inject
@@ -40,7 +41,10 @@ class GroovyTemplate implements ResourceTemplate {
     @Inject private TemplateEngine engine
     
     /** Layout header parser */
-    @Inject HeaderParser parser
+    @Inject private HeaderParser parser
+
+    /** Markup processor */
+    @Inject private MarkupProcessor markupProcessor
 
     /** Source file */
     private final File file
@@ -95,7 +99,7 @@ class GroovyTemplate implements ResourceTemplate {
             scriptObject.run()
             String content = writer.toString()
             view = new ResourceView()
-            view.content = content.replaceAll('<p><figure', '<figure').replaceAll('</figure></p>', '</figure>')
+            view.content = markupProcessor.process(content, file.getExtension())
             view.full = view.content
             view.bytes = view.full.bytes
             def renderTime = System.currentTimeMillis() - startRenderTime
@@ -105,7 +109,7 @@ class GroovyTemplate implements ResourceTemplate {
 
             if (layout) {
                 def newView = engine.createTemplate(locator.findLayout(layout)).
-                        render(bindings + [content: view.content], true)
+                        render(bindings + [content: FixedBlock.escapeText(view.content)], true)
                 view.full = newView.full
                 view.bytes = view.full.bytes
             }

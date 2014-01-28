@@ -26,12 +26,24 @@ class ScriptTranslatorSpec extends Specification {
         translator.translate('abc<% def a = 1 %>def').trim() == 'output.write("""abc""");\ndef a = 1;\noutput.write("""def""");'
     }
 
-    def 'check highlighted block translation'() {
-        expect: 'highlighted block should be translated into statements that disallow groovy expressions'
-        translator.translate('abc```def', ['$xyz']).trim() ==
-                'output.write("""abc""");\noutput.write(\'\'\'$xyz\'\'\');\noutput.write("""def""");'
+    def 'check fixed block (`!`) translation'() {
+        expect: '`!` block should be translated into statements that disallow groovy expressions'
+        translator.translate('abc`!`some text`!`def').trim() ==
+                'output.write("""abc""");\noutput.write(\'\'\'some text\'\'\');\noutput.write("""def""");'
     }
-    
+
+    def 'check \\ escaping in fixed block'() {
+        expect: '\\ in fixed block should be escaped'
+        translator.translate('`!`jeeves \\& wooster`!`').trim() ==
+                'output.write(\'\'\'jeeves \\\\& wooster\'\'\');'
+    }
+
+    def 'check quote escaping in fixed block'() {
+        expect: 'quote in `!` block should be escaped'
+        translator.translate('`!`je\'eves`!`').trim() ==
+                'output.write(\'\'\'je\\\'eves\'\'\');'
+    }
+
     def 'check long lines truncation'() {
         def stLen = 'output.write("""""");'.length()
         expect: 'very long line should be automatically truncated'

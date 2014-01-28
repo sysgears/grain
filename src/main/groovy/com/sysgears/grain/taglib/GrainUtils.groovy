@@ -37,4 +37,17 @@ class GrainUtils {
             sb.append(String.format('%02x', it))
         }.toString()
     }
+
+    /**
+     * Outputs fixed block.
+     * <p>
+     * The fixed block is a block delimited by &&&. It is not modified by Grain and rendered as is.  
+     * 
+     * @param text source text
+     * 
+     * @return source text wrapped into fixed block
+     */
+    static def fixedBlock(String text) {
+        '`!`' + text.replace('`!`', '`!!`') + '`!`'
+    }
 }

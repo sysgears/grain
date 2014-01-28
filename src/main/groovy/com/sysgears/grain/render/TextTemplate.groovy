@@ -19,8 +19,8 @@ package com.sysgears.grain.render
 import com.google.inject.assistedinject.Assisted
 import com.sysgears.grain.registry.HeaderParser
 import com.sysgears.grain.registry.ResourceLocator
+import com.sysgears.grain.util.FixedBlock
 
-import javax.annotation.Nullable
 import javax.inject.Inject
 
 /**
@@ -29,38 +29,35 @@ import javax.inject.Inject
  */
 class TextTemplate implements ResourceTemplate {
 
-    /** Resource text */
-    private final String contents
-    
-    /** Highlighted fragments */
-    private final List<String> fragments
-
     /** Template engine */
     @Inject private TemplateEngine engine
-
-    /** Source file */
-    private final File file
 
     /** Resource locator */
     @Inject private ResourceLocator locator
 
     /** Layout header parser */
-    @Inject HeaderParser parser
+    @Inject private HeaderParser parser
+
+    /** Markup processor */
+    @Inject private MarkupProcessor markupProcessor
+
+    /** Source file */
+    private final File file
+
+    /** Resource text */
+    private final String contents
 
     /**
      * Creates instance of the renderer
      *
      * @param file source file
      * @param contents resource file contents
-     * @param fragments highlighted fragments
      */
     @Inject
     public TextTemplate(@Assisted final File file,
-                        @Assisted final String contents,
-                        @Nullable @Assisted final List<String> fragments) {
+                        @Assisted final String contents) {
         this.file = file
         this.contents = contents
-        this.fragments = fragments
     }
 
     /**
@@ -74,13 +71,8 @@ class TextTemplate implements ResourceTemplate {
      */
     public ResourceView render(final Map bindings, final boolean isResourcePart) {
         def view = new ResourceView()
-        int codeIdx = 0
 
-        String content = contents.replaceAll(/```/, {
-            this.fragments[codeIdx++]
-        })
-        view.content = content.replaceAll('<p><figure', '<figure').
-                replaceAll('</figure></p>', '</figure>')
+        view.content = markupProcessor.process(contents, file.getExtension()) 
         view.full = view.content
         view.bytes = view.full.bytes
 
@@ -88,7 +80,7 @@ class TextTemplate implements ResourceTemplate {
 
         if (layout) {
             def newView = engine.createTemplate(locator.findLayout(layout)).
-                    render(bindings + [content: view.content], true)
+                    render(bindings + [content: FixedBlock.escapeText(view.content)], true)
             view.full = newView.full
             view.bytes = view.full.bytes
         }

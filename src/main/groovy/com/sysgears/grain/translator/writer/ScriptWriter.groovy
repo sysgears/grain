@@ -15,6 +15,7 @@
  */
 
 package com.sysgears.grain.translator.writer
+
 /**
  * Builds a sequence of output.write() statements that have arbitrary groovy code between them.
  */

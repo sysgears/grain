@@ -34,34 +34,36 @@ public class ScriptTranslator {
      * Translates Grain script code into Groovy source code.
      * 
      * @param scriptSource Grain script source code
-     * @param insertions list of text chunks, each chunk should be placed instead of ```, 
-     *                   without translation
      * 
      * @return Groovy source code 
      */
-    public String translate(String scriptSource, List insertions = []) {
-        def codeIdx = 0
+    public String translate(String scriptSource) {
         def script = scriptPrototype.get()
         while (scriptSource.length() > 0) {
-            def m = scriptSource =~ /```|\$\{|<%=|<%/
+            def m = scriptSource =~ /`!`|\$\{|<%=|<%/
 
             def found = m.find()
 
             script.write(scriptSource.substring(0, found ? m.start() : scriptSource.length())
-                    .replaceAll('\r', '').replaceAll(/([\$"\\])/, '\\\\$1'))
+                    .replace('\r', '').replaceAll(/([\$"\\])/, '\\\\$1'))
 
             scriptSource = found ? scriptSource.substring(m.end()) : ""
 
             if (found) {
                 def op = m[0]
 
-                if (op == '```') {
-                    def code = insertions[codeIdx++] as String
-                    script.write(code.replaceAll("\\\\", "\\\\\\\\").replaceAll("'", "\\\\'"), StatementType.STRING_WRITE)
+                if (op == '`!`') {
+                    def m2 = scriptSource =~ /`!`/
+                    if (m2.find()) {
+                        script.write(op + scriptSource.substring(0, m2.start()).replace('\\', '\\\\').
+                                replace('\'', '\\\'') + op, StatementType.STRING_WRITE)
+                        scriptSource = scriptSource.substring(m2.end())
+                    }
                 } else if (op == '<%') {
                     def m2 = scriptSource =~ /%>/
                     if (m2.find()) {
-                        script.write(scriptSource.substring(0, m2.start()).trim() + ";\n", StatementType.PLAIN_CODE, true)
+                        script.write(scriptSource.substring(0, m2.start()).trim() + ";\n",
+                                StatementType.PLAIN_CODE, true)
                         scriptSource = scriptSource.substring(m2.end())
                     }
                 } else if (op == '<%=') {

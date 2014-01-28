@@ -30,9 +30,7 @@ public interface TextTemplateFactory {
      *
      * @param file source file
      * @param contents resource file text contents
-     * @param fragments highlighted fragments
      */
     public TextTemplate create(@Assisted final File file,
-                               @Assisted final String contents,
-                               @Nullable final List<String> fragments)
+                               @Assisted final String contents)
 }
