@@ -99,7 +99,7 @@ class GroovyTemplate implements ResourceTemplate {
             scriptObject.run()
             String content = writer.toString()
             view = new ResourceView()
-            view.content = content.replaceAll('<p><figure', '<figure').replaceAll('</figure></p>', '</figure>')
+            view.content = content.replaceAll(/(?s)<p>(<figure.+?<\/figure>)<\/p>/, '$1')
             view.full = view.content
             view.bytes = view.full.bytes
             def renderTime = System.currentTimeMillis() - startRenderTime

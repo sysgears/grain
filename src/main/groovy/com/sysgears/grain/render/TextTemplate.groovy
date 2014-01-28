@@ -74,8 +74,7 @@ class TextTemplate implements ResourceTemplate {
         String content = contents.replaceAll(/```/, {
             this.fragments[codeIdx++]
         })
-        view.content = content.replaceAll('<p><figure', '<figure').
-                replaceAll('</figure></p>', '</figure>')
+        view.content = content.replaceAll(/(?s)<p>(<figure.+?<\/figure>)<\/p>/, '$1')
         view.full = view.content
         view.bytes = view.full.bytes
 
