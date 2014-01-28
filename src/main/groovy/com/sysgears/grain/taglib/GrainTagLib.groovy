@@ -18,6 +18,7 @@ package com.sysgears.grain.taglib
 
 import com.sysgears.grain.registry.URLRegistry
 import com.sysgears.grain.render.ResourceView
+import com.sysgears.grain.util.FixedBlock
 import groovy.util.logging.Slf4j
 
 import javax.inject.Inject
@@ -91,7 +92,7 @@ class GrainTagLib {
      */
     def include = { String location, Map model = null ->
         try {
-            page.include(location, model).full
+            FixedBlock.wrapText(page.include(location, model).full)
         } catch (AbsentResourceException e) {
             log.warn "WARNING: ${page.location} tried to include absent resource: ${location}"
             def msg = "Resource not found: ${location}"
