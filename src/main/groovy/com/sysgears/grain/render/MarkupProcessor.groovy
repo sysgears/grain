@@ -47,6 +47,9 @@ public class MarkupProcessor {
             output = input
         }
         
-        keeper.reanimateFixedBlocks(output)
+        def result = keeper.reanimateFixedBlocks(output)
+        
+        // Unwrap highlighted blocks
+        result.replaceAll(/(?s)<p>(<figure.+?<\/figure>)<\/p>/, '$1')
     }
 }

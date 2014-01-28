@@ -53,10 +53,6 @@ public class FixedBlocksKeeper {
      */
     public String reanimateFixedBlocks(String output) {
         def idx = 0
-        def result = output.replaceAll(MARKER, { blocks[idx++] })
-
-        result.replaceAll(/(?s)<p>(<figure.+?<\/figure>)<\/p>/, '$1')
-        //result.replace('<p><figure', '<figure').replace('</figure></p>', '</figure>')
-        //result
+        output.replaceAll(MARKER, { blocks[idx++] })
     }
 }
