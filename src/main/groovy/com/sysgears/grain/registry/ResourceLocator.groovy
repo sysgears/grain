@@ -103,7 +103,7 @@ class ResourceLocator {
      * @return include file
      */
     public File findInclude(String location) {
-        List dirs = [] + config.include_dir + config.source_dir + ['']
+        List dirs = [] + config.include_dir + config.source_dir
         def dirStr = dirs.find {
             def file = new File(it.toString(), location)
             file.exists() && file.isFile()
