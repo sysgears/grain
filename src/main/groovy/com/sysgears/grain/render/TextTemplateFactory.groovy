@@ -28,9 +28,9 @@ public interface TextTemplateFactory {
     /**
      * Creates an instance of TextTemplate
      *
-     * @param file source file
+     * @param map resource map
      * @param contents resource file text contents
      */
-    public TextTemplate create(@Assisted final File file,
+    public TextTemplate create(@Assisted final Map resource,
                                @Assisted final String contents)
 }

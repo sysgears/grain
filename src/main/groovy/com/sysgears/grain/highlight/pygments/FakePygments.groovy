@@ -15,6 +15,9 @@
  */
 
 package com.sysgears.grain.highlight.pygments
+
+import javax.annotation.Nullable
+
 /**
  * Fake pygments integration, i.e. does nothing
  */
@@ -27,5 +30,12 @@ class FakePygments extends Pygments {
     @Override
     String highlight(String code, String language) {
         code
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Nullable String getCacheSubdir() {
+        null
     }
 }

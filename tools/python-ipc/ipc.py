@@ -24,6 +24,7 @@ def _write_string(sf, result):
         sf.write(ret)
         sf.flush()
 
+# Creates dir with parent dirs creation as needed
 def mkdir_p(path):
     try:
         os.makedirs(path)
@@ -32,14 +33,17 @@ def mkdir_p(path):
             pass
         else: raise
 
+# Adds path to Python's sys.path
 def add_lib_path(path):
     sys.path.insert(1, path)
     
+# Sets PYTHONUSERBASE for Jython
 def set_user_base(user_base):
     os.environ['PYTHONUSERBASE'] = user_base
     import site
     site.USER_BASE = user_base
 
+# Installs python package from PyPI and returns package version
 def install_package(pkg_name):
     if sys.platform.startswith('java'):
         from distutils.command.install import INSTALL_SCHEMES
@@ -120,7 +124,7 @@ def install_package(pkg_name):
     import setuptools, pkg_resources, site, sysconfig
     from setuptools.command import easy_install
     try:
-        pkg_resources.require(pkg_name)
+        dist = pkg_resources.get_distribution(pkg_name)
     except:
         log.warn("Downloading package %s...", pkg_name)
         easy_install.main(argv = ['--user', '-U', pkg_name])
@@ -128,9 +132,11 @@ def install_package(pkg_name):
         site.addsitedir(sysconfig.get_path('platlib', os.name + '_user'))
         reload(pkg_resources)
         
-        pkg_resources.get_distribution(pkg_name).activate()
+        dist = pkg_resources.get_distribution(pkg_name)
+        dist.activate()
     if sys.platform.startswith('java'):
         urllib2.urlopen = org_urlopen
+    return dist.version
 
 def main(port):
 

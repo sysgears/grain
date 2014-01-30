@@ -15,13 +15,17 @@ class Ipc
     Gem::Specification.each.any? { |spec| name == spec.name and version.satisfied_by? spec.version }
   end
 
-  # Installs gem
+  # Installs gem and returns installed gem version
   def self.install_gem(name, version = Gem::Requirement.default)
-    return if gem_installed name, version
+    if gem_installed name, version
+      return Gem.latest_spec_for(name).version.to_s
+    end
 
     STDERR.puts "Downloading gem #{name} #{version}"
     
     Gem::DependencyInstaller.new.install name, version
+
+    return Gem.latest_spec_for(name).version.to_s
   end
 
   # Adds gem path to the search path list for looking up gems

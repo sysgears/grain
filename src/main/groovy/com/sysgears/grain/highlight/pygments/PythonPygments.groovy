@@ -20,6 +20,7 @@ import com.sysgears.grain.init.GrainSettings
 import com.sysgears.grain.rpc.python.Python
 import groovy.util.logging.Slf4j
 
+import javax.annotation.Nullable
 import javax.inject.Inject
 import java.util.concurrent.CountDownLatch
 
@@ -38,6 +39,9 @@ public class PythonPygments extends Pygments {
 
     /** Latch for Pygments initialization */
     private CountDownLatch latch
+    
+    /** Pygments version */
+    private String version
 
     /**
      * Launches pygments 
@@ -61,14 +65,29 @@ public class PythonPygments extends Pygments {
      * @return highlighted code HTML
      */
     public String highlight(String code, String language) {
+        startAndWait()
+        python.rpc.pygments_bridge.highlight(code, language)
+    }
+
+    /**
+     * Starts Python pygments and waits until start will be completed 
+     */
+    private void startAndWait() {
         if (!latch) {
             latch = new CountDownLatch(1)
             def rpc = python.rpc
-            rpc.ipc.install_package('pygments>=1.6')
+            this.version = rpc.ipc.install_package('pygments>=1.6')
             rpc.ipc.add_lib_path new File(settings.toolsHome, 'pygments-bridge').canonicalPath
             latch.countDown()
         }
         latch.await()
-        python.rpc.pygments_bridge.highlight(code, language)
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Nullable String getCacheSubdir() {
+        startAndWait()
+        "pygments." + version?.replace('.', '_')
     }
 }

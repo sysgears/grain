@@ -39,6 +39,17 @@ class GrainUtils {
     }
 
     /**
+     * Calculates non-crypthographic collision-free hash of a byte array.
+     * <p>
+     * For now this method uses md5, but implementation will change in the future.
+     *
+     * @attr bytes to calculate a hash
+     *
+     * @return the hash
+     */
+    static def hash = md5
+
+    /**
      * Outputs fixed block.
      * <p>
      * The fixed block is a block delimited by &&&. It is not modified by Grain and rendered as is.  

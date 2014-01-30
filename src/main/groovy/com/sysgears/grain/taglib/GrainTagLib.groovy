@@ -27,7 +27,7 @@ import javax.inject.Inject
  * Basic tag lib exposed to each resource code.
  */
 @Slf4j
-class GrainTagLib {
+class GrainTagLib extends GrainUtils {
 
     /** Resource locator */
     @Inject private URLRegistry urlRegistry

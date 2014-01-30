@@ -24,11 +24,11 @@ public interface TemplateEngine {
     /**
      * Creates template for given resource file. 
      * 
-     * @param file resource file
+     * @param resource resource map
      * 
      * @return resource rendering template
      * 
      * @throws RenderException in case of error creating template
      */
-    public ResourceTemplate createTemplate(File file) throws RenderException
+    public ResourceTemplate createTemplate(Map resource) throws RenderException
 }

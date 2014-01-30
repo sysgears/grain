@@ -63,13 +63,6 @@ abstract class Pygments implements Highlighter, ConfigChangeListener, Service {
     /**
      * @inheritDoc
      */
-    @Nullable String getCacheSubdir() {
-        "pygments"
-    }
-
-    /**
-     * @inheritDoc
-     */
     @Override
     public void configChanged() {
     }

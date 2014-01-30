@@ -56,17 +56,28 @@ class ResourceRenderer {
      * @return result of resource rendering
      */
     public ResourceView render(Map resource, Map model, boolean isResourcePart) {
-        if (!resource.location)
-            throw new InvalidObjectException('Not a resource map, the map is missing \'location\' key.')
+        if (!resource.location && (!resource.source || !resource.markup))
+            throw new InvalidObjectException("Not a resource map, the map should have either 'location' key " +
+                    "or 'source' and 'markup' keys, map:\n${resource}")
 
-        def file = locator.findInclude(resource.location)
+        def updatedResource = [:] + resource
+        if (resource.location) {
+            def file = locator.findInclude(resource.location)            
 
-        if (!file)
-            throw new AbsentResourceException("Resource was not found: ${resource.location}", resource.lcation)
+            if (!file)
+                throw new AbsentResourceException("Resource was not found: ${resource.location}", resource.lcation)
 
+            if (isResourcePart) {
+                updatedResource.remove('markup')
+                updatedResource.remove('layout')
+                updatedResource += parser.parse(file)
+            }
+        }
+        
+        def page = resource
+        
         def taglib = taglibProvider.get()
 
-        def page = isResourcePart ? resource + parser.parse(file) : resource
         if (model) {
             page = (resource as ConfigObject).merge(model as ConfigObject)
         }
@@ -81,6 +92,6 @@ class ResourceRenderer {
             }
         }
 
-        templateEngine.createTemplate(file).render(bindings, isResourcePart)        
+        templateEngine.createTemplate(updatedResource).render(bindings)        
     }
 }

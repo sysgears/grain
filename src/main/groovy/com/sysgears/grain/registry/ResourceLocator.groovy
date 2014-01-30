@@ -76,10 +76,10 @@ class ResourceLocator {
      * @return layout file
      */
     public File findLayout(String location) {
-        List dirs = [] + config.layout_dir
         if (!location.contains('.')) {
             location = "${location}.html"
         }
+        List dirs = [] + config.layout_dir 
         def dirStr = dirs.find {
             def file = new File(it.toString(), location)
             file.exists() && file.isFile()
@@ -103,12 +103,12 @@ class ResourceLocator {
      * @return include file
      */
     public File findInclude(String location) {
-        List dirs = [] + config.include_dir + config.source_dir
+        List dirs = [] + config.include_dir + config.source_dir + ['']
         def dirStr = dirs.find {
             def file = new File(it.toString(), location)
             file.exists() && file.isFile()
         }
-        if (!dirStr) {
+        if (dirStr == null) {
             if (settings.command == 'preview') {
                 null
             } else {

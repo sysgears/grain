@@ -23,7 +23,7 @@ public interface RawTemplateFactory {
     /**
      * Creates an instance of RawTemplate
      *
-     * @param resource resource file
+     * @param bytes resource bytes
      */
-    public RawTemplate create(final File resource)
+    public RawTemplate create(final byte[] bytes)
 }

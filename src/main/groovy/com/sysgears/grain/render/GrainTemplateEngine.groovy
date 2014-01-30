@@ -21,9 +21,12 @@ import com.sysgears.grain.config.Config
 import com.sysgears.grain.highlight.PageHighlighter
 import com.sysgears.grain.preview.SiteChangeListener
 import com.sysgears.grain.registry.HeaderParser
+import com.sysgears.grain.registry.MarkupDetector
 import com.sysgears.grain.registry.ResourceLocator
 import com.sysgears.grain.registry.ResourceParser
+import com.sysgears.grain.taglib.AbsentResourceException
 import com.sysgears.grain.translator.ScriptTranslator
+import groovy.util.logging.Slf4j
 
 import javax.inject.Inject
 
@@ -31,6 +34,7 @@ import javax.inject.Inject
  * Grain template engine.
  */
 @javax.inject.Singleton
+@Slf4j
 class GrainTemplateEngine implements TemplateEngine, SiteChangeListener {
     
     /** Site config */
@@ -53,7 +57,10 @@ class GrainTemplateEngine implements TemplateEngine, SiteChangeListener {
 
     /** Groovy Shell used to execute Groovy scripts */
     @Inject private GroovyShell groovyShell
-    
+
+    /** Markup detector */
+    @Inject private MarkupDetector markupDetector
+
     /** Raw template factory */
     @Inject private RawTemplateFactory rawTemplateFactory
 
@@ -84,40 +91,39 @@ class GrainTemplateEngine implements TemplateEngine, SiteChangeListener {
     /**
      * @inheritDoc 
      */
-    public ResourceTemplate createTemplate(File file) throws RenderException {
+    public ResourceTemplate createTemplate(final Map resource) throws RenderException {
         long startDocParse = System.currentTimeMillis()
-        def extension = file.getExtension()
-        def codeEnabledFiles = config.code_enabled_files
-        def codeAllowedFiles = config.code_allowed_files
-        if (!codeEnabledFiles || !(codeEnabledFiles instanceof List) || !(extension in codeEnabledFiles)) {
-            if (!codeAllowedFiles || !(codeAllowedFiles instanceof List) || !(extension in codeAllowedFiles)) {
-                return rawTemplateFactory.create(file)
-            }
-            def firstLine = new BufferedReader(new FileReader(file)).readLine().trim()
-            if (!(firstLine.startsWith("---") || firstLine.startsWith("/*-"))) {
-                return rawTemplateFactory.create(file)
+        
+        def res = [:] + resource
+        
+        def file = res.source ? new File('<source>') : locator.findInclude(res.location)
+
+        if (!file)
+            throw new AbsentResourceException("Resource was not found: ${res.location}", res.lcation)
+        
+        if (!res.markup) {
+            res.markup = markupDetector.getMarkupType(file) 
+        }
+        
+        log.trace "Creating template for ${file}, markup: ${res.markup}"
+
+        if (res.markup == 'binary') {
+            return rawTemplateFactory.create(res.source ? res.source as byte[] : file.bytes)
+        }
+        
+        def text = ''
+        if (res.source) {
+            text = res.source 
+        } else {
+            new BufferedReader(new StringReader(file.text)).withReader { reader ->
+                def resourceParser = new ResourceParser(file, reader)
+                headerParser.parse(file, resourceParser.header)
+                text = resourceParser.content
             }
         }
-        def sourceModifier = config.source_modifier
-        def text = sourceModifier ? sourceModifier(file) : file.text as String
-        if (extension in ['html', 'md', 'markdown', 'rst', 'adoc', 'asciidoctor']) {
+
+        if (res.markup != 'text') {
             text = pageHighlighter.highlight(text)
-        }
-
-        Map pageConfig = [:]
-        new BufferedReader(new StringReader(text)).withReader { reader ->
-            def resourceParser = new ResourceParser(file, reader)
-            pageConfig = headerParser.parse(file, resourceParser.header)
-            text = resourceParser.content
-        }
-        boolean isMarkup = extension in ['markdown', 'md', 'rst', 'adoc', 'asciidoctor']
-
-        def isScript = pageConfig.script ?: !isMarkup
-
-        if (isMarkup) {
-            if (text.contains('${') || text.contains('<%')) {
-                isScript = true
-            }
         }
 
         long startScriptParse = System.currentTimeMillis()
@@ -125,13 +131,13 @@ class GrainTemplateEngine implements TemplateEngine, SiteChangeListener {
         def scriptName = "GrainScript${counter++}.groovy"
         
         def template
-        if (isScript) {
+        if (res.script != false) {
             String source = scriptTranslator.translate(text)
             perf.scriptParseTime += (System.currentTimeMillis() - startScriptParse)
             try {
                 long startScriptCompileTime = System.currentTimeMillis()
                 def script = groovyShell.parse(source, scriptName)
-                template = groovyTemplateFactory.create(file, source, script)
+                template = groovyTemplateFactory.create(res, source, script)
                 perf.scriptCompileTime += (System.currentTimeMillis() - startScriptCompileTime)
             } catch (RenderException gr) {
                 throw gr
@@ -143,7 +149,7 @@ class GrainTemplateEngine implements TemplateEngine, SiteChangeListener {
                 throw new RenderException("Failed to parse ${file} script: " + sw.toString() + "\nScript source:\n${src}")
             }
         } else {
-            template = textTemplateFactory.create(file, text)
+            template = textTemplateFactory.create(res, text)
         }
         
         template

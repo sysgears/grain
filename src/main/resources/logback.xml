@@ -8,6 +8,7 @@
 
   <!--logger name="com.sysgears.grain.service" level="TRACE"/-->
   <!--logger name="com.sysgears.grain.rpc" level="TRACE"/-->
+  <!--logger name="com.sysgears.grain.render" level="TRACE"/-->
 
   <root level="INFO">
     <appender-ref ref="STDOUT" />

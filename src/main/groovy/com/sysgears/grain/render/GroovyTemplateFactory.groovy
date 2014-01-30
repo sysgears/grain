@@ -26,11 +26,11 @@ interface GroovyTemplateFactory {
     /**
      * Creates an instance of GroovyTemplate.
      *
-     * @param file source file
+     * @param resource resource map
      * @param source source code of the groovy script
      * @param script compiled groovy script
      */
-    public GroovyTemplate create(final File file,
+    public GroovyTemplate create(final Map resource,
                                  @Assisted final String source,
                                  final Script script)
 }

@@ -43,6 +43,9 @@ class Registry implements FileChangeListener, Service {
 
     /** Rendering engine */
     @Inject private TemplateEngine templateEngine
+    
+    /** Markup detector */
+    @Inject private MarkupDetector markupDetector
 
     /** Site pages registry */
     private final Map<File, Map<String, Object>> pages = [:]
@@ -68,7 +71,7 @@ class Registry implements FileChangeListener, Service {
         def sourceDirs = (config.source_dir as List<String>).collect { new File(it) }.reverse()
         sourceDirs*.eachFileRecurse(FileType.FILES) {
             if (isResource(it)) {
-                templateEngine.createTemplate(it)
+                templateEngine.createTemplate([location: it.canonicalPath])
             }
         }
         log.info "Finished filling up template cache"
@@ -154,19 +157,23 @@ class Registry implements FileChangeListener, Service {
     private void add(final File resourceFile) {
         log.debug "Adding file ${resourceFile} to registry"
         def location = locator.getLocation(resourceFile)
-        def defaultUrl = location.replaceAll(/\/index\.(md|markdown|html)$/, '/')
-        def page = resourceFile.getExtension() in ['html', 'markdown', 'md', 'xml', 'rst', 'adoc', 'asciidoc']
+        def defaultUrl = location.replaceAll(/\/index\.?[^.]*$/, '/')
+        def markup = markupDetector.getMarkupType(resourceFile) 
+        def page = !(markup in ['binary', 'text'])  
         def resourceConfig = [:]
+        def nonScriptFiles = config.non_script_files ?: []
 
-        if (page) {
+        if (markup != 'binary') {
             def resourceParser = new ResourceParser(resourceFile)
             resourceConfig = headerParser.parse(resourceFile, resourceParser.header)
             resourceConfig.text = { resourceParser.content }
         }
         resourceConfig.dateCreated = resourceFile.dateCreated()
         resourceConfig.lastUpdated =  resourceFile.lastModified()
+        resourceConfig.script = nonScriptFiles.every { !resourceFile.canonicalPath.matches(it as String) }
         resourceConfig.url = defaultUrl
         resourceConfig.location = location
+        resourceConfig.markup = markup
         resourceConfig.bytes = { resourceFile.bytes }
         resourceConfig.type = page ? 'page' : 'asset'
         def layoutConfig = resourceConfig
@@ -202,8 +209,8 @@ class Registry implements FileChangeListener, Service {
      */
     private boolean isResource(File file) {
         (!file.exists() || file.isFile()) &&
-                ([] + config.include_dir).find { file.path.startsWith(new File(it.toString()).absolutePath) } == null &&
-                ([] + config.layout_dir).find { file.path.startsWith(new File(it.toString()).absolutePath) } == null &&
+                ([] + config.include_dir).every { !file.path.startsWith(new File(it.toString()).absolutePath) } &&
+                ([] + config.layout_dir).every { !file.path.startsWith(new File(it.toString()).absolutePath) } &&
                 !isExcluded(file)
     }
 
@@ -216,13 +223,7 @@ class Registry implements FileChangeListener, Service {
      */
     private boolean isExcluded(File file) {
         def excludes = (config.excludes ?: []) + ['/SiteConfig.groovy', '']
-        if (excludes) {
-            def location = locator.getLocation(file)
-            excludes.find { String pattern ->
-                location.matches(pattern)
-            } != null
-        } else {
-            return false
-        }
+        def location = locator.getLocation(file)
+        excludes.any { location.matches(it as String) }
     }
 }

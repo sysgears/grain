@@ -25,21 +25,18 @@ import javax.inject.Inject
  * with highlighting section insertion.
  */
 class RawTemplate implements ResourceTemplate {
-
-    /** Resource file */
-    private final File resource
     
-    /** Resource file reader */
-    @Inject private ResourceReader reader
-
+    /** Resource file bytes */
+    private final byte[] bytes
+    
     /**
      * Creates instance of the renderer
      *
-     * @param resource resource file
+     * @param resource resource bytes
      */
     @Inject
-    public RawTemplate(@Assisted final File resource) {
-        this.resource = resource
+    public RawTemplate(@Assisted final byte[] bytes) {
+        this.bytes = bytes
     }
 
     /**
@@ -47,42 +44,11 @@ class RawTemplate implements ResourceTemplate {
      * as rendered representation of resource. 
      *
      * @param bindings ignored
-     * @param isResourcePart whether rendered template is layout or include
      *
      * @return rendered view of resource
      */
-    public ResourceView render(final Map bindings, boolean isResourcePart) {
-        def view = new ResourceView()
-        if (!isBinary(resource)) {
-            String content = reader.readText(resource)
-            
-            view.content = content
-            view.full = content
-            view.bytes = view.full.bytes
-        } else {
-            view.bytes = reader.readBytes(resource)
-        }
-        view
+    public ResourceView render(final Map bindings) {
+        new ResourceView(bytes: bytes)
     }
 
-    /**
-     * Detects if resource is a binary file
-     * 
-     * @param resource resource file
-     * 
-     * @return whether file is binary
-     */
-    private static final isBinary(File resource) {
-        !(resource.getExtension() in ['html', 'rb', 'markdown', 'md', 'rst', 'css', 'txt', 'xml', 'js']) 
-    }
-
-    /**
-     * Returns layout of this template
-     *
-     * @return layout
-     */
-    public String getLayout() {
-        null
-    }
 }
-
