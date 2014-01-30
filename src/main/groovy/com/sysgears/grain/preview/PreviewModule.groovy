@@ -30,7 +30,7 @@ import com.sysgears.grain.highlight.pygments.Pygments
 import com.sysgears.grain.rpc.python.Python
 import com.sysgears.grain.rpc.python.PythonFinder
 import com.sysgears.grain.highlight.pygments.PythonPygments
-import com.sysgears.grain.markdown.MarkdownProcessor
+import com.sysgears.grain.markup.markdown.MarkdownProcessor
 import com.sysgears.grain.registry.CachedHeaderParser
 import com.sysgears.grain.registry.Registry
 import com.sysgears.grain.registry.URLRegistry
@@ -38,7 +38,6 @@ import com.sysgears.grain.render.CachedTemplateEngine
 import com.sysgears.grain.render.GrainTemplateEngine
 import com.sysgears.grain.rpc.ruby.Ruby
 import com.sysgears.grain.rpc.ruby.RubyFinder
-import com.sysgears.grain.rst.RstProcessor
 
 /**
  * Package-specific IoC config

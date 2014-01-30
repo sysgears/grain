@@ -18,6 +18,7 @@ package com.sysgears.grain.render
 
 import com.google.inject.assistedinject.Assisted
 import com.sysgears.grain.PerfMetrics
+import com.sysgears.grain.markup.MarkupRenderer
 import com.sysgears.grain.registry.HeaderParser
 import com.sysgears.grain.registry.ResourceLocator
 import com.sysgears.grain.util.FixedBlock
@@ -45,8 +46,8 @@ class GroovyTemplate implements ResourceTemplate {
     /** Layout header parser */
     @Inject private HeaderParser parser
 
-    /** Markup processor */
-    @Inject private MarkupProcessor markupProcessor
+    /** Markup renderer */
+    @Inject private MarkupRenderer markupRenderer
 
     /** Resource map */
     private final Map resource 
@@ -100,7 +101,7 @@ class GroovyTemplate implements ResourceTemplate {
             scriptObject.run()
             String content = writer.toString()
             view = new ResourceView()
-            view.content = markupProcessor.process(content, resource.markup)
+            view.content = markupRenderer.process(content, resource.markup)
             view.full = view.content
             view.bytes = view.full.bytes
             def renderTime = System.currentTimeMillis() - startRenderTime
@@ -112,7 +113,7 @@ class GroovyTemplate implements ResourceTemplate {
             if (layout) {
                 def layoutFile = locator.findLayout(layout)
                 def newView = engine.createTemplate(parser.parse(layoutFile) +
-                        [location: layoutFile.toString()]).
+                        [location: layoutFile]).
                         render(bindings + [content: FixedBlock.escapeText(view.content)])
                 view.full = newView.full
                 view.bytes = view.full.bytes
@@ -126,7 +127,7 @@ class GroovyTemplate implements ResourceTemplate {
             t.printStackTrace(new PrintWriter(sw))
             def src = new StringWriter()
             source.readLines().eachWithIndex { String line, int i -> src.append("${i+1}: ${line}\n")}
-            def file = resource.location ? locator.findInclude(resource.location) : '<source>'
+            def file = resource.location ?: '<source>'
             throw new RenderException("Failed to parse ${file} script: " +
                     sw.toString() + "\nScript source:\n${src}")
         }

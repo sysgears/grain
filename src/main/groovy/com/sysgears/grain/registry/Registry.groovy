@@ -71,7 +71,7 @@ class Registry implements FileChangeListener, Service {
         def sourceDirs = (config.source_dir as List<String>).collect { new File(it) }.reverse()
         sourceDirs*.eachFileRecurse(FileType.FILES) {
             if (isResource(it)) {
-                templateEngine.createTemplate([location: it.canonicalPath])
+                templateEngine.createTemplate([location: it])
             }
         }
         log.info "Finished filling up template cache"

@@ -1,9 +1,8 @@
-package com.sysgears.grain.markdown
+package com.sysgears.grain.markup.markdown
 
 import com.google.inject.AbstractModule
 import com.google.inject.Injector
 import com.google.inject.Provides
-import com.sysgears.grain.config.Config
 import com.sysgears.grain.config.ImplBinder
 
 /**

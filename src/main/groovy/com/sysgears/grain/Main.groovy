@@ -17,16 +17,13 @@
 package com.sysgears.grain
 
 import com.google.inject.Guice
-import com.google.inject.spi.ConstructorBinding
-import com.google.inject.spi.DefaultElementVisitor
 import com.sysgears.grain.compass.CompassModule
 import com.sysgears.grain.rpc.python.PythonModule
-import com.sysgears.grain.service.Service
 import com.sysgears.grain.highlight.HighlightModule
 import com.sysgears.grain.init.GrainSettings
 import com.sysgears.grain.init.InitModule
 import com.sysgears.grain.init.Initializer
-import com.sysgears.grain.markdown.MarkdownModule
+import com.sysgears.grain.markup.markdown.MarkdownModule
 import com.sysgears.grain.preview.DisabledPreviewModule
 import com.sysgears.grain.preview.PreviewModule
 import com.sysgears.grain.registry.RegistryModule

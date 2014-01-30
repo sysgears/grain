@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package com.sysgears.grain.asciidoc
+package com.sysgears.grain.markup.rst
 
-import com.sysgears.grain.compass.AbstractCompass
 import com.sysgears.grain.config.Config
 import com.sysgears.grain.init.GrainSettings
-import com.sysgears.grain.rpc.ruby.Ruby
+import com.sysgears.grain.rpc.python.Python
 import com.sysgears.grain.service.Service
 import groovy.util.logging.Slf4j
 
@@ -27,11 +26,11 @@ import javax.inject.Inject
 import java.util.concurrent.CountDownLatch
 
 /**
- * Implementation of AsciiDoctor integration.
+ * Implementation of reStructuredText integration using Python docutils.
  */
 @Slf4j
 @javax.inject.Singleton
-public class AsciiDoctorProcessor implements Service {
+public class RstProcessor implements Service {
     
     /** Site config */
     @Inject private Config config
@@ -39,14 +38,14 @@ public class AsciiDoctorProcessor implements Service {
     /** Grain settings */
     @Inject private GrainSettings settings
     
-    /** Ruby implementation */
-    @Inject private Ruby ruby
+    /** Python implementation */
+    @Inject private Python python
     
-    /** Latch for AsciiDoctor initialization */
+    /** Latch for DocUtils initialization */
     private CountDownLatch latch
 
     /**
-     * Renders AsciiDoctor content.
+     * Renders reStructuredText content.
      * 
      * @param source source
      * 
@@ -57,9 +56,16 @@ public class AsciiDoctorProcessor implements Service {
             start()
         }
         latch.await()
-        ruby.rpc.with {
-            Asciidoctor.render(source)
+        python.rpc.with {
+            docutils_bridge.process(source)
         }
+    }
+
+    /**
+     * Does nothing.
+     */
+    @Override
+    public void configChanged() {
     }
 
     /**
@@ -68,10 +74,9 @@ public class AsciiDoctorProcessor implements Service {
     @Override
     void start() {
         latch = new CountDownLatch(1)
-        ruby.rpc.with {
-            Ipc.install_gem('asciidoctor', '>=0.1.4')
-            Ipc.require('asciidoctor')
-        }
+        def ipc = python.rpc.ipc  
+        ipc.install_package('docutils>=0.11')
+        ipc.add_lib_path new File(settings.toolsHome, 'docutils-bridge').canonicalPath
         latch.countDown()
     }
 

@@ -17,14 +17,13 @@
 package com.sysgears.grain.render
 
 import com.google.inject.assistedinject.Assisted
+import com.sysgears.grain.markup.MarkupRenderer
 import com.sysgears.grain.registry.HeaderParser
-import com.sysgears.grain.registry.MarkupDetector
 import com.sysgears.grain.registry.ResourceLocator
 import com.sysgears.grain.util.FixedBlock
 import groovy.util.logging.Slf4j
 
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
  * Represents template that renders resource by returning predefined text
@@ -42,8 +41,8 @@ class TextTemplate implements ResourceTemplate {
     /** Resource locator */
     @Inject private ResourceLocator locator
 
-    /** Markup processor */
-    @Inject private MarkupProcessor markupProcessor
+    /** Markup renderer */
+    @Inject private MarkupRenderer markupRenderer
 
     /** Resource map */
     private final Map resource
@@ -75,7 +74,7 @@ class TextTemplate implements ResourceTemplate {
     public ResourceView render(final Map bindings) {
         def view = new ResourceView()
 
-        view.content = markupProcessor.process(contents, resource.markup) 
+        view.content = markupRenderer.process(contents, resource.markup) 
         view.full = view.content
         view.bytes = view.full.bytes
 
@@ -86,7 +85,7 @@ class TextTemplate implements ResourceTemplate {
         if (layout) {
             def layoutFile = locator.findLayout(layout)
             def newView = engine.createTemplate(parser.parse(layoutFile) + 
-                    [location: layoutFile.toString()]).
+                    [location: layoutFile]).
                     render(bindings + [content: FixedBlock.escapeText(view.content)])
             view.full = newView.full
             view.bytes = view.full.bytes

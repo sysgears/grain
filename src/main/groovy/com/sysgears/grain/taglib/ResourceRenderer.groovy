@@ -66,6 +66,8 @@ class ResourceRenderer {
 
             if (!file)
                 throw new AbsentResourceException("Resource was not found: ${resource.location}", resource.lcation)
+            
+            updatedResource.location = file
 
             if (isResourcePart) {
                 updatedResource.remove('markup')

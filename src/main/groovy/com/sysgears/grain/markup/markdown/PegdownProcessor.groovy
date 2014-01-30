@@ -1,4 +1,4 @@
-package com.sysgears.grain.markdown
+package com.sysgears.grain.markup.markdown
 
 import groovy.util.logging.Slf4j
 import org.pegdown.PegDownProcessor
@@ -21,6 +21,14 @@ class PegdownProcessor implements MarkdownProcessor {
         new PegDownProcessor().markdownToHtml(source)
     }
 
+    /**
+     * @inheritDoc
+     */
+    @Override
+    String getCacheSubdir() {
+        'pegdown.1_4_2'
+    }
+    
     /**
      * @inheritDoc
      */

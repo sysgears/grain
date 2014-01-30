@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-package com.sysgears.grain.rst
+package com.sysgears.grain.markup.asciidoc
 
 import com.sysgears.grain.config.Config
 import com.sysgears.grain.init.GrainSettings
-import com.sysgears.grain.rpc.python.Python
+import com.sysgears.grain.markup.MarkupProcessor
+import com.sysgears.grain.rpc.ruby.Ruby
 import com.sysgears.grain.service.Service
 import groovy.util.logging.Slf4j
 
+import javax.annotation.Nullable
 import javax.inject.Inject
 import java.util.concurrent.CountDownLatch
 
 /**
- * Implementation of reStructuredText integration using Python docutils.
+ * Implementation of AsciiDoctor integration.
  */
 @Slf4j
 @javax.inject.Singleton
-public class RstProcessor implements Service {
+public class AsciiDoctorProcessor implements Service, MarkupProcessor {
     
     /** Site config */
     @Inject private Config config
@@ -38,34 +40,27 @@ public class RstProcessor implements Service {
     /** Grain settings */
     @Inject private GrainSettings settings
     
-    /** Python implementation */
-    @Inject private Python python
+    /** Ruby implementation */
+    @Inject private Ruby ruby
     
-    /** Latch for DocUtils initialization */
+    /** Latch for AsciiDoctor initialization */
     private CountDownLatch latch
+    
+    /** AsciiDoctor gem version */
+    private String version
 
     /**
-     * Renders reStructuredText content.
+     * Renders AsciiDoctor content.
      * 
      * @param source source
      * 
      * @return rendered output 
      */
     public String process(String source) {
-        if (!latch) {
-            start()
+        startAndWait()
+        ruby.rpc.with {
+            Asciidoctor.render(source)
         }
-        latch.await()
-        python.rpc.with {
-            docutils_bridge.process(source)
-        }
-    }
-
-    /**
-     * Does nothing.
-     */
-    @Override
-    public void configChanged() {
     }
 
     /**
@@ -73,11 +68,6 @@ public class RstProcessor implements Service {
      */
     @Override
     void start() {
-        latch = new CountDownLatch(1)
-        def ipc = python.rpc.ipc  
-        ipc.install_package('docutils>=0.11')
-        ipc.add_lib_path new File(settings.toolsHome, 'docutils-bridge').canonicalPath
-        latch.countDown()
     }
 
     /**
@@ -86,5 +76,32 @@ public class RstProcessor implements Service {
     @Override
     void stop() {
         latch = null
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    void configChanged() {
+    }
+
+    /**
+     * Starts Python pygments and waits until start will be completed 
+     */
+    private void startAndWait() {
+        latch = new CountDownLatch(1)
+        ruby.rpc.with {
+            this.version = Ipc.install_gem('asciidoctor', '>=0.1.4')
+            Ipc.require('asciidoctor')
+        }
+        latch.countDown()
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Nullable String getCacheSubdir() {
+        startAndWait()
+        "asciidoctor." + version?.replace('.', '_')
     }
 }

@@ -96,7 +96,7 @@ class GrainTemplateEngine implements TemplateEngine, SiteChangeListener {
         
         def res = [:] + resource
         
-        def file = res.source ? new File('<source>') : locator.findInclude(res.location)
+        File file = res.source ? new File('<source>') : res.location
 
         if (!file)
             throw new AbsentResourceException("Resource was not found: ${res.location}", res.lcation)

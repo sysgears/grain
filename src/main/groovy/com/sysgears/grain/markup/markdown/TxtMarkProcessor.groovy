@@ -1,4 +1,4 @@
-package com.sysgears.grain.markdown
+package com.sysgears.grain.markup.markdown
 
 import com.github.rjeschke.txtmark.Processor
 import groovy.util.logging.Slf4j
@@ -19,6 +19,14 @@ class TxtMarkProcessor implements MarkdownProcessor {
      */
     public String process(String source) {
         Processor.process(source)
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    String getCacheSubdir() {
+        'txtmark.0_9'
     }
 
     /**
