@@ -61,6 +61,8 @@ class MarkupRenderer {
                     cacheFile.write(output)
                 }
             }
+        } else if (processor) {
+            output = processor.process(input)
         }
 
         def result = keeper.reanimateFixedBlocks(output)
