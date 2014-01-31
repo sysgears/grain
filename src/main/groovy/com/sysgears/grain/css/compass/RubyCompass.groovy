@@ -14,65 +14,56 @@
  * limitations under the License.
  */
 
-package com.sysgears.grain.compass
+package com.sysgears.grain.css.compass
 
 import com.sysgears.grain.config.Config
 import com.sysgears.grain.init.GrainSettings
+import com.sysgears.grain.rpc.ruby.Ruby
 import groovy.util.logging.Slf4j
 
 import javax.inject.Inject
-import javax.inject.Named
 
 /**
- * Base implementation of Compass integration.
+ * Implementation of Compass integration.
  */
 @Slf4j
-abstract class AbstractCompass implements Compass {
+@javax.inject.Singleton
+public class RubyCompass extends AbstractCompass {
     
     /** Site config */
     @Inject private Config config
     
-    /** Rendering mutex */
-    @Inject @Named("renderMutex") private Object mutex
-
     /** Grain settings */
     @Inject private GrainSettings settings
+    
+    /** Ruby implementation */
+    @Inject private Ruby ruby
 
     /**
-     * Configures and launches Compass process
-     *
-     * @param mode compass mode
-     */
-    public void configureAndLaunch(String mode) {
-        def compassConfig
-
-        compassConfig = [location: '/config.rb'].render().full
-
-        def configFile = new File(config.cache_dir as String, 'config.rb')
-        if (!configFile.exists() || configFile.text != compassConfig) {
-            configFile.write(compassConfig)
-        }
-
-        launchCompass(mode)
-    }
-
-    /**
-     * Launches compass in a separate thread 
+     * Launches compass in a separate Ruby thread 
      * <p>
      * If the thread is interrupted the process will be destroyed.
      *
      * @param mode compass mode
      */
-    abstract protected void launchCompass(String mode)
+    protected void launchCompass(String mode) {
+        log.info 'Launching Ruby Compass process...'
+
+        def rpc = ruby.rpc
+
+        rpc.Ipc.install_gem('compass')        
+        
+        rpc.Ipc.add_lib_path new File(settings.toolsHome, 'compass-bridge').canonicalPath
+        rpc.Ipc.require('compass_bridge')
+        
+        rpc.CompassBridge.start(mode, "${config.cache_dir}")
+    }
 
     /**
-     * @inheritDoc
+     * Awaits termination of Compass process
      */
-    @Override
-    public void start() {
-        if (settings.command == 'preview') {
-            configureAndLaunch("watch")
-        }
+    public void awaitTermination() {
+        ruby.rpc.CompassBridge.await()
     }
 
     /**
@@ -81,7 +72,11 @@ abstract class AbstractCompass implements Compass {
      * @throws Exception in case some error occur
      */
     @Override
-    public abstract void stop()
+    public void stop() {
+        log.info 'Stopping Ruby Compass process...'
+        ruby.rpc.CompassBridge.stop()
+        log.info 'Ruby Compass process finished.'
+    }
 
     /**
      * @inheritDoc

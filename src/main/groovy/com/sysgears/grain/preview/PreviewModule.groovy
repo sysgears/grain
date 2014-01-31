@@ -22,9 +22,10 @@ import com.google.inject.AbstractModule
 import com.google.inject.Provides
 import com.google.inject.name.Names
 import com.sysgears.grain.annotations.Uncached
-import com.sysgears.grain.compass.Compass
-import com.sysgears.grain.compass.RubyCompass
+import com.sysgears.grain.css.compass.Compass
+import com.sysgears.grain.css.compass.RubyCompass
 import com.sysgears.grain.config.ConfigUpdater
+import com.sysgears.grain.css.less.LessCompiler
 import com.sysgears.grain.highlight.Highlighter
 import com.sysgears.grain.highlight.pygments.Pygments
 import com.sysgears.grain.rpc.python.Python
@@ -56,10 +57,10 @@ class PreviewModule extends AbstractModule {
             Pygments pygments, MarkdownProcessor markdownProcessor,
             PythonFinder pythonFinder, Python python, RubyFinder rubyFinder, Ruby ruby,
             PythonPygments pythonPygments, 
-            RubyCompass rubyCompass, Compass compass) {
+            RubyCompass rubyCompass, Compass compass, LessCompiler less) {
         return new ConfigChangeBroadcaster(configUpdater,
                 markdownProcessor, pythonFinder, python, rubyFinder, ruby, pythonPygments,
-                rubyCompass, compass, highlighter, uncachedHighlighter, pygments)
+                rubyCompass, compass, less, highlighter, uncachedHighlighter, pygments)
     }
 
     @Provides @javax.inject.Singleton

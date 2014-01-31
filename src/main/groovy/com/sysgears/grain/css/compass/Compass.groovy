@@ -14,42 +14,26 @@
  * limitations under the License.
  */
 
-package com.sysgears.grain.compass
+package com.sysgears.grain.css.compass
+
+import com.sysgears.grain.service.Service
+import com.sysgears.grain.preview.ConfigChangeListener
+
 /**
- * Fake implementation of Compass integration - does nothing. 
+ * Interface for Compass integration.
  */
-@javax.inject.Singleton
-class FakeCompass extends AbstractCompass {
+public interface Compass extends ConfigChangeListener, Service {
 
     /**
-     * Does nothing
-     * 
-     * @param mode
-     */
-    public void configureAndLaunch(String mode) {
-    }
-    
-    /**
-     * Does nothing
+     * Configures and launches Compass process
      *
      * @param mode compass mode
      */
-    public void launchCompass(String mode) {
-    }
+    public void configureAndLaunch(String mode)
 
     /**
      * Awaits termination of Compass process
      */
-    public void awaitTermination() {
-    }
-
-    /**
-     * Shuts down Compass process 
-     *
-     * @throws Exception in case some error occur
-     */
-    @Override
-    public void stop() {
-    }
+    public void awaitTermination()
 
 }

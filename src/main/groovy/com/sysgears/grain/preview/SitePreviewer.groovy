@@ -18,6 +18,7 @@ package com.sysgears.grain.preview
 
 import com.sysgears.grain.compress.ResourceCompressor
 import com.sysgears.grain.config.Config
+import com.sysgears.grain.css.less.LessCompiler
 import com.sysgears.grain.service.Service
 import com.sysgears.grain.registry.Registry
 import com.sysgears.grain.registry.URLRegistry
@@ -53,7 +54,7 @@ class SitePreviewer implements Service {
 
     /** Resource compressor */
     @Inject private ResourceCompressor compressor
-
+    
     /** Rendering mutex */
     @Inject @Named("renderMutex") private Object mutex
 

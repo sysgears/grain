@@ -17,9 +17,10 @@
 package com.sysgears.grain.generate
 
 import com.sysgears.grain.PerfMetrics
-import com.sysgears.grain.compass.RubyCompass
+import com.sysgears.grain.css.compass.RubyCompass
 import com.sysgears.grain.compress.ResourceCompressor
 import com.sysgears.grain.config.Config
+import com.sysgears.grain.css.less.LessCompiler
 import com.sysgears.grain.log.StreamLoggerFactory
 import com.sysgears.grain.preview.SiteChangeBroadcaster
 import com.sysgears.grain.registry.Registry
@@ -60,6 +61,9 @@ class SiteGenerator {
     /** Site change broadcaster */
     @Inject private SiteChangeBroadcaster siteChangeBroadcaster
 
+    /** LESS compiler */
+    @Inject private LessCompiler lessCompiler
+
     /**
      * Generates static web site on a file system.
      */
@@ -70,8 +74,8 @@ class SiteGenerator {
         FileUtils.removeDir(destDir)
         FileUtils.createDirs(destDir)
 
-        log.info 'Compiling SASS resources...'
         compass.configureAndLaunch('compile')
+        lessCompiler.compile()
         log.info 'Building resource registry...'
         registry.compile()
         compass.awaitTermination()

@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package com.sysgears.grain.compass
+package com.sysgears.grain.css.compass
 
 import com.google.inject.AbstractModule
 import com.google.inject.Injector
 import com.google.inject.Provides
-import com.sysgears.grain.config.Config
 import com.sysgears.grain.config.ImplBinder
 
 /**
