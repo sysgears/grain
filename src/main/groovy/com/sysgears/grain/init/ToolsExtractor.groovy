@@ -21,6 +21,9 @@ class ToolsExtractor {
      * @param settings Grain settings
      */
     public void extractTools(GrainSettings settings) {
+        if (settings.env != 'cmd')
+            log.info "Grain version: ${settings.grainVersion}"
+
         if (settings.toolsHome.exists()) {
             if (settings.env != 'cmd')
                 log.info "Using tools home: ${settings.toolsHome}"
