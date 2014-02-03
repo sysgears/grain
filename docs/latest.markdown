@@ -12,8 +12,8 @@ Grain comes with the following high-level features:
  - preview mode that allows to make and see changes on the fly
  - support of embedded Groovy code for any content files
  - conventions that allow to process content sources using Groovy code
- - support of Markdown and reStructuredText
- - support of SASS/SCSS
+ - support of Markdown, reStructuredText and AsciiDoctor
+ - support of SASS/SCSS and LESS CSS
  - code highlighting via Pygments
  - sources compression and minification
 
@@ -146,24 +146,26 @@ to have the possibility for more fine-grained control over Grain website structu
 
 You can control website filesystem layout by modifying the following parameters in `SiteConfig.Groovy`:
 
-`cache_dir` - directory where cache files of various Grain subsystems are stored
+`cache_dir` - directory where cache files of various Grain subsystems are stored (default: ".cache") 
 
 `source_dir` - directory or list of directories with website sources. The directories are handled sequentially
 by Grain and if the same files with same relative locations appear in each directory, then the file from the directory
-listed later takes precedence
+listed later takes precedence (default: ["content", "theme", ".cache/compass", ".cache/less"])
 
-`include_dir` - directory or list of directories with includes
+`include_dir` - directory or list of directories with includes (default: "includes")
 
-`layout_dir` - directory or list of directories with layouts
+`layout_dir` - directory or list of directories with layouts (default: "layouts")
 
-`destination_dir` - destination directory for generated website files
+`destination_dir` - destination directory for generated website files (default: "target")
 
 `excludes` - a list of regular expressions, that match locations of files or directories to be excluded
-             from processing by Grain
+             from processing by Grain (default: ['/sass/.*', '/src/.*', '/target/.*'])
+             
+`binary_files` - a list of regular expressions, that match locations of <br/> binary files (default: [/(?i).*\.(png|jpg|jpeg|gif|ico|bmp)$/])                
 
 ###Preview configuration
 
-`jetty_port` - TCP port for serving HTTP request in preview mode (default is `4000`)
+`jetty_port` - TCP port for serving HTTP request in preview mode (default: 4000)
 
 ###Features configuration
 
@@ -172,62 +174,45 @@ section of the configuration file.
 
 ####Markdown markup feature
 
-`markdown` - markdown markup implementation (default is `txtmark`)
+`markdown` - markdown markup implementation (default: txtmark)
   
   - `txtmark` - TxtMark Markdown 
   - `pegdown` - PegDown Markdown
-
+  
 ####reStructuredText markup feature
 
-`rst` - reStructuredText implementation (default is `jrst`)
-  
-  - `jrst` - JRst
+There is only one implementation of reStructuredText at this time - via Python docutils. All files having `rst`
+extension will be rendered using this implementation.
+
+####AsciiDoctor markup feature
+
+All files having `adoc` or `asciidoctor` extensions will be rendered using latest asciidoc Ruby gem.
 
 ####Syntax highlighting feature
 
-`highlight` - code highlighting method (default is `none`):
+`highlight` - code highlighting method (default: none):
 
   - `none` - no code highlighting
   - `pygments` - code highlighting using Pygments   
 
-`pygments` - Pygments integration method (default is `auto`):
-
-  - `none` - do not use Pygments 
-  - `python` - use Pygments bundled with Grain as Python process (requires Python installed)
-  - `jython` - use Pygments bundled with Grain as Jython process (slow startup time)
-  - `shell` - use Pygments installed in the system as shell Python process
-  - `auto` - use Pygments bundled with Grain as Python process if Python is installed in the system,
-             otherwise fallback to Jython process 
- 
-`cache_highlight` - cache highlighting results (default is `true`):
+`cache_highlight` - cache highlighting results (default: true):
 
   - `true` - cache highlighting results
   - `false` - do not cache highlighting results
 
 #####Python command selection
 
-By default, `python` and `python2.7` are tried, in that order. To try other python command names first, add a `python`
-section in the `features` section with a `cmd_candidates` list of python interpreters, like so:
-```
-features {
-    python {
-        cmd_candidates = ['python2', 'some-other-python', 'yet-another-python']
-    }
-}
-```
+Grain uses Python interpreter in your system to execute various Python packages. If Python interpreter is not found
+Grain falls back to Jython. You can specify an ordered list of Python command candidates in config.
+
+`python.cmd_candidates` - Python command candidates (default: ['python2', "python", "python2.7"])
 
 #####Ruby command selection
-  
-By default, "ruby", "ruby1.8.7", "ruby1.9.3", "user.home/.rvm/bin/ruby"  are tried, in that order.
-To try other ruby command names first, add a `ruby` section in the `features` section with a `cmd_candidates`
-list of ruby interpreters, like so:
-```
-features {
-  ruby {
-      cmd_candidates = ['ruby1.8', 'some-other-ruby']
-  }
-}
-```
+
+Grain tries to find Ruby interpreter in your system to execute various Ruby gems. If Ruby interpreter is not found
+Grain falls back to JRuby. You can specify an ordered list of Ruby command candidates in config.
+
+`ruby.cmd_candidates` - Ruby command candidates (default: ["ruby", "ruby1.8.7", "ruby1.9.3", "user.home/.rvm/bin/ruby"])
 
 ####SASS/Compass feature
 
@@ -237,44 +222,44 @@ in `/config.rb` file, which is rendered to `cache_dir/config.rb` as an ordinary 
 can use website configuration parameters and have embedded Groovy code. The Compass process is launched in the 
 `cache_dir` directory and reads settings from `config.rb`. 
 
-`compass`- SASS/Compass integration method (default is `none`):
+####LESS CSS feature
 
-  - `none` - do not launch Compass 
-  - `ruby` - use Compass bundled with Grain as Ruby process (requires Ruby installed)
-  - `jruby` - use Compass bundled with Grain as JRuby process (slow startup time, generally slower than Ruby process)   
-  - `shell` - use Compass installed in the system as shell Ruby process
-  - `auto` - use Compass bundled with Grain as Ruby process if Ruby is installed in the system,
-             otherwise fallback to JRuby process
-             
+`less.input_dirs` - input directories with LESS files (default: ["theme/less"])
+
+`less.output_dir` - output directory for LESS files (default: ".cache/less")
+
+`less.excludes` - LESS files that should be excluded from Grain processing
+                  (default: [/.*[\/\\]_[^\/\\]+$/],e.g.: filenames starting with `_`) 
+
 ####Minification and compression features
 
 The generated files of website can be minified and compressed in various ways.
 
 #####Minification
  
-`minify_xml` - minify XML files (default is `none`)
+`minify_xml` - minify XML files (default: none)
 
   - `none` - do not minify XML files
   - `true` - minify XML files 
 
-`minify_html` - minify HTML pages (default is `none`)
+`minify_html` - minify HTML pages (default: none)
 
   - `none` - do not minify HTML files
   - `true` - minify HTML files 
 
-`minify_js` - minify JavaScript files
+`minify_js` - minify JavaScript files (default: none)
 
   - `none` - do not minify JavaScript files
   - `true` - minify JavaScript files 
 
-`minify_css` - minify CSS stylesheets
+`minify_css` - minify CSS stylesheets (default: none)
 
   - `none` - do not minify CSS files
   - `true` - minify CSS files 
 
 #####Compression
 
-`compress` - compress all generated files
+`compress` - compress all generated files (default: none)
 
   - `none` - do not compress generated files
   - `gzip` - compress all generated files using GZIP
@@ -319,28 +304,6 @@ Grain uses the following environments:
         defined in SiteConfig.groovy  
    
 ###Advanced configuration
-
-####Source modifier closure
-
-`source_modifier` - a closure that is run for each source file of website before rendering
-
-***Parameters***:
-
-  1. Resource file
-
-***Return value***: transformed resource file text
-  
-***Example***
-
-``` groovy:nl
-source_modifier = { File file ->
-    if (file.name.endsWith('.css')) {
-        file.text.replaceAll('foo', 'bar')
-    } else {
-        file.text
-    }
-}
-```
 
 ####Config posthandler hook
 
