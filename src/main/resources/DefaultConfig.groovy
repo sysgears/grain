@@ -1,3 +1,4 @@
+Locale.setDefault(Locale.US)
 
 // Jetty port
 jetty_port = 4000
