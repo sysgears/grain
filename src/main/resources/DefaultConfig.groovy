@@ -14,7 +14,7 @@ layout_dir = "${theme_dir}/layouts"
 destination_dir = "${base_dir}/target"
 
 // Binary files
-binary_files = [/(?i).*\.(png|jpg|jpeg|gif|ico|bmp)$/]
+binary_files = [/(?i).*\.(png|jpg|jpeg|gif|ico|bmp|swf|avi|mkv|ogg|mp3|mp4)$/]
 
 // Date time format
 datetime_format = 'yyyy-MM-dd HH:mm'
