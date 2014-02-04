@@ -150,7 +150,7 @@ You can control website filesystem layout by modifying the following parameters 
 
 `source_dir` - directory or list of directories with website sources. The directories are handled sequentially
 by Grain and if the same files with same relative locations appear in each directory, then the file from the directory
-listed later takes precedence (default: ["content", "theme", ".cache/compass", ".cache/less"])
+listed later takes precedence (default: ["content", "theme", ".cache/compass"])
 
 `include_dir` - directory or list of directories with includes (default: "includes")
 
@@ -221,15 +221,6 @@ which watches for SASS/SCSS files and recompiles them automatically. The setting
 in `/config.rb` file, which is rendered to `cache_dir/config.rb` as an ordinary page and hence
 can use website configuration parameters and have embedded Groovy code. The Compass process is launched in the 
 `cache_dir` directory and reads settings from `config.rb`. 
-
-####LESS CSS feature
-
-`less.input_dirs` - input directories with LESS files (default: ["theme/less"])
-
-`less.output_dir` - output directory for LESS files (default: ".cache/less")
-
-`less.excludes` - LESS files that should be excluded from Grain processing
-                  (default: [/.*[\/\\]_[^\/\\]+$/],e.g.: filenames starting with `_`) 
 
 ####Minification and compression features
 
