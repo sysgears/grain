@@ -1,10 +1,10 @@
 package com.sysgears.grain.css.less
 
-import com.asual.lesscss.LessEngine
 import com.sysgears.grain.config.Config
 import com.sysgears.grain.preview.ConfigChangeListener
 import com.sysgears.grain.util.FileUtils
 import groovy.util.logging.Slf4j
+import org.lesscss.LessCompiler
 
 import javax.inject.Inject
 
@@ -13,13 +13,13 @@ import javax.inject.Inject
  */
 @javax.inject.Singleton
 @Slf4j
-class LessCompiler implements ConfigChangeListener {
+class LessProcessor implements ConfigChangeListener {
     
     /** Site config */
     @Inject private Config config
     
     /** Less engine */
-    @Inject private LessEngine engine
+    @Inject private LessCompiler engine
 
     /**
      * @inheritDoc 
@@ -77,6 +77,8 @@ class LessCompiler implements ConfigChangeListener {
                     inputFileList.each { inputFile ->
                         def outputFile = getOutputFile(inputFile, inputDir, outputDir)
                         FileUtils.createDirs(outputFile.parentFile)
+                        println inputFile
+                        println outputFile
                         engine.compile(inputFile, outputFile)
                     }
                 }

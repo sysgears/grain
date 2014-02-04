@@ -16,8 +16,8 @@
 
 package com.sysgears.grain.css.less
 
-import com.asual.lesscss.LessEngine
 import com.google.inject.AbstractModule
+import org.lesscss.LessCompiler
 
 /**
  * Package-specific IoC config 
@@ -26,6 +26,6 @@ class LessModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(LessEngine.class).toInstance(new LessEngine())
+        bind(LessCompiler.class).toInstance(new LessCompiler())
     }
 }

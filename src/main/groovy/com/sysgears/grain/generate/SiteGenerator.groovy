@@ -20,7 +20,7 @@ import com.sysgears.grain.PerfMetrics
 import com.sysgears.grain.css.compass.RubyCompass
 import com.sysgears.grain.compress.ResourceCompressor
 import com.sysgears.grain.config.Config
-import com.sysgears.grain.css.less.LessCompiler
+import com.sysgears.grain.css.less.LessProcessor
 import com.sysgears.grain.log.StreamLoggerFactory
 import com.sysgears.grain.preview.SiteChangeBroadcaster
 import com.sysgears.grain.registry.Registry
@@ -62,7 +62,7 @@ class SiteGenerator {
     @Inject private SiteChangeBroadcaster siteChangeBroadcaster
 
     /** LESS compiler */
-    @Inject private LessCompiler lessCompiler
+    @Inject private LessProcessor lessCompiler
 
     /**
      * Generates static web site on a file system.
