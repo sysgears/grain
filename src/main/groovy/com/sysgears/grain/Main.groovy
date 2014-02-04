@@ -18,7 +18,6 @@ package com.sysgears.grain
 
 import com.google.inject.Guice
 import com.sysgears.grain.css.compass.CompassModule
-import com.sysgears.grain.css.less.LessModule
 import com.sysgears.grain.rpc.python.PythonModule
 import com.sysgears.grain.highlight.HighlightModule
 import com.sysgears.grain.init.GrainSettings
@@ -71,7 +70,6 @@ public class Main {
                 new MarkdownModule(),
                 new HighlightModule(),
                 new CompassModule(),
-                new LessModule(),
                 new RegistryModule(),
                 new RenderModule(),
                 settings.command in ['preview', 'generate', 'gendeploy'] ?

@@ -25,7 +25,6 @@ import com.sysgears.grain.annotations.Uncached
 import com.sysgears.grain.css.compass.Compass
 import com.sysgears.grain.css.compass.RubyCompass
 import com.sysgears.grain.config.ConfigUpdater
-import com.sysgears.grain.css.less.LessProcessor
 import com.sysgears.grain.highlight.Highlighter
 import com.sysgears.grain.highlight.pygments.Pygments
 import com.sysgears.grain.rpc.python.Python
@@ -57,10 +56,10 @@ class PreviewModule extends AbstractModule {
             Pygments pygments, MarkdownProcessor markdownProcessor,
             PythonFinder pythonFinder, Python python, RubyFinder rubyFinder, Ruby ruby,
             PythonPygments pythonPygments, 
-            RubyCompass rubyCompass, Compass compass, LessProcessor less) {
+            RubyCompass rubyCompass, Compass compass) {
         return new ConfigChangeBroadcaster(configUpdater,
                 markdownProcessor, pythonFinder, python, rubyFinder, ruby, pythonPygments,
-                rubyCompass, compass, less, highlighter, uncachedHighlighter, pygments)
+                rubyCompass, compass, highlighter, uncachedHighlighter, pygments)
     }
 
     @Provides @javax.inject.Singleton

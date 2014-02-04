@@ -21,9 +21,3 @@ datetime_format = 'yyyy-MM-dd HH:mm'
 
 // Excluded files or directories.
 excludes = ['/sass/.*', '/src/.*', '/target/.*']
-
-less {
-    input_dirs = ["${theme_dir}/less"]
-    excludes = [/.*[\/\\]_[^\/\\]+$/]
-    output_dir = "${cache_dir}/less"
-}
