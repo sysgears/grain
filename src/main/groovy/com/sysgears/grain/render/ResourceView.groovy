@@ -29,4 +29,13 @@ class ResourceView {
     
     /** Full contents of this resource as byte array */
     byte[] bytes
+
+    /**
+     * Converts this view to string
+     * 
+     * @return this view as a string
+     */
+    public String toString() {
+        full != null ? full : new String(bytes)
+    }
 }

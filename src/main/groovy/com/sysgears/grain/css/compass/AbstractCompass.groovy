@@ -46,9 +46,7 @@ abstract class AbstractCompass implements Compass {
     public void configureAndLaunch(String mode) {
         log.info 'Compiling SASS resources...'
 
-        def compassConfig
-
-        compassConfig = [location: '/config.rb'].render().full
+        String compassConfig = [location: '/config.rb'].render()
 
         def configFile = new File(config.cache_dir as String, 'config.rb')
         if (!configFile.exists() || configFile.text != compassConfig) {

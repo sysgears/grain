@@ -92,7 +92,7 @@ class GrainTagLib extends GrainUtils {
      */
     def include = { String location, Map model = null ->
         try {
-            FixedBlock.wrapText(page.include(location, model).full)
+            FixedBlock.wrapText(page.include(location, model) as String)
         } catch (AbsentResourceException e) {
             log.warn "WARNING: ${page.location} tried to include absent resource: ${location}"
             def msg = "Resource not found: ${location}"
