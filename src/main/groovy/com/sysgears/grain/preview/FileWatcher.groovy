@@ -138,9 +138,10 @@ class FileWatcher extends Thread {
                 }
             } catch (ClosedWatchServiceException t) {
                 t.printStackTrace()
-                Thread.startDaemon {
+                startDaemon {
                     System.exit(1)
                 }
+                return
             } catch (t) {
                 changedFiles.clear()
                 t.printStackTrace()

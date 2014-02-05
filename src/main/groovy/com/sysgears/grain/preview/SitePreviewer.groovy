@@ -67,6 +67,7 @@ class SitePreviewer implements Service {
             Thread.startDaemon {
                 System.exit(1)
             }
+            return
         }
         
         fileWatcher.start()
