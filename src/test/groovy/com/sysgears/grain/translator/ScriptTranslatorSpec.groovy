@@ -29,19 +29,19 @@ class ScriptTranslatorSpec extends Specification {
     def 'check fixed block (`!`) translation'() {
         expect: '`!` block should be translated into statements that disallow groovy expressions'
         translator.translate('abc`!`some text`!`def').trim() ==
-                'output.write("""abc""");\noutput.write(\'\'\'some text\'\'\');\noutput.write("""def""");'
+                'output.write("""abc""");\noutput.write(\'\'\'`!`some text`!`\'\'\');\noutput.write("""def""");'
     }
 
     def 'check \\ escaping in fixed block'() {
         expect: '\\ in fixed block should be escaped'
         translator.translate('`!`jeeves \\& wooster`!`').trim() ==
-                'output.write(\'\'\'jeeves \\\\& wooster\'\'\');'
+                'output.write(\'\'\'`!`jeeves \\\\& wooster`!`\'\'\');'
     }
 
     def 'check quote escaping in fixed block'() {
         expect: 'quote in `!` block should be escaped'
         translator.translate('`!`je\'eves`!`').trim() ==
-                'output.write(\'\'\'je\\\'eves\'\'\');'
+                'output.write(\'\'\'`!`je\\\'eves`!`\'\'\');'
     }
 
     def 'check long lines truncation'() {
