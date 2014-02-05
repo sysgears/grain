@@ -159,9 +159,10 @@ listed later takes precedence (default: ["content", "theme", ".cache/compass"])
 `destination_dir` - destination directory for generated website files (default: "target")
 
 `excludes` - a list of regular expressions, that match locations of files or directories to be excluded
-             from processing by Grain (default: ['/sass/.*', '/src/.*', '/target/.*'])
+             from final website: ['/sass/.*', '/src/.*', '/target/.*'])
              
-`binary_files` - a list of regular expressions, that match locations of <br/> binary files (default: [/(?i).*\.(png|jpg|jpeg|gif|ico|bmp)$/])                
+`binary_files` - a list of regular expressions, that match locations of <br/>
+binary files (default: [/(?i).*\.(png|jpg|jpeg|gif|ico|bmp|swf|avi|mkv|ogg|mp3|mp4)$/])                
 
 ###Preview configuration
 
@@ -482,10 +483,15 @@ All sorts of this transformations can be made by using resource mapping mechanis
 it is important to be familiar with how website resources are represented in Grain.
 
 ###Resource representation
-In Grain each resource is represented as plain Groovy map. Each resource should have at least two keys in its map:
+In Grain each resource is represented as plain Groovy map. Each resource should have at least three keys in its map:
 
-- `location` - pointing to the resource file in filesystem
+-  either `location` - pointing to the resource file in filesystem, or `source` - resource contents
+- `markup` - resource markup used, one of 'html', 'md', 'rst', 'adoc', 'text' or 'binary', `markup` can be omitted
+             if `location` is present   
 - `url` - representing the URL of the resource
+
+`source` and `markup` have higher priority over `location`, when Grain decides what contents should be rendered and 
+what markup should be used for rendering
 
 Along with these keys, resource representation holds all the properties specified in content files' headers.
 
@@ -548,6 +554,23 @@ resource_mapper = { resources ->
         }
     }
 }
+```
+
+###Dynamic rendering
+Resource in Grain can be rendered dynamically anywhere, to do this one should assemble resource map and call
+method render() on it.
+
+Example:
+``` groovy:nl
+[source: '**Bold text**', markup: 'adoc'].render()
+``` groovy:nl
+
+Example of using dynamic rendering inside page:
+
+``` jsp:nl
+<div>
+    ${[source: '**Bold text**', markup: 'adoc'].render()}
+</div>
 ```
 
 ##Tag libraries
