@@ -85,6 +85,7 @@ public class CPython implements Python {
                 serverSocket = TCPUtils.firstAvailablePort
                 if (!serverSocket)
                     throw new RuntimeException("Unable to allocate socket for IPC, all TCP ports are busy")
+                serverSocket.setSoTimeout(5000)
                 def port = serverSocket.getLocalPort()
 
                 def cmdline = [pythonCmd, "${settings.toolsHome}/python-ipc/ipc.py", port]
