@@ -61,10 +61,12 @@ class SitePreviewer implements Service {
      * Runs Grain web server 
      */
     public void start() {
-        def jettyPort = config.jetty_port ?: 5000
+        def jettyPort = config.jetty_port ?: 4000
         if (!available(jettyPort)) {
             log.error("Port ${jettyPort} is not available, exitting...")
-            System.exit(1)
+            Thread.startDaemon {
+                System.exit(1)
+            }
         }
         
         fileWatcher.start()
