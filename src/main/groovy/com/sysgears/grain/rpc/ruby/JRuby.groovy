@@ -46,6 +46,9 @@ public class JRuby implements com.sysgears.grain.rpc.ruby.Ruby {
     /** RPC dispatcher factory */
     @Inject private RPCDispatcherFactory dispatcherFactory
 
+    /** RubyGems installer */
+    @Inject private RubyGemsInstaller installer
+
     /** JRuby interpreter instance */
     private Ruby ruby
 
@@ -70,6 +73,8 @@ public class JRuby implements com.sysgears.grain.rpc.ruby.Ruby {
             ServerSocket serverSocket = null
             try {
                 log.info "Launching JRuby process..."
+                
+                def rubyGemsDir = installer.install() 
 
                 System.setProperty('jruby.gem.home', "${settings.grainHome}/packages/ruby")
                 System.setProperty('jruby.bindir', "${settings.grainHome}/packages/ruby/bin")
@@ -106,6 +111,7 @@ public class JRuby implements com.sysgears.grain.rpc.ruby.Ruby {
                     
                     def rpc = dispatcherFactory.create(executor)
 
+                    rpc.Ipc.add_lib_path(rubyGemsDir)
                     rpc.Ipc.set_gem_home("${settings.grainHome}/packages/ruby")
 
                     this.rpc = rpc

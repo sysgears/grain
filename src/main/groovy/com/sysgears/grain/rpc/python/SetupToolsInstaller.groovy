@@ -12,9 +12,11 @@ import javax.inject.Inject
 @javax.inject.Singleton
 @Slf4j
 public class SetupToolsInstaller {
-    
+
+    /** SetupTools version to use */
     private static final String VERSION = '2.1'
-    
+
+    /** Grain settings */
     @Inject private GrainSettings settings
 
     /**

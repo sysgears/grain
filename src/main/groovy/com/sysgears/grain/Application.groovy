@@ -25,6 +25,7 @@ import com.sysgears.grain.init.GrainSettings
 import com.sysgears.grain.preview.ConfigChangeBroadcaster
 import com.sysgears.grain.preview.SitePreviewer
 import com.sysgears.grain.rpc.python.Jython
+import com.sysgears.grain.rpc.ruby.RubyGemsInstaller
 import com.sysgears.grain.service.ServiceManager
 import com.sysgears.grain.util.FileUtils
 import groovy.util.logging.Slf4j
@@ -88,6 +89,8 @@ class Application {
                 config.source_dir.collect { new File(it as String) }.findAll { !it.exists() })
         FileUtils.createDirs(dirs)
     }
+    
+    @Inject private RubyGemsInstaller installer
 
     /**
      * Launches the command specified in command line arguments. 
