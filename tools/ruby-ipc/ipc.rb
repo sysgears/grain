@@ -1,6 +1,4 @@
 require 'socket'
-require 'rubygems'
-require 'rubygems/dependency_installer'
 
 # Inter process communication protocol between Groovy and Ruby implementation   
 class Ipc
@@ -11,6 +9,8 @@ class Ipc
 
   # Checks if gem installed
   def self.gem_installed(name, version = Gem::Requirement.default)
+    require 'rubygems'
+    require 'rubygems/dependency_installer'
     version = Gem::Requirement.create version unless version.is_a? Gem::Requirement
     Gem::Specification.each.any? { |spec| name == spec.name and version.satisfied_by? spec.version }
   end
@@ -30,7 +30,9 @@ class Ipc
 
   # Adds gem path to the search path list for looking up gems
   def self.set_gem_home gempath
-    ENV['GEM_HOME']=gempath 
+    require 'rubygems'
+    require 'rubygems/dependency_installer'
+    ENV['GEM_HOME']=gempath
     ENV['GEM_PATH']=ENV['GEM_PATH'] || gempath 
     Gem.clear_paths
   end
