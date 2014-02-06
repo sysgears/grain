@@ -25,7 +25,6 @@ import java.util.concurrent.locks.ReentrantLock
 import java.util.concurrent.locks.ReentrantReadWriteLock
 
 import static groovyx.gpars.GParsPool.withPool
-import static groovyx.gpars.GParsPool.executeAsyncAndWait
 import static groovyx.gpars.dataflow.Dataflow.task
 import groovyx.gpars.dataflow.DataflowQueue
 
@@ -106,7 +105,7 @@ public class ServiceManager implements Service {
                             log.debug "Service ${target.class} starting..."
                             def thread = Thread.startDaemon {
                                 boolean exit = false
-                                long waitTime = 0, waitDelta = 10000L
+                                long waitTime = 0, waitDelta = 30000L
                                 while (!exit) {
                                     sleep(waitDelta) { exit = true }
                                     waitTime += waitDelta
