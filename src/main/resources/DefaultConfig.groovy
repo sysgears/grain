@@ -9,8 +9,8 @@ cache_dir = "${base_dir}/.cache"
 content_dir = "${base_dir}/content"
 theme_dir = "${base_dir}/theme"
 source_dir = [content_dir, theme_dir, "${cache_dir}/compass", "${cache_dir}/less"]
-include_dir = "${theme_dir}/includes"
-layout_dir = "${theme_dir}/layouts"
+include_dir = ["${theme_dir}/includes"]
+layout_dir = ["${theme_dir}/layouts"]
 destination_dir = "${base_dir}/target"
 
 // Binary files

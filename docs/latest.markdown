@@ -152,9 +152,9 @@ You can control website filesystem layout by modifying the following parameters 
 by Grain and if the same files with same relative locations appear in each directory, then the file from the directory
 listed later takes precedence (default: ["content", "theme", ".cache/compass"])
 
-`include_dir` - directory or list of directories with includes (default: "includes")
+`include_dir` - directory or list of directories with includes (default: ["includes"])
 
-`layout_dir` - directory or list of directories with layouts (default: "layouts")
+`layout_dir` - directory or list of directories with layouts (default: ["layouts"])
 
 `destination_dir` - destination directory for generated website files (default: "target")
 
