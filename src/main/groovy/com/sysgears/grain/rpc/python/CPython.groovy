@@ -118,10 +118,10 @@ public class CPython implements Python {
                 log.info 'Python process finished...'
             } catch (t) {
                 log.error("Error running Python", t)
-                latch.countDown()
             } finally {
                 if (serverSocket != null)
                     serverSocket.close()
+                latch.countDown()
             }
         }
     }

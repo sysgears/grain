@@ -73,6 +73,7 @@ class ShellCompass extends AbstractCompass {
                 log.info 'Shell Compass finished'
             } catch (t) {
                 log.error("Error launching Compass", t)
+            } finally {
                 latch.countDown()
             }
         }

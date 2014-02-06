@@ -127,10 +127,10 @@ public class RMIRuby implements Ruby {
                 log.info 'RMI Ruby process finished...'
             } catch (t) {
                 log.error("Error running RMI Ruby", t)
-                latch.countDown()
             } finally {
                 if (serverSocket != null)
                     serverSocket.close()
+                latch.countDown()
             }
         }
     }

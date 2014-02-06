@@ -74,10 +74,13 @@ public class RstProcessor implements Service {
     @Override
     void start() {
         latch = new CountDownLatch(1)
-        def ipc = python.rpc.ipc  
-        ipc.install_package('docutils>=0.11')
-        ipc.add_lib_path new File(settings.toolsHome, 'docutils-bridge').canonicalPath
-        latch.countDown()
+        try {
+            def ipc = python.rpc.ipc
+            ipc.install_package('docutils>=0.11')
+            ipc.add_lib_path new File(settings.toolsHome, 'docutils-bridge').canonicalPath
+        } finally {
+            latch.countDown()
+        }
     }
 
     /**

@@ -90,11 +90,14 @@ public class AsciiDoctorProcessor implements Service, MarkupProcessor {
      */
     private void startAndWait() {
         latch = new CountDownLatch(1)
-        ruby.rpc.with {
-            this.version = Ipc.install_gem('asciidoctor', '>=0.1.4')
-            Ipc.require('asciidoctor')
+        try {
+            ruby.rpc.with {
+                this.version = Ipc.install_gem('asciidoctor', '>=0.1.4')
+                Ipc.require('asciidoctor')
+            }
+        } finally {
+            latch.countDown()
         }
-        latch.countDown()
     }
 
     /**

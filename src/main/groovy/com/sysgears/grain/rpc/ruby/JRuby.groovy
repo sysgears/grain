@@ -99,17 +99,20 @@ public class JRuby implements com.sysgears.grain.rpc.ruby.Ruby {
                 def filename = config.displayedFileName();
                 
                 Thread.startDaemon {
-                    def socket = serverSocket.accept()
+                    try {
+                        def socket = serverSocket.accept()
 
-                    def executor = executorFactory.create(socket.inputStream, socket.outputStream)
-                    executor.start()
-                    
-                    def rpc = dispatcherFactory.create(executor)
+                        def executor = executorFactory.create(socket.inputStream, socket.outputStream)
+                        executor.start()
 
-                    rpc.Ipc.set_gem_home(new File("${settings.grainHome}/packages/ruby").canonicalPath)
+                        def rpc = dispatcherFactory.create(executor)
 
-                    this.rpc = rpc
-                    latch.countDown()
+                        rpc.Ipc.set_gem_home(new File("${settings.grainHome}/packages/ruby").canonicalPath)
+
+                        this.rpc = rpc
+                    } finally {
+                        latch.countDown()
+                    }
                 }
                 
                 try {
@@ -132,6 +135,8 @@ public class JRuby implements com.sysgears.grain.rpc.ruby.Ruby {
                 log.info 'JRuby process finished...'
             } catch (t) {
                 log.error("Error launching JRuby", t)
+            } finally {
+                latch.countDown()
             }
         }
     }

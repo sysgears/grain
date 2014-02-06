@@ -91,14 +91,16 @@ public class Jython implements Python {
                 python.setErr(new LoggingOutputStream())
                 
                 Thread.startDaemon {
-                    def socket = serverSocket.accept()
+                    try {
+                        def socket = serverSocket.accept()
 
-                    def executor = executorFactory.create(socket.inputStream, socket.outputStream)
-                    executor.start()
+                        def executor = executorFactory.create(socket.inputStream, socket.outputStream)
+                        executor.start()
 
-                    rpc = dispatcherFactory.create(executor)
-
-                    latch.countDown()
+                        rpc = dispatcherFactory.create(executor)
+                    } finally {
+                        latch.countDown()
+                    }
                 }
 
                 try {
@@ -121,6 +123,8 @@ ipc.main($port)""")
                 log.info 'Jython process finished...'
             } catch (t) {
                 log.error("Error launching Jython", t)
+            } finally {
+                latch.countDown()
             }
         }
     }

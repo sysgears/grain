@@ -75,10 +75,13 @@ public class PythonPygments extends Pygments {
     private void startAndWait() {
         if (!latch) {
             latch = new CountDownLatch(1)
-            def rpc = python.rpc
-            this.version = rpc.ipc.install_package('pygments>=1.6')
-            rpc.ipc.add_lib_path new File(settings.toolsHome, 'pygments-bridge').canonicalPath
-            latch.countDown()
+            try {
+                def rpc = python.rpc
+                this.version = rpc.ipc.install_package('pygments>=1.6')
+                rpc.ipc.add_lib_path new File(settings.toolsHome, 'pygments-bridge').canonicalPath
+            } finally {
+                latch.countDown()
+            }
         }
         latch.await()
     }
