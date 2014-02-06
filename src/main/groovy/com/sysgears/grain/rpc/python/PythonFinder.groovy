@@ -1,7 +1,8 @@
 package com.sysgears.grain.rpc.python
 
 import com.sysgears.grain.config.Config
-import com.sysgears.grain.util.ShellCommandFinder
+import com.sysgears.grain.rpc.ShellCommand
+import com.sysgears.grain.rpc.ShellCommandFinder
 
 import javax.inject.Inject
 
@@ -34,14 +35,15 @@ public class PythonFinder extends ShellCommandFinder {
      * @inheritDoc
      */
     @Override
-    public boolean checkCandidate(String name) { 
+    public ShellCommand checkCandidate(String name) { 
         try {
+            def ver = new StringWriter()
             def proc = [name, '--version'].execute()
-            def err = new StringWriter()
-            proc.consumeProcessErrorStream(err).join()
-            err.toString().startsWith('Python 2')
+            proc.consumeProcessErrorStream(ver).join()
+            def command = new ShellCommand(command: name, version: ver.toString().readLines().first().trim())
+            command.version.startsWith('Python 2') ? command : null
         } catch (Throwable ignored) {
-            false
+            null
         }
     }
 }

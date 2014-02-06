@@ -78,9 +78,16 @@ public class RMIRuby implements Ruby {
             try {
                 log.info "Launching RMI Ruby process..."
 
-                def rubyGemsDir = installer.install()
+                def rubyGemsDir
+                
+                rubyCmd = rubyFinder.cmd.command
 
-                rubyCmd = rubyFinder.cmd
+                if (rubyFinder.cmd.version.contains('revision 33570')) {
+                    // 1.8.11 version is compatible with Ubuntu 12.04 LTS Ruby 1.9.3p0
+                    rubyGemsDir = installer.install('1.8.11')
+                } else {
+                    rubyGemsDir = installer.install()
+                }
 
                 serverSocket = TCPUtils.firstAvailablePort
                 if (!serverSocket)

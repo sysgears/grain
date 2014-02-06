@@ -24,12 +24,12 @@ public class RubyGemsInstaller {
      *
      * @return installed setuptools egg path
      */
-    public String install() {
-        def rubyGemsDir = new File("${settings.grainHome}/packages/ruby/rubygems-${VERSION}")
+    public String install(final String version = VERSION) {
+        def rubyGemsDir = new File("${settings.grainHome}/packages/ruby/rubygems-${version}")
         if (!rubyGemsDir.exists()) {
             def tempDir = File.createTempDir()
             try {
-                def tarballName = "v${VERSION}.tar.gz"
+                def tarballName = "v${version}.tar.gz"
                 def baseUrl = 'https://github.com/rubygems/rubygems/archive/'
                 def tarball = new File(tempDir, tarballName)
                 def ant = new AntBuilder()
@@ -40,7 +40,7 @@ public class RubyGemsInstaller {
                 log.info "Downloading ${url}..."
                 tarball << url.openStream()
 
-                def sourceDir = new File(tempDir, "rubygems-${VERSION}")
+                def sourceDir = new File(tempDir, "rubygems-${version}")
 
                 ant.sequential() {
                     untar(src: tarball, dest: tempDir, compression: 'gzip')

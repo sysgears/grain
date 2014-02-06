@@ -1,7 +1,8 @@
 package com.sysgears.grain.rpc.ruby
 
 import com.sysgears.grain.config.Config
-import com.sysgears.grain.util.ShellCommandFinder
+import com.sysgears.grain.rpc.ShellCommand
+import com.sysgears.grain.rpc.ShellCommandFinder
 
 import javax.inject.Inject
 
@@ -34,12 +35,14 @@ public class RubyFinder extends ShellCommandFinder {
      * @inheritDoc
      */
     @Override
-    public boolean checkCandidate(String name) {
+    public ShellCommand checkCandidate(String name) {
         try {
-            [name, '--version'].execute()
-            true
+            def ver = new StringWriter()
+            def proc = [name, '--version'].execute() 
+            proc.consumeProcessOutputStream(ver).join()
+            new ShellCommand(command: name, version: ver.toString().readLines().first().trim())
         } catch (Throwable ignored) {
-            false
+            null
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.sysgears.grain.util
+package com.sysgears.grain.rpc
 
 import com.sysgears.grain.preview.ConfigChangeListener
 
@@ -12,7 +12,7 @@ abstract class ShellCommandFinder implements ConfigChangeListener {
 
     /** Shell command candidate currently used */
     @Nullable
-    private String currentCandidate
+    private ShellCommand currentCandidate
     
     /** Whether we attempted to search for candidate after instantiation */
     private boolean initialized = false
@@ -29,7 +29,7 @@ abstract class ShellCommandFinder implements ConfigChangeListener {
      * Returns most appropriate command in the system.
      */
     @Nullable
-    public String getCmd() {
+    public ShellCommand getCmd() {
         if (!initialized) {
             currentCandidate = findCandidate()
             initialized = true
@@ -43,11 +43,11 @@ abstract class ShellCommandFinder implements ConfigChangeListener {
      *  
      * @return command 
      */
-    private String findCandidate() {
+    private ShellCommand findCandidate() {
         def candidates = userConfiguredCandidates + defaultCandidates
 
         candidates = isWindows() ? candidates.collect { it + ".exe" } : candidates
-        candidates.find { checkCandidate(it.toString()) }
+        candidates.findResult { checkCandidate(it.toString()) }
     }
 
     /**
@@ -78,8 +78,8 @@ abstract class ShellCommandFinder implements ConfigChangeListener {
     /**
      * Checks candidate and returns whether it is accepted or not.
      * 
-     * @return whether candidate is accepted
+     * @return candidate command or null
      */
     @Nonnull
-    abstract boolean checkCandidate(String name)
+    abstract ShellCommand checkCandidate(String name)
 }

@@ -80,7 +80,7 @@ public class CPython implements Python {
                 
                 def setupToolsPath = installer.install()
 
-                pythonCmd = pythonFinder.cmd
+                pythonCmd = pythonFinder.cmd.command
 
                 serverSocket = TCPUtils.firstAvailablePort
                 if (!serverSocket)
