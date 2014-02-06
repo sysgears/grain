@@ -98,7 +98,7 @@ public class JRuby implements com.sysgears.grain.rpc.ruby.Ruby {
                 config.processArguments(config.parseShebangOptions(inp));
                 def filename = config.displayedFileName();
                 
-                Thread.start {
+                Thread.startDaemon {
                     def socket = serverSocket.accept()
 
                     def executor = executorFactory.create(socket.inputStream, socket.outputStream)
@@ -132,7 +132,6 @@ public class JRuby implements com.sysgears.grain.rpc.ruby.Ruby {
                 log.info 'JRuby process finished...'
             } catch (t) {
                 log.error("Error launching JRuby", t)
-                latch.countDown()
             }
         }
     }

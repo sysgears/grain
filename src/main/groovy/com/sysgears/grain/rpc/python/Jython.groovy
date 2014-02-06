@@ -77,19 +77,20 @@ public class Jython implements Python {
                     throw new RuntimeException("Unable to allocate socket for IPC, all TCP ports are busy")
                 serverSocket.setSoTimeout(30000)
                 def port = serverSocket.getLocalPort()
+                def ipcPath = new File("${settings.toolsHome}/python-ipc/ipc.py").canonicalPath 
 
-                def args = ["${settings.toolsHome}/python-ipc/ipc.py", port] as String[]
+                def args = [ipcPath, port] as String[]
 
                 log.info args.join(' ')
 
-                System.setProperty('python.executable', "${settings.toolsHome}/python-ipc/ipc.py")
+                System.setProperty('python.executable', ipcPath)
 
                 python = new PythonInterpreter()
                 python.setIn(new ByteArrayInputStream())
                 python.setOut(new LoggingOutputStream())
                 python.setErr(new LoggingOutputStream())
                 
-                Thread.start {
+                Thread.startDaemon {
                     def socket = serverSocket.accept()
 
                     def executor = executorFactory.create(socket.inputStream, socket.outputStream)
@@ -102,10 +103,10 @@ public class Jython implements Python {
 
                 try {
                     python.exec("""
-import sys
-sys.path.append('${settings.toolsHome}/python-ipc/') 
+import os, sys
+sys.path.append(os.path.join('${settings.toolsHome}', 'python-ipc')) 
 import ipc
-ipc.set_user_base("${settings.grainHome}/packages/python/")
+ipc.set_user_base(os.path.join('${settings.grainHome}', 'packages', 'python'))
 ipc.add_lib_path("${setupToolsPath}")
 ipc.main($port)""")
                 } catch (PyException pe) {
@@ -120,7 +121,6 @@ ipc.main($port)""")
                 log.info 'Jython process finished...'
             } catch (t) {
                 log.error("Error launching Jython", t)
-                latch.countDown()
             }
         }
     }
