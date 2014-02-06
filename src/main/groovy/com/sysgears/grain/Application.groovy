@@ -20,12 +20,9 @@ import com.sysgears.grain.config.Config
 import com.sysgears.grain.deploy.SiteDeployer
 import com.sysgears.grain.expando.GrainDynamicMethods
 import com.sysgears.grain.generate.SiteGenerator
-import com.sysgears.grain.highlight.pygments.PythonPygments
 import com.sysgears.grain.init.GrainSettings
 import com.sysgears.grain.preview.ConfigChangeBroadcaster
 import com.sysgears.grain.preview.SitePreviewer
-import com.sysgears.grain.rpc.python.Jython
-import com.sysgears.grain.rpc.ruby.RubyGemsInstaller
 import com.sysgears.grain.service.ServiceManager
 import com.sysgears.grain.util.FileUtils
 import groovy.util.logging.Slf4j
@@ -90,8 +87,6 @@ class Application {
         FileUtils.createDirs(dirs)
     }
     
-    @Inject private RubyGemsInstaller installer
-
     /**
      * Launches the command specified in command line arguments. 
      * <p> 

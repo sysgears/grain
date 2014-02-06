@@ -50,9 +50,6 @@ public class RMIRuby implements Ruby {
     /** RPC dispatcher factory */
     @Inject private RPCDispatcherFactory dispatcherFactory
 
-    /** RubyGems installer */
-    @Inject private RubyGemsInstaller installer
-
     /** Memorize Ruby command, to restart service when ruby command changes */
     private String rubyCmd
 
