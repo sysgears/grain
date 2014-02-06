@@ -104,7 +104,17 @@ public class ServiceManager implements Service {
                                 }
                             }
                             log.debug "Service ${target.class} starting..."
+                            def thread = Thread.startDaemon {
+                                boolean exit = false
+                                long waitTime = 0, waitDelta = 10000L
+                                while (!exit) {
+                                    sleep(waitDelta) { exit = true }
+                                    waitTime += waitDelta
+                                    log.warn("Still waiting for service ${target.class} to start after ${waitTime} ms")
+                                }
+                            }
                             target.originalStart()
+                            thread.interrupt()
                             running = true
                             log.debug "Service ${target.class} started."
                             
@@ -154,8 +164,18 @@ public class ServiceManager implements Service {
                     }
                     
                     log.debug "Service ${target.class} stopping..."
-                    if (!target.class.toString().startsWith('class $Proxy')) {
+                    if (!target.class.toString().contains('$Proxy')) {
+                        def thread = Thread.startDaemon {
+                            boolean exit = false
+                            long waitTime = 0, waitDelta = 10000L 
+                            while (!exit) {
+                                sleep(waitDelta) { exit = true }
+                                waitTime += waitDelta
+                                log.warn("Still waiting for service ${target.class} to stop after ${waitTime} ms")
+                            }
+                        } 
                         target.originalStop()
+                        thread.interrupt()
                     }
                     this.running = false
                     this.chained.set(chained)
