@@ -19,7 +19,7 @@ public class RubyFinder extends ShellCommandFinder {
      */
     @Override
     List<String> getDefaultCandidates() {
-        ["ruby", "ruby1.8.7", "ruby1.9.3", "${System.getProperty('user.home')}/.rvm/bin/ruby"]
+        ["ruby", "ruby1.8.7", "ruby1.9.3", "${System.getProperty('user.home')}/.rvm/bin/ruby", "${System.getProperty('user.home')}/.rvm/bin/ruby-rvm-env"]
     }
 
     /**

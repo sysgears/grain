@@ -50,6 +50,9 @@ public class RMIRuby implements Ruby {
     /** RPC dispatcher factory */
     @Inject private RPCDispatcherFactory dispatcherFactory
 
+    /** RubyGems installer */
+    @Inject private RubyGemsInstaller installer
+
     /** Memorize Ruby command, to restart service when ruby command changes */
     private String rubyCmd
 
@@ -75,6 +78,8 @@ public class RMIRuby implements Ruby {
             try {
                 log.info "Launching RMI Ruby process..."
 
+                def rubyGemsDir = installer.install()
+
                 rubyCmd = rubyFinder.cmd
 
                 serverSocket = TCPUtils.firstAvailablePort
@@ -99,6 +104,7 @@ public class RMIRuby implements Ruby {
                 streamLogger = streamLoggerFactory.create(process.in, process.err)
                 streamLogger.start()
 
+                rpc.Ipc.add_lib_path(rubyGemsDir)
                 rpc.Ipc.set_gem_home("${settings.grainHome}/packages/ruby")
 
                 this.rpc = rpc
