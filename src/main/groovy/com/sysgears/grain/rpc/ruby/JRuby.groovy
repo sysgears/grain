@@ -71,8 +71,8 @@ public class JRuby implements com.sysgears.grain.rpc.ruby.Ruby {
             try {
                 log.info "Launching JRuby process..."
                 
-                System.setProperty('jruby.gem.home', "${settings.grainHome}/packages/ruby")
-                System.setProperty('jruby.bindir', "${settings.grainHome}/packages/ruby/bin")
+                System.setProperty('jruby.gem.home', new File("${settings.grainHome}/packages/ruby").canonicalPath)
+                System.setProperty('jruby.bindir', new File("${settings.grainHome}/packages/ruby/bin").canonicalPath)
                 System.setProperty('jruby.compile.fastest', 'true')
 
                 def config = new RubyInstanceConfig()
@@ -83,7 +83,7 @@ public class JRuby implements com.sysgears.grain.rpc.ruby.Ruby {
                 serverSocket.setSoTimeout(30000)
                 def port = serverSocket.getLocalPort()
                 
-                def args = ["${settings.toolsHome}/ruby-ipc/ipc.rb", port] as String[]
+                def args = [new File("${settings.toolsHome}/ruby-ipc/ipc.rb").canonicalPath, port] as String[]
                 
                 log.info args.join(' ')
                 
@@ -106,7 +106,7 @@ public class JRuby implements com.sysgears.grain.rpc.ruby.Ruby {
                     
                     def rpc = dispatcherFactory.create(executor)
 
-                    rpc.Ipc.set_gem_home("${settings.grainHome}/packages/ruby")
+                    rpc.Ipc.set_gem_home(new File("${settings.grainHome}/packages/ruby").canonicalPath)
 
                     this.rpc = rpc
                     latch.countDown()

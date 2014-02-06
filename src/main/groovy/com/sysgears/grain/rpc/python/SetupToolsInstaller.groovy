@@ -75,6 +75,6 @@ public class SetupToolsInstaller {
                 FileUtils.deleteDirectory(tempDir)
             }
         }
-        "${setupToolsDir}/setuptools-${VERSION}.egg"
+        new File("${setupToolsDir}/setuptools-${VERSION}.egg").canonicalPath
     }
 }

@@ -109,7 +109,8 @@ public class ServiceManager implements Service {
                                 while (!exit) {
                                     sleep(waitDelta) { exit = true }
                                     waitTime += waitDelta
-                                    log.warn("Still waiting for service ${target.class} to start after ${waitTime} ms")
+                                    if (!exit)
+                                        log.warn("Still waiting for service ${target.class} to start after ${waitTime} ms")
                                 }
                             }
                             target.originalStart()
@@ -170,7 +171,8 @@ public class ServiceManager implements Service {
                             while (!exit) {
                                 sleep(waitDelta) { exit = true }
                                 waitTime += waitDelta
-                                log.warn("Still waiting for service ${target.class} to stop after ${waitTime} ms")
+                                if (!exit)
+                                    log.warn("Still waiting for service ${target.class} to stop after ${waitTime} ms")
                             }
                         } 
                         target.originalStop()

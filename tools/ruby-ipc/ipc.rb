@@ -61,8 +61,9 @@ class Ipc
         result = clazz.send(func_name, *args).to_s
 
         write_string(result)
-      rescue SystemExit, Interrupt, IOError
-        return
+      rescue SystemExit, Interrupt
+        # We raise critical errors so that JRuby wrapper know it needs to terminate Grain
+        raise
       rescue IOError
         raise
       rescue Exception => e

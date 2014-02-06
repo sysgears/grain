@@ -52,6 +52,6 @@ public class RubyGemsInstaller {
                 FileUtils.deleteDirectory(tempDir)
             }
         }
-        "${rubyGemsDir}"
+        rubyGemsDir.canonicalPath
     }
 }
