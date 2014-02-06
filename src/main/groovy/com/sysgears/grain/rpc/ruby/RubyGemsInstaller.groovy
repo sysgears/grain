@@ -14,7 +14,7 @@ import javax.inject.Inject
 public class RubyGemsInstaller {
 
     /** RubyGems version to use */
-    private static final String VERSION = '2.2.2'
+    private static final String VERSION = '2.1.11'
 
     /** Grain settings */
     @Inject private GrainSettings settings
