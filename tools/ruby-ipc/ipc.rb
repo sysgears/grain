@@ -62,6 +62,8 @@ class Ipc
 
         write_string(result)
       rescue SystemExit, Interrupt, IOError
+        return
+      rescue IOError
         raise
       rescue Exception => e
         STDERR.puts e.inspect

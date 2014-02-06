@@ -172,7 +172,7 @@ def main(port):
 
             _write_string(sf, result)
         except KeyboardInterrupt:
-            raise 
+            return 
         except IOError:
             raise
         except:
