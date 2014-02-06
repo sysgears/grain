@@ -75,7 +75,7 @@ public class Jython implements Python {
                 serverSocket = TCPUtils.firstAvailablePort
                 if (!serverSocket)
                     throw new RuntimeException("Unable to allocate socket for IPC, all TCP ports are busy")
-                serverSocket.setSoTimeout(5000)
+                serverSocket.setSoTimeout(30000)
                 def port = serverSocket.getLocalPort()
 
                 def args = ["${settings.toolsHome}/python-ipc/ipc.py", port] as String[]
