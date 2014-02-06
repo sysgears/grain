@@ -171,6 +171,8 @@ def main(port):
             #sys.stderr.flush()
 
             _write_string(sf, result)
+        except KeyboardInterrupt:
+            raise 
         except IOError:
             raise
         except:
