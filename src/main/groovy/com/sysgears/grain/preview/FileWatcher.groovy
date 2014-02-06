@@ -74,13 +74,13 @@ class FileWatcher extends Thread {
         try {
             sourceDirs.each { File srcDir ->
                 if (srcDir.exists()) {
-                    log.info "Watching dir ${srcDir} for changes recursively"
+                    log.debug "Watching dir ${srcDir} for changes recursively"
                     watchRecursive(srcDir)
                 }
             }
             configDirs.each { File srcDir ->
                 if (srcDir.exists()) {
-                    log.info "Watching dir ${srcDir} for changes non-recursively"
+                    log.debug "Watching dir ${srcDir} for changes non-recursively"
                     watchDir(srcDir)
                 }
             }
@@ -117,7 +117,7 @@ class FileWatcher extends Thread {
                             if (!configDirs.contains(dir) || configFiles.contains(f)) {
                                 if (f.isDirectory() && !keys.containsKey(Paths.get(f.absolutePath))) {
                                     log.debug "Registering new dir to watch: ${f.absolutePath}"
-                                    log.info "Watching dir ${f} for changes recursively"
+                                    log.debug "Watching dir ${f} for changes recursively"
                                     watchRecursive(f)
                                     f.eachFileRecurse {
                                         if (!isIgnored(it)) {
