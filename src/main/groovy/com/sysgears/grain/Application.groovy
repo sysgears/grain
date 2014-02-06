@@ -86,6 +86,25 @@ class Application {
                 config.source_dir.collect { new File(it as String) }.findAll { !it.exists() })
         FileUtils.createDirs(dirs)
     }
+
+    /**
+     * Starts quit listener daemon thread
+     */
+    private void startQuitListener() {
+        Thread.startDaemon {
+            boolean exit = false
+            while (!exit) {
+                while (System.in.available()) {
+                    int ch = System.in.read()
+                    if (ch == 'q' || ch == 'Q') {
+                        log.info "Terminating Grain..."
+                        System.exit(0)
+                    }
+                }
+                sleep(100, { exit = true })
+            }
+        }
+    }
     
     /**
      * Launches the command specified in command line arguments. 
@@ -94,6 +113,9 @@ class Application {
      */
     public void run() {
         long startTime = System.currentTimeMillis()
+
+        startQuitListener()
+        
         prepare()
 
         switch (settings.command) {
@@ -129,20 +151,7 @@ class Application {
         }
         log.info "Total time: ${System.currentTimeMillis() - startTime}"
         if (settings.command == 'preview') {
-            Thread.startDaemon {
-                log.info "Press CTRL-C or 'q' and ENTER to Stop Grain"
-                boolean exit = false
-                while (!exit) {
-                    while (System.in.available()) {
-                        int ch = System.in.read()
-                        if (ch == 'q' || ch == 'Q') {
-                            log.info "Terminating Grain..."
-                            System.exit(0)
-                        }
-                    }
-                    sleep(100, { exit = true })
-                }
-            }
+            log.info "Press CTRL-C or 'q' and ENTER to Stop Grain"
         } else {
             // Terminate all active service threads
             System.exit(0)
