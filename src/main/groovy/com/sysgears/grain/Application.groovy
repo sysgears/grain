@@ -25,8 +25,8 @@ import com.sysgears.grain.preview.ConfigChangeBroadcaster
 import com.sysgears.grain.preview.SitePreviewer
 import com.sysgears.grain.service.ServiceManager
 import com.sysgears.grain.util.FileUtils
+import com.sysgears.grain.util.ClosureUtils
 import groovy.util.logging.Slf4j
-import org.codehaus.groovy.reflection.ReflectionCache
 
 import javax.inject.Inject
 
@@ -146,14 +146,15 @@ class Application {
                     }
                     System.exit(0)
                 } else {
-                    def minimumNumberOfParameters = ReflectionCache.getCachedClass(command.class).methods
-                            .findAll { 'doCall'.equals(it.name) }*.nativeParameterTypes.collect { it.size() }.min()
-
-                    if ((minimumNumberOfParameters..command.maximumNumberOfParameters).contains(settings.args.size())) {
+                    // Gets the minimum and maximum number of arguments for the command.
+                    def minArgs = ClosureUtils.getMinArgs(command)
+                    def maxArgs = ClosureUtils.getMaxArgs(command)
+                    // Runs the command if a valid number of arguments is provided.
+                    if ((minArgs..maxArgs).contains(settings.args.size())) {
                         command(* settings.args)
                     } else {
                         System.err.println("Unable to run the $settings.command command: expected at least " +
-                                "$minimumNumberOfParameters argument(s) but only ${settings.args.size()} found")
+                                "${minArgs} argument(s) but only ${settings.args.size()} found")
                     }
                 }
                 break
