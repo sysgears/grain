@@ -26,6 +26,7 @@ import com.sysgears.grain.preview.SitePreviewer
 import com.sysgears.grain.service.ServiceManager
 import com.sysgears.grain.util.FileUtils
 import groovy.util.logging.Slf4j
+import org.codehaus.groovy.reflection.ReflectionCache
 
 import javax.inject.Inject
 
@@ -35,7 +36,7 @@ import javax.inject.Inject
 @javax.inject.Singleton
 @Slf4j
 class Application {
-    
+
     /** Site config */
     @Inject private Config config
 
@@ -56,7 +57,7 @@ class Application {
 
     /** Grain dynamic methods registrar */
     @Inject private GrainDynamicMethods grainDynamicMethods
-    
+
     /** Service manager */
     @Inject private ServiceManager serviceManager
 
@@ -64,14 +65,14 @@ class Application {
      * Prepares Grain engine to launch a command: binds additional methods
      * to standard Groovy classes, creates site cache directories.
      */
-    private void prepare() {        
+    private void prepare() {
 
         // Register Grain extension methods to Groovy classes
         grainDynamicMethods.register()
-        
+
         // Start service manager
         serviceManager.start()
-        
+
         // Trigger config changed event to read Site config
         // and select implementations for Site features specified in config
         try {
@@ -79,7 +80,7 @@ class Application {
         } catch (t) {
             t.printStackTrace()
         }
-        
+
         // Create cache directories
         def cacheDir = new File(config.cache_dir.toString())
         def dirs = (File[]) ([] + cacheDir +
@@ -105,7 +106,7 @@ class Application {
             }
         }
     }
-    
+
     /**
      * Launches the command specified in command line arguments. 
      * <p> 
@@ -115,7 +116,7 @@ class Application {
         long startTime = System.currentTimeMillis()
 
         startQuitListener()
-        
+
         prepare()
 
         switch (settings.command) {
@@ -138,14 +139,22 @@ class Application {
                     if (settings.command != 'help') {
                         System.err.println("Unknown command: ${settings.command}")
                         settings.cliBuilder.usage()
-                    }                               
+                    }
                     println("\nTheme commands:")
                     config.commands.each { name, closure ->
                         println(name)
                     }
                     System.exit(0)
                 } else {
-                    command(settings.args)
+                    def minimumNumberOfParameters = ReflectionCache.getCachedClass(command.class).methods
+                            .findAll { 'doCall'.equals(it.name) }*.nativeParameterTypes.collect { it.size() }.min()
+
+                    if ((minimumNumberOfParameters..command.maximumNumberOfParameters).contains(settings.args.size())) {
+                        command(* settings.args)
+                    } else {
+                        System.err.println("Unable to run the $settings.command command: expected at least " +
+                                "$minimumNumberOfParameters argument(s) but only ${settings.args.size()} found")
+                    }
                 }
                 break
         }
