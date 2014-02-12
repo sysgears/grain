@@ -91,7 +91,7 @@ class Application {
     /**
      * Starts quit listener daemon thread
      */
-    private void startQuitListener() {
+    private static void startQuitListener() {
         Thread.startDaemon {
             boolean exit = false
             while (!exit) {
@@ -106,7 +106,7 @@ class Application {
             }
         }
     }
-
+    
     /**
      * Launches the command specified in command line arguments. 
      * <p> 

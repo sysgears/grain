@@ -15,6 +15,7 @@
  */
 
 package com.sysgears.grain.preview
+
 /**
  * Config change broadcaster is responsible for propagating site config changes
  * to all the classes that listen to them.

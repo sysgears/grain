@@ -44,7 +44,8 @@ abstract class AbstractCompass implements Compass {
      * @param mode compass mode
      */
     public void configureAndLaunch(String mode) {
-        log.info 'Compiling SASS resources...'
+        if (mode == 'compile')
+            log.info 'Compiling SASS resources...'
 
         String compassConfig = [location: '/config.rb'].render()
 
@@ -88,5 +89,6 @@ abstract class AbstractCompass implements Compass {
      */
     @Override
     public void configChanged() {
+        start()
     }
 }

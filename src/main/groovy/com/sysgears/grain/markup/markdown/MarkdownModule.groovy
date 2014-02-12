@@ -1,9 +1,8 @@
 package com.sysgears.grain.markup.markdown
 
 import com.google.inject.AbstractModule
-import com.google.inject.Injector
 import com.google.inject.Provides
-import com.sysgears.grain.config.ImplBinder
+import com.sysgears.grain.config.ConfigBinder
 
 /**
  * Package-specific IoC config
@@ -11,11 +10,11 @@ import com.sysgears.grain.config.ImplBinder
 class MarkdownModule extends AbstractModule {
     
     @Provides @javax.inject.Singleton
-    public MarkdownProcessor provideProcessor(Injector injector,
+    public MarkdownProcessor provideProcessor(ConfigBinder binder,
                                   TxtMarkProcessor txtmark,
                                   PegdownProcessor pegdown) {
-        new ImplBinder<MarkdownProcessor>(MarkdownProcessor.class, 'features.markdown',
-                [default: txtmark, txtmark: txtmark, pegdown: pegdown], injector).proxy
+        binder.bind(MarkdownProcessor, 'features.markdown',
+                [default: txtmark, txtmark: txtmark, pegdown: pegdown])
     }
 
     @Override

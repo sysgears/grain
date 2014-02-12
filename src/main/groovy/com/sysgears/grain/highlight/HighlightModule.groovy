@@ -17,10 +17,9 @@
 package com.sysgears.grain.highlight
 
 import com.google.inject.AbstractModule
-import com.google.inject.Injector
 import com.google.inject.Provides
 import com.sysgears.grain.annotations.Uncached
-import com.sysgears.grain.config.ImplBinder
+import com.sysgears.grain.config.ConfigBinder
 import com.sysgears.grain.highlight.pygments.*
 
 /**
@@ -29,26 +28,26 @@ import com.sysgears.grain.highlight.pygments.*
 class HighlightModule extends AbstractModule {
 
     @Provides @javax.inject.Singleton
-    public Pygments providePygments(Injector injector,
+    public Pygments providePygments(ConfigBinder binder,
             PythonPygments pygments, FakePygments fake) {
-        new ImplBinder<Pygments>(Pygments.class, 'features.pygments', 
+        binder.bind(Pygments, 'features.pygments', 
                 [python: pygments, jython: pygments,
-                 shell: pygments, default: pygments, none: fake], injector).proxy
+                 shell: pygments, default: pygments, none: fake])
     }
 
     @Provides @javax.inject.Singleton @Uncached
-    public Highlighter provideUncachedHighlighter(Injector injector,
+    public Highlighter provideUncachedHighlighter(ConfigBinder binder,
             Pygments pygments, FakeHighlighter fake) {
-        new ImplBinder<Highlighter>(Highlighter.class, 'features.highlight',
-                [pygments: pygments, default: fake], injector).proxy
+        binder.bind(Highlighter, 'features.highlight',
+                [pygments: pygments, default: fake])
     }
 
     @Provides @javax.inject.Singleton
-    public Highlighter provideHighlighter(Injector injector,
+    public Highlighter provideHighlighter(ConfigBinder binder,
             @Uncached Highlighter uncachedHighlighter,
             CachedHighlighter cachedHighlighter) {
-        new ImplBinder<Highlighter>(Highlighter.class, 'features.cache_highlight',
-                [default: cachedHighlighter, false: uncachedHighlighter], injector).proxy
+        binder.bind(Highlighter, 'features.cache_highlight',
+                [default: cachedHighlighter, false: uncachedHighlighter])
     }
 
     @Override

@@ -78,11 +78,4 @@ public class RubyCompass extends AbstractCompass {
         ruby.rpc.CompassBridge.stop()
         log.info 'Ruby Compass process finished.'
     }
-
-    /**
-     * @inheritDoc
-     */
-    @Override
-    public void configChanged() {
-    }
 }

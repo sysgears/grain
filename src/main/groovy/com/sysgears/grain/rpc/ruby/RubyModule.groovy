@@ -17,10 +17,8 @@
 package com.sysgears.grain.rpc.ruby
 
 import com.google.inject.AbstractModule
-import com.google.inject.Injector
 import com.google.inject.Provides
-import com.sysgears.grain.config.Config
-import com.sysgears.grain.config.ImplBinder
+import com.sysgears.grain.config.ConfigBinder
 
 /**
  * Package-specific IoC config 
@@ -28,10 +26,10 @@ import com.sysgears.grain.config.ImplBinder
 class RubyModule extends AbstractModule {
 
     @Provides @javax.inject.Singleton
-    public Ruby provideRuby(Injector injector,
+    public Ruby provideRuby(ConfigBinder binder,
             AutoRuby auto, RMIRuby rmi, JRuby jruby) {
-        new ImplBinder<Ruby>(Ruby.class, 'features.ruby',
-                [default: auto, auto: auto, ruby: rmi, jruby: jruby], injector).proxy
+        binder.bind(Ruby, 'features.ruby',
+                [default: auto, auto: auto, ruby: rmi, jruby: jruby])
     }
 
     @Override
