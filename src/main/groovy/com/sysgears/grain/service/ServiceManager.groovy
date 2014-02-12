@@ -30,50 +30,50 @@ public class ServiceManager implements Service {
     }
 
     /**
+     * Waits for service operations and warns if they take too long.
+     */
+    private static class AlarmThread extends Thread {
+
+        /** Warning message */
+        private final String warnMsg
+
+        /** Alarm time in ms */
+        private final Long alarmTime
+
+        /**
+         * Creates instance of alarm thread
+         *
+         * @param warnMsg warning message
+         * @param alarmTime alarm time in ms
+         */
+        public AlarmThread(final String warnMsg, final Long alarmTime) {
+            setDaemon(true)
+            this.warnMsg = warnMsg
+            this.alarmTime = alarmTime
+        }
+
+        /**
+         * Waits for service operations and warns if they take too long.
+         */
+        public void run() {
+            boolean exit = false
+            long waitTime = 0
+            while (!exit) {
+                sleep(alarmTime) { exit = true }
+                waitTime += alarmTime
+                if (!exit)
+                    log.warn("${warnMsg} after ${waitTime} ms")
+            }
+        }
+    }
+
+    /**
      * Service agent protects service in the following way: if any method is called on a service
      * it attempts to fully start first and then execute the method,
      * if the service is already starting the start method blocks until the service and all
      * the services it depends on will be completely started, the same is true for stop method. 
      */
     private class ServiceAgent {
-        
-        /**
-         * Waits for service operations and warns if they take too long.
-         */
-        private class AlarmThread extends Thread {
-
-            /** Warning message */
-            private final String warnMsg
-            
-            /** Alarm time in ms */
-            private final Long alarmTime
-
-            /**
-             * Creates instance of alarm thread 
-             * 
-             * @param warnMsg warning message
-             * @param alarmTime alarm time in ms
-             */
-            public AlarmThread(final String warnMsg, final Long alarmTime) {
-                setDaemon(true)
-                this.warnMsg = warnMsg
-                this.alarmTime = alarmTime
-            }
-
-            /**
-             * Waits for service operations and warns if they take too long. 
-             */
-            public void run() {
-                boolean exit = false
-                long waitTime = 0
-                while (!exit) {
-                    sleep(alarmTime) { exit = true }
-                    waitTime += alarmTime
-                    if (!exit)
-                        log.warn("${warnMsg} after ${waitTime} ms")
-                }
-            }
-        }
         
         /** Target service */
         private Service target
@@ -180,7 +180,6 @@ public class ServiceManager implements Service {
          */
         public Object handleMethod(String name, args) {
             def result = Void
-            //log.trace "Before ${target.class}.${name}"
             if (name in ['stop', 'chainedStop', 'stopAndShutdown']) {
                 state.sendAndWait { ServiceState it ->
                     try {
@@ -202,7 +201,6 @@ public class ServiceManager implements Service {
             }
             if (result instanceof AgentError)
                 throw result.cause
-            //log.trace "After ${target.class}.${name}"
             result
         }
 
@@ -274,15 +272,37 @@ public class ServiceManager implements Service {
             def agent = new ServiceAgent(it)
 
             it.metaClass.invokeMethod = { String name, args ->
+                //log.trace "Before ${delegate.class}.${name}"
                 def protectMethod = !(name in ['asBoolean', 'asType', 'equals', 'hashCode',
                         'invokeMethod', 'configChanged'])
+                def result
                 if (protectMethod) {
-                    agent.handleMethod(name, args)
+                    result = agent.handleMethod(name, args)
                 } else {
-                    args ? delegate.&"${name}"(args) : delegate.&"${name}"() 
+                    result = args ? delegate.&"${name}"(args) : delegate.&"${name}"()
                 }
+                //log.trace "After ${delegate.class}.${name}"
+                result
             }
         }
+    }
+
+    /**
+     * Starts given service.
+     *
+     * @param service a service that should be started
+     */
+    public static void startService(final Service service) {
+        service.start()
+    }
+
+    /**
+     * Stops given service.
+     *
+     * @param service a service that should be stopped
+     */
+    public static void stopService(final Service service) {
+        service.stop()
     }
 
     /**
