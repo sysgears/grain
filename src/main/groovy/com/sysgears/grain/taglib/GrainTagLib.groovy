@@ -37,7 +37,7 @@ class GrainTagLib extends GrainUtils {
 
     /** Page data exposed to the resource */
     Map page = [:]
-    
+
     /**
      * Creates and initializes an instance of resource tag lib.
      */
@@ -48,21 +48,27 @@ class GrainTagLib extends GrainUtils {
 
     /**
      * Looks up resource url by resource location
-     * 
+     *
      * @attr location resource location
-     * 
+     *
      * @return resource URL
      */
     def r = { String location ->
+        def resultUrl
         if (!location.startsWith("/")) {
             location = new File(new File(page.url.toString()).parentFile ?: new File("/"), location)
         }
-        def absoluteUrl = urlRegistry.getCdnUrl(urlRegistry.getUrl(location))
-        if (absoluteUrl == null) {
+        def relativeUrl = urlRegistry.getUrl(location)
+        if (relativeUrl == null) {
             log.warn "WARNING: ${page.location} tried to find out url of absent resource: ${location}"
-            absoluteUrl = "/not/found/${location}"
+            resultUrl = "/not/found/${location}"
+        } else {
+            def cdnUrl = urlRegistry.getCdnUrl(relativeUrl)
+
+            resultUrl = cdnUrl ?: link(relativeUrl)
         }
-        absoluteUrl
+
+        resultUrl
     }
 
     /**
@@ -73,20 +79,12 @@ class GrainTagLib extends GrainUtils {
      * @return resource URLs list
      */
     def rs = { List<String> locations ->
-        urlRegistry.getUrls((String[]) locations.collect { location ->
-            def relativeUrl
-            if (!location.startsWith("/")) {
-                relativeUrl = new File(new File(page.url.toString()).parentFile ?: new File("/"), location).toString()
-            } else {
-                relativeUrl = location
-            }
-            urlRegistry.getCdnUrl(relativeUrl)
-        })
+        locations.collect { r it }
     }
 
     /**
      * Returns rendered resource contents with specified location
-     * 
+     *
      * @attr location template location
      * @attr model (optional) additional model variables added to <code>page</code> map
      */
@@ -98,5 +96,25 @@ class GrainTagLib extends GrainUtils {
             def msg = "Resource not found: ${location}"
             new ResourceView(content: msg, full: msg, bytes: msg.bytes)
         }
+    }
+
+    /**
+     * Generates proper url from a relative link to a resource.
+     *
+     * @attr relativeUrl resource relative link
+     *
+     * @return proper resource link
+     */
+    def link = { String relativeUrl ->
+        def resultUrl
+        if (site.generate_absolute_links) {
+            resultUrl = "$site.url$relativeUrl"
+        } else {
+            def urlPathMatcher = site.url =~ '^[^#]*?://.+?(/.+)$'
+            resultUrl = urlPathMatcher.matches() ?
+                "${urlPathMatcher[0][1]}${relativeUrl}" : relativeUrl
+        }
+
+        resultUrl
     }
 }
