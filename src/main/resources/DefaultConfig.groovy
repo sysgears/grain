@@ -16,6 +16,9 @@ destination_dir = "${base_dir}/target"
 // Binary files
 binary_files = [/(?i).*\.(png|jpg|jpeg|gif|ico|bmp|swf|avi|mkv|ogg|mp3|mp4)$/]
 
+// Absolute links
+generate_absolute_links = false
+
 // Date time format
 datetime_format = 'yyyy-MM-dd HH:mm'
 

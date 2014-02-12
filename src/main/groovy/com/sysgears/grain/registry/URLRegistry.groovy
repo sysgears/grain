@@ -62,8 +62,8 @@ class URLRegistry implements SiteChangeListener {
 
     /** Current CDN no to use */
     private int cdnIndex = 0
-    
-    /** CDN url cache */ 
+
+    /** CDN url cache */
     private def cdnCache = [:]
 
     /**
@@ -98,10 +98,10 @@ class URLRegistry implements SiteChangeListener {
                     }
             locationMap = urlMap.values().collectEntries { [it.location as String, it.url as String] }
         }
-        
+
         pages = urlMap.values().findAll { it.type == 'page' }
         assets = urlMap.values().findAll { it.type == 'asset' }
-        
+
         perf.resourceMapTime += (System.currentTimeMillis() - resourceMapStart)
 
         if (log.debugEnabled) {
@@ -114,28 +114,30 @@ class URLRegistry implements SiteChangeListener {
     /**
      * Returns CDN url that should be used for the given resource url to speed
      * up parallel resource download in browser as much as possible
-     * 
+     *
      * @param url resource url
-     * 
+     *
      * @return CDN url that should be used to access the resource
      */
     public String getCdnUrl(String url) {
+        String cdnUrl = null
+
         if (config.cdn_urls && url) {
             if (!cdnCache.containsKey(url)) {
                 cdnCache[url] = config.cdn_urls[(cdnIndex / MAX_BROWSER_CONNECTS).toInteger()] + url
                 cdnIndex = (cdnIndex + 1) % (config.cdn_urls.size() * MAX_BROWSER_CONNECTS)
             }
-            cdnCache[url]
-        } else {
-            url
+            cdnUrl = cdnCache[url]
         }
+
+        cdnUrl
     }
 
     /**
      * Returns url by resource location
-     * 
+     *
      * @param location resource location
-     * 
+     *
      * @return resource url
      */
     public String getUrl(String location) {
@@ -144,20 +146,6 @@ class URLRegistry implements SiteChangeListener {
             throw new RuntimeException("Failed to find resource with location: ${location}")
         }
         res
-    }
-
-    /**
-     * Returns url list by resource location list
-     *
-     * @param location resource location list
-     *
-     * @return resource url list for listed locations
-     */
-    public List getUrls(String[] locations) {
-        List urls = locations.collect { location ->
-            locationMap[location]
-        }.flatten()
-        urls
     }
 
     /**
@@ -183,9 +171,9 @@ class URLRegistry implements SiteChangeListener {
 
     /**
      * Returns resource for the given url
-     * 
+     *
      * @param url an url
-     * 
+     *
      * @return a resource that has specified url
      */
     public Map getResource(String url) {
