@@ -17,6 +17,7 @@
 package com.sysgears.grain.highlight
 
 import com.sysgears.grain.annotations.Uncached
+import com.sysgears.grain.config.Config
 import com.sysgears.grain.taglib.GrainUtils
 import com.sysgears.grain.taglib.Site
 
@@ -30,9 +31,9 @@ import javax.inject.Inject
 @javax.inject.Singleton
 class CachedHighlighter implements Highlighter {
     
-    /** Site instance */
+    /** Config instance */
     @Inject
-    private Site site
+    private Config config
     
     /** Uncached highlighter proxy */
     @Inject @Uncached
@@ -45,7 +46,7 @@ class CachedHighlighter implements Highlighter {
     String highlight(String code, String language) {
         def uniqueName = uncachedHighlighter.cacheSubdir
         
-        def cacheDir = new File(site.cache_dir.toString(), "highlight/" + uniqueName)
+        def cacheDir = new File(config.cache_dir.toString(), "highlight/" + uniqueName)
         def cacheFile = new File(cacheDir, GrainUtils.md5((code + '\001' + language).bytes) + ".html")
         if (uniqueName != null && cacheFile.exists() && cacheFile.length() > 0) {
             cacheFile.text

@@ -5,79 +5,48 @@ package com.sysgears.grain.service
  */
 public class ProxyManagerState {
 
-    /** Proxy class to proxy mapping */
-    private Map<Class, Object> proxies = [:]
-
-    /** Proxy objects to proxy class mapping */
-    private Map<Object, Class> reverseProxies = [:]
-
     /** Proxy class to proxy target mapping */
-    private Map<Class, Object> proxyTargets = [:]
+    private Map<Object, Object> proxyTargets = [:]
 
     /** Proxy target to proxy class mapping */
-    private Map<Object, Class> reverseProxyTargets = [:]
+    private Map<Object, Object> reverseProxyTargets = [:]
 
     /**
-     * Sets proxy object for the given interface
+     * Returns proxy object for given target object
      *
-     * @param ifc interface implemented by proxy object
-     * @param obj proxy object
+     * @param proxy proxy object
      */
-    void setProxy(final Class ifc, final Object proxy) {
-        proxies[ifc] = proxy
-        reverseProxies[proxy] = ifc
+    public Object getProxy(final Object target) {
+        reverseProxyTargets[target]
     }
 
     /**
-     * Returns proxy object for target object or interface
+     * Returns currently used target object for the given proxy object
      *
-     * @param obj target object or interface implemented by proxy
+     * @param proxy proxy object or interface implemented by proxy
      */
-    public Object getProxy(final Object obj) {
-        if (obj instanceof Class) {
-            proxies[obj]
-        } else {
-            proxies[reverseProxyTargets[obj]]
-        }
+    public Object getTarget(final Object proxy) {
+        proxyTargets[proxy]
     }
 
     /**
-     * Returns currently used target object for the given interface
-     * or proxy object
+     * Checks whether object is a proxy
      *
-     * @param obj proxy object or interface implemented by proxy
+     * @return whether object is a proxy
      */
-    public Object getTarget(final Object obj) {
-        if (obj instanceof Class) {
-            proxyTargets[obj]
-        } else {
-            proxyTargets[reverseProxies[obj]]
-        }
-    }
-
-    /**
-     * Checks whether object or interface is a proxy
-     *
-     * @return whether object or interface is a proxy
-     */
-    public boolean isProxy(final Object obj) {
-        if (obj instanceof Class) {
-            proxies.containsKey(obj)
-        } else {
-            reverseProxies.containsKey(obj)
-        }
+    public boolean isProxy(final Object proxy) {
+        proxyTargets.containsKey(proxy)
     }
 
     /**
      * Sets currently used target for the proxy.
      *
-     * @param ifc proxy class
+     * @param obj proxy object
      *
      * @param target currently used target
      */
-    void setTarget(final Class ifc, final Object target) {
-        reverseProxyTargets.remove(proxyTargets[ifc])
-        proxyTargets[ifc] = target
-        reverseProxyTargets[target] = ifc
+    void setTarget(final Object proxy, final Object target) {
+        proxyTargets[proxy] = target
+        reverseProxyTargets[target] = proxy
     }
 }

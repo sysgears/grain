@@ -46,22 +46,20 @@ public class ConfigBinder {
                 if (impl == null) {
                     impl = implMap['default'] as T
                 }
-                def proxyTarget = managerState.getTarget(ifc)
+                def proxyTarget = managerState.getTarget(delegate.proxy)
                 def isService = Service.class.isAssignableFrom(ifc) && proxyTarget != impl
                 if (isService) {
                     log.info "Switching from ${proxyTarget?.class?.name ?: 'none'} to ${impl.class.name} service for ${propertyName}"
                     proxyTarget?.stop()
-                    proxyManager.setTarget(ifc, impl)
-                    managerState = proxyManager.state
-                    proxyTarget = managerState.getTarget(ifc)
                 }
-                log.debug "Using proxy ${proxyTarget?.class?.name} for ${propertyName}"
+                proxyManager.setTarget(delegate.proxy, impl)
+                log.debug "Using proxy ${impl?.class?.name} for ${propertyName}"
             } catch (e) {
                 throw new RuntimeException("Error handling config change in binder", e)
             }
         }])
         
-        proxyManager.setTarget(ifc, implMap['default'])
+        proxyManager.setTarget(proxy, implMap['default'])
         
         proxy
     }

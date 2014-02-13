@@ -25,8 +25,8 @@ import static java.lang.annotation.ElementType.*
 import static java.lang.annotation.RetentionPolicy.RUNTIME
 
 /**
- * Annotation to specify that service should be started only when one of its method is used.
+ * Annotation to specify that the service should not be running to execute this method
  */
-@Target([FIELD])
+@Target([METHOD])
 @Retention(RUNTIME)
-public @interface Manual {}
+public @interface Spare {}

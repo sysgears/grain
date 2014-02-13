@@ -16,14 +16,12 @@
 
 package com.sysgears.grain.markup.rst
 
-import com.sysgears.grain.config.Config
 import com.sysgears.grain.init.GrainSettings
 import com.sysgears.grain.rpc.python.Python
 import com.sysgears.grain.service.Service
 import groovy.util.logging.Slf4j
 
 import javax.inject.Inject
-import java.util.concurrent.CountDownLatch
 
 /**
  * Implementation of reStructuredText integration using Python docutils.
@@ -31,9 +29,9 @@ import java.util.concurrent.CountDownLatch
 @Slf4j
 @javax.inject.Singleton
 public class RstProcessor implements Service {
-    
-    /** Site config */
-    @Inject private Config config
+
+    /** Docutils version. */
+    private static final String VERSION = "0.11"
     
     /** Grain settings */
     @Inject private GrainSettings settings
@@ -41,9 +39,6 @@ public class RstProcessor implements Service {
     /** Python implementation */
     @Inject private Python python
     
-    /** Latch for DocUtils initialization */
-    private CountDownLatch latch
-
     /**
      * Renders reStructuredText content.
      * 
@@ -52,20 +47,9 @@ public class RstProcessor implements Service {
      * @return rendered output 
      */
     public String process(String source) {
-        if (!latch) {
-            start()
-        }
-        latch.await()
         python.rpc.with {
             docutils_bridge.process(source)
         }
-    }
-
-    /**
-     * Does nothing.
-     */
-    @Override
-    public void configChanged() {
     }
 
     /**
@@ -73,14 +57,9 @@ public class RstProcessor implements Service {
      */
     @Override
     void start() {
-        latch = new CountDownLatch(1)
-        try {
-            def ipc = python.rpc.ipc
-            ipc.install_package('docutils>=0.11')
-            ipc.add_lib_path new File(settings.toolsHome, 'docutils-bridge').canonicalPath
-        } finally {
-            latch.countDown()
-        }
+        def ipc = python.rpc.ipc
+        ipc.install_package("docutils=${VERSION}")
+        ipc.add_lib_path new File(settings.toolsHome, 'docutils-bridge').canonicalPath
     }
 
     /**
@@ -88,6 +67,11 @@ public class RstProcessor implements Service {
      */
     @Override
     void stop() {
-        latch = null
+    }
+
+    /**
+     * Does nothing.
+     */
+    void configChanged() {
     }
 }

@@ -18,37 +18,11 @@ package com.sysgears.grain.highlight.pygments
 
 import com.sysgears.grain.service.Service
 import com.sysgears.grain.highlight.Highlighter
-import com.sysgears.grain.init.GrainSettings
-import com.sysgears.grain.preview.ConfigChangeListener
-import com.sysgears.grain.taglib.Site
-import groovy.util.logging.Slf4j
-
-import javax.annotation.Nullable
-import javax.inject.Inject
 
 /**
  * Interface for Pygments integration.
  */
-@Slf4j
-abstract class Pygments implements Highlighter, ConfigChangeListener, Service {
-
-    /** Site instance */
-    private @Inject Site site
-
-    /** Grain settings */
-    private @Inject GrainSettings settings
-
-    /**
-     * Launches pygments 
-     */
-    public void start() {
-    }
-
-    /**
-     * Terminates pygments  
-     */
-    public void stop() {
-    }
+interface Pygments extends Highlighter, Service {
 
     /**
      * Highlights code using Pygments 
@@ -58,12 +32,6 @@ abstract class Pygments implements Highlighter, ConfigChangeListener, Service {
      *
      * @return highlighted code HTML
      */
-    public abstract String highlight(String code, String language)
+    public String highlight(String code, String language)
 
-    /**
-     * @inheritDoc
-     */
-    @Override
-    public void configChanged() {
-    }
 }

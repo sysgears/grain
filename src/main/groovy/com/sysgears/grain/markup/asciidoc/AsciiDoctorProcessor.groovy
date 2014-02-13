@@ -16,8 +16,6 @@
 
 package com.sysgears.grain.markup.asciidoc
 
-import com.sysgears.grain.config.Config
-import com.sysgears.grain.init.GrainSettings
 import com.sysgears.grain.markup.MarkupProcessor
 import com.sysgears.grain.rpc.ruby.Ruby
 import com.sysgears.grain.service.Service
@@ -25,7 +23,6 @@ import groovy.util.logging.Slf4j
 
 import javax.annotation.Nullable
 import javax.inject.Inject
-import java.util.concurrent.CountDownLatch
 
 /**
  * Implementation of AsciiDoctor integration.
@@ -33,22 +30,13 @@ import java.util.concurrent.CountDownLatch
 @Slf4j
 @javax.inject.Singleton
 public class AsciiDoctorProcessor implements Service, MarkupProcessor {
-    
-    /** Site config */
-    @Inject private Config config
-    
-    /** Grain settings */
-    @Inject private GrainSettings settings
+
+    /** AsciiDoctor gem version used */
+    @Inject private static final String VERSION = '0.1.4'
     
     /** Ruby implementation */
     @Inject private Ruby ruby
     
-    /** Latch for AsciiDoctor initialization */
-    private CountDownLatch latch
-    
-    /** AsciiDoctor gem version */
-    private String version
-
     /**
      * Renders AsciiDoctor content.
      * 
@@ -57,7 +45,6 @@ public class AsciiDoctorProcessor implements Service, MarkupProcessor {
      * @return rendered output 
      */
     public String process(String source) {
-        startAndWait()
         ruby.rpc.with {
             Asciidoctor.render(source)
         }
@@ -68,6 +55,10 @@ public class AsciiDoctorProcessor implements Service, MarkupProcessor {
      */
     @Override
     void start() {
+        ruby.rpc.with {
+            this.version = Ipc.install_gem('asciidoctor', "=${VERSION}")
+            Ipc.require('asciidoctor')
+        }
     }
 
     /**
@@ -75,7 +66,13 @@ public class AsciiDoctorProcessor implements Service, MarkupProcessor {
      */
     @Override
     void stop() {
-        latch = null
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Nullable String getCacheSubdir() {
+        "asciidoctor.${VERSION.replace('.', '_')}"
     }
 
     /**
@@ -85,26 +82,4 @@ public class AsciiDoctorProcessor implements Service, MarkupProcessor {
     void configChanged() {
     }
 
-    /**
-     * Starts Python pygments and waits until start will be completed 
-     */
-    private void startAndWait() {
-        latch = new CountDownLatch(1)
-        try {
-            ruby.rpc.with {
-                this.version = Ipc.install_gem('asciidoctor', '>=0.1.4')
-                Ipc.require('asciidoctor')
-            }
-        } finally {
-            latch.countDown()
-        }
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Nullable String getCacheSubdir() {
-        startAndWait()
-        "asciidoctor." + version?.replace('.', '_')
-    }
 }

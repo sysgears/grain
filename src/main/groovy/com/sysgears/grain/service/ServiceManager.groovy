@@ -277,7 +277,7 @@ public class ServiceManager implements Service {
             it.metaClass.invokeMethod = { String name, args ->
                 //log.trace "Before ${delegate.class}.${name}"
                 def protectMethod = !(name in ['asBoolean', 'asType', 'equals', 'hashCode',
-                        'invokeMethod', 'configChanged'])
+                        'invokeMethod', 'configChanged', 'getCacheSubdir'])
                 def result
                 if (protectMethod) {
                     result = agent.handleMethod(name, args)

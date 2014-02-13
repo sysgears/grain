@@ -16,7 +16,7 @@
 
 package com.sysgears.grain.rpc.ruby
 
-import com.sysgears.grain.annotations.Manual
+import com.sysgears.grain.annotations.Spare
 import com.sysgears.grain.rpc.RPCDispatcher
 
 import javax.inject.Inject
@@ -31,10 +31,10 @@ public class AutoRuby implements Ruby {
     @Inject private RubyFinder rubyFinder
 
     /** RMI Ruby implementation */
-    @Inject @Manual private RMIRuby rmiRuby
+    @Inject private RMIRuby rmiRuby
 
     /** JRuby implementation */
-    @Inject @Manual private JRuby jruby
+    @Inject private JRuby jruby
 
     /** Ruby implementation service used */
     private Ruby ruby

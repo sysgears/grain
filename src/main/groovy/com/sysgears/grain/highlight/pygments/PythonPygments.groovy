@@ -22,14 +22,16 @@ import groovy.util.logging.Slf4j
 
 import javax.annotation.Nullable
 import javax.inject.Inject
-import java.util.concurrent.CountDownLatch
 
 /**
  * Implementation of Pygments highlighter integration.
  */
 @Slf4j
 @javax.inject.Singleton
-public class PythonPygments extends Pygments {
+public class PythonPygments implements Pygments {
+
+    /** Pygments version used */
+    private static final String VERSION = '1.6'
 
     /** Grain settings */
     @Inject private GrainSettings settings
@@ -37,23 +39,19 @@ public class PythonPygments extends Pygments {
     /** Python implementation */
     @Inject private Python python
 
-    /** Latch for Pygments initialization */
-    private CountDownLatch latch
-    
-    /** Pygments version */
-    private String version
-
     /**
      * Launches pygments 
      */
     public void start() {
+        def rpc = python.rpc
+        rpc.ipc.install_package("pygments==${VERSION}")
+        rpc.ipc.add_lib_path new File(settings.toolsHome, 'pygments-bridge').canonicalPath
     }
 
     /**
      * Terminates pygments  
      */
     public void stop() {
-        latch = null
     }
 
     /**
@@ -65,32 +63,17 @@ public class PythonPygments extends Pygments {
      * @return highlighted code HTML
      */
     public String highlight(String code, String language) {
-        startAndWait()
         python.rpc.pygments_bridge.highlight(code, language)
-    }
-
-    /**
-     * Starts Python pygments and waits until start will be completed 
-     */
-    private void startAndWait() {
-        if (!latch) {
-            latch = new CountDownLatch(1)
-            try {
-                def rpc = python.rpc
-                this.version = rpc.ipc.install_package('pygments>=1.6')
-                rpc.ipc.add_lib_path new File(settings.toolsHome, 'pygments-bridge').canonicalPath
-            } finally {
-                latch.countDown()
-            }
-        }
-        latch.await()
     }
 
     /**
      * @inheritDoc
      */
     @Nullable String getCacheSubdir() {
-        startAndWait()
-        "pygments." + version?.replace('.', '_')
+        "pygments.${VERSION.replace('.', '_')}"
+    }
+
+    @Override
+    void configChanged() {
     }
 }

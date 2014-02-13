@@ -16,7 +16,7 @@
 
 package com.sysgears.grain.rpc.python
 
-import com.sysgears.grain.annotations.Manual
+import com.sysgears.grain.annotations.Spare
 import com.sysgears.grain.rpc.RPCDispatcher
 import com.sysgears.grain.rpc.ruby.Ruby
 
@@ -32,10 +32,10 @@ public class AutoPython implements Ruby {
     @Inject private PythonFinder pythonFinder
 
     /** CPython implementation */
-    @Inject @Manual private CPython cPython
+    @Inject private CPython cPython
 
     /** Jython implementation */
-    @Inject @Manual private Jython jython
+    @Inject private Jython jython
 
     /** Python implementation service used */
     private Python python

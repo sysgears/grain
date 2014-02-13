@@ -25,18 +25,23 @@ public class ProxyManager {
             try {
                 def map = [:]
 
+                def closure = { Object[] args ->
+                    proxyManagerState.val.getTarget(delegate.proxy)?.invokeMethod(delegate.methodName, args)
+                }
+
                 ifc.methods.each { method ->
-                    map."$method.name" = { Object[] args ->
-                        proxyManagerState.val.getTarget(ifc)?.invokeMethod(method.name, args)
-                    }
+                    map."$method.name" = closure.clone()
                 }
 
                 map += override
 
                 def proxy = map.asType(ifc)
 
-                it.setProxy(ifc, proxy)
-                it
+                map.each { String key, Closure value ->
+                    value.delegate = [methodName: key, proxy: proxy]
+                }
+
+                proxy
             } catch (e) {
                 new AgentError(cause: e)
             }
@@ -44,7 +49,7 @@ public class ProxyManager {
         if (result instanceof AgentError)
             throw result.cause
                 
-        result.getProxy(ifc) as T
+        result as T
     }
 
     /**
@@ -59,13 +64,13 @@ public class ProxyManager {
     /**
      * Sets currently used target for the proxy.
      *
-     * @param ifc proxy class
+     * @param proxy proxy object
      *
      * @param target currently used target
      */
-    public void setTarget(final Class ifc, final Object target) {
+    public void setTarget(final Object proxy, final Object target) {
         proxyManagerState << { ProxyManagerState it ->
-            it.setTarget(ifc, target)
+            it.setTarget(proxy, target)
         }
     }
 }

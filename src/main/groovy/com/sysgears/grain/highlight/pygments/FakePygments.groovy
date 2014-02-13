@@ -22,7 +22,7 @@ import javax.annotation.Nullable
  * Fake pygments integration, i.e. does nothing
  */
 @javax.inject.Singleton
-class FakePygments extends Pygments {
+class FakePygments implements Pygments {
 
     /**
      * @inheritDoc
@@ -37,5 +37,26 @@ class FakePygments extends Pygments {
      */
     @Nullable String getCacheSubdir() {
         null
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    void configChanged() {
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    void start() {
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    void stop() {
     }
 }

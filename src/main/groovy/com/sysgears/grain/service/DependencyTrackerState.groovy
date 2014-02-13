@@ -110,7 +110,9 @@ public class DependencyTrackerState {
      * @return real object
      */
     private static Object getTarget(final ProxyManagerState proxyState, final Object obj) {
-        proxyState.getTarget(obj) ?: obj
+        def result = proxyState.getTarget(obj) ?: obj
+//        println "GetTarget: ${obj} - ${proxyState.getTarget(obj)}"
+        result
     }
 
     /**
@@ -122,7 +124,9 @@ public class DependencyTrackerState {
      * @return proxy object or original object if this obj is not bound to any proxy 
      */
     private static Object getProxy(final ProxyManagerState proxyState, final Object obj) {
-        proxyState.getProxy(obj) ?: obj
+        def result = proxyState.getProxy(obj) ?: obj
+//        println "GetProxy: ${obj} - ${proxyState.getProxy(obj)}"
+        result
     }
     
 }
