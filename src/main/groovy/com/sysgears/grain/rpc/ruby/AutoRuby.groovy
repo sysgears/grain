@@ -52,6 +52,7 @@ public class AutoRuby implements Ruby {
      * Stops the service.
      */
     public void stop() {
+        ruby.stop()
     }
 
     /**

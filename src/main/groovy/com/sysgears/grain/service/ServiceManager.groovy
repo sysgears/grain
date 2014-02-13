@@ -138,36 +138,45 @@ public class ServiceManager implements Service {
          *                  to stop
          * @param shutdown - whether service should be shut down and never started again  
          */
-        public void serviceStop(final ServiceState state, final boolean chained, final boolean shutdown) {
+        public Object serviceStop(final boolean chained, final boolean shutdown) {
             log.trace "Attempt to stop service ${target.class}"
+
             def trackerState = tracker.state
             def proxyState = proxyManager.state
-
-            if (state.running) {
-                log.trace "Stopping services that use ${target.class}..."
-                withPool {
-                    trackerState.findNearestUsers(proxyState, target, serviceClosure).eachParallel { Service service ->
-                        log.trace "${target.class} waits for service ${service.class} to stop"
-                        if (shutdown) {
-                            service.stopAndShutdown()
-                        } else {
-                            service.chainedStop()
-                        }
+            log.trace "Stopping services that use ${target.class}..."
+            withPool {
+                trackerState.findNearestUsers(proxyState, target, serviceClosure).eachParallel { Service service ->
+                    log.trace "${target.class} waits for service ${service.class} to stop"
+                    if (shutdown) {
+                        service.stopAndShutdown()
+                    } else {
+                        service.chainedStop()
                     }
                 }
-
-                log.debug "Service ${target.class} stopping..."
-                def alarm = new AlarmThread("Still waiting for service ${target.class} to stop", 10000L)
-                alarm.start()
-                invokeOriginal('stop')
-                alarm.interrupt()
-                state.running = false
-                state.chained = chained
-                state.shutdown = shutdown
-                log.debug "Service ${target.class} stopped."
-            } else {
-                log.debug "Service ${target.class} is already stopped"
             }
+
+            def result = state.sendAndWait { ServiceState state ->
+                try {
+                    if (state.running) {
+                        log.debug "Service ${target.class} stopping..."
+                        def alarm = new AlarmThread("Still waiting for service ${target.class} to stop", 10000L)
+                        alarm.start()
+                        invokeOriginal('stop')
+                        alarm.interrupt()
+                        state.running = false
+                        state.chained = chained
+                        state.shutdown = shutdown
+                        log.debug "Service ${target.class} stopped."
+                        Void
+                    } else {
+                        log.debug "Service ${target.class} is already stopped"
+                    }
+                } catch (e) {
+                    AgentError(cause: e)
+                }
+            }
+
+            result
         }
         
         /**
@@ -181,13 +190,7 @@ public class ServiceManager implements Service {
         public Object handleMethod(String name, args) {
             def result = Void
             if (name in ['stop', 'chainedStop', 'stopAndShutdown']) {
-                state.sendAndWait { ServiceState it ->
-                    try {
-                        serviceStop(it, name == 'chainedStop', name ==  'stopAndShutdown')
-                    } catch (e) {
-                        new AgentError(cause: e)
-                    }
-                }
+                result = serviceStop(name == 'chainedStop', name ==  'stopAndShutdown')
             } else {
                 result = state.sendAndWait { ServiceState it ->
                     try {
