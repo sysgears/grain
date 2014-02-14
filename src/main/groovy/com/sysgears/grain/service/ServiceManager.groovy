@@ -172,7 +172,7 @@ public class ServiceManager implements Service {
                         log.debug "Service ${target.class} is already stopped"
                     }
                 } catch (e) {
-                    AgentError(cause: e)
+                    new AgentError(cause: e)
                 }
             }
 
