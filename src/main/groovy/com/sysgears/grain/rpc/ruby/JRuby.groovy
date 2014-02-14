@@ -52,9 +52,6 @@ public class JRuby implements com.sysgears.grain.rpc.ruby.Ruby {
     /** JRuby RPC implementation */
     private RPCDispatcher rpc
 
-    /** Mutex for JRuby starting */
-    private CountDownLatch latch
-
     /** JRuby thread */
     private Thread thread
     
@@ -65,79 +62,74 @@ public class JRuby implements com.sysgears.grain.rpc.ruby.Ruby {
      * Starts JRuby process 
      */
     public void start() {
-        latch = new CountDownLatch(1)
-        thread = Thread.start {
-            ServerSocket serverSocket = null
-            try {
-                log.info "Launching JRuby process..."
-                
-                System.setProperty('jruby.gem.home', new File("${settings.grainHome}/packages/ruby").canonicalPath)
-                System.setProperty('jruby.bindir', new File("${settings.grainHome}/packages/ruby/bin").canonicalPath)
-                System.setProperty('jruby.compile.fastest', 'true')
+        log.info "Launching JRuby process..."
 
-                def config = new RubyInstanceConfig()
+        ServerSocket serverSocket = null
+        try {
+            serverSocket = TCPUtils.firstAvailablePort
+            if (!serverSocket)
+                throw new RuntimeException("Unable to allocate socket for IPC, all TCP ports are busy")
+            serverSocket.setSoTimeout(30000)
+            def port = serverSocket.getLocalPort()
 
-                serverSocket = TCPUtils.firstAvailablePort
-                if (!serverSocket)
-                    throw new RuntimeException("Unable to allocate socket for IPC, all TCP ports are busy")
-                serverSocket.setSoTimeout(30000)
-                def port = serverSocket.getLocalPort()
-                
-                def args = [new File("${settings.toolsHome}/ruby-ipc/ipc.rb").canonicalPath, port] as String[]
-                
-                log.info args.join(' ')
-                
-                config.processArguments(args)
+            System.setProperty('jruby.gem.home', new File("${settings.grainHome}/packages/ruby").canonicalPath)
+            System.setProperty('jruby.bindir', new File("${settings.grainHome}/packages/ruby/bin").canonicalPath)
+            System.setProperty('jruby.compile.fastest', 'true')
 
-                config.setOutput(new PrintStream(new LoggingOutputStream()))
-                config.setError(new PrintStream(new LoggingOutputStream()))
+            def config = new RubyInstanceConfig()
 
-                ruby = Ruby.newInstance(config)
+            def args = [new File("${settings.toolsHome}/ruby-ipc/ipc.rb").canonicalPath, port] as String[]
 
-                def inp = config.getScriptSource();
-                config.processArguments(config.parseShebangOptions(inp));
-                def filename = config.displayedFileName();
-                
-                Thread.startDaemon {
-                    try {
-                        def socket = serverSocket.accept()
+            log.info args.join(' ')
 
-                        def executor = executorFactory.create(socket.inputStream, socket.outputStream)
-                        executor.start()
+            config.processArguments(args)
 
-                        def rpc = dispatcherFactory.create(executor)
+            config.setOutput(new PrintStream(new LoggingOutputStream()))
+            config.setError(new PrintStream(new LoggingOutputStream()))
 
-                        rpc.Ipc.set_gem_home(new File("${settings.grainHome}/packages/ruby").canonicalPath)
-
-                        this.rpc = rpc
-                    } finally {
-                        latch.countDown()
-                    }
-                }
-                
+            thread = Thread.startDaemon {
                 try {
-                    ruby.runFromMain(inp, filename)
-                } catch (RaiseException re) {
-                    if (re.exception.toString() != "exit" && re.exception.toString() != "Interrupt") {
-                        log.error("Error while running JRuby", re)
-                    } else if (re.exception.toString() == "exit" && !stopInProcess) {
-                        // User pressed CTRL-C which was intercepted by JRuby, terminating Grain
-                        Thread.startDaemon {
+                    ruby = Ruby.newInstance(config)
+
+                    def inp = config.getScriptSource();
+                    config.processArguments(config.parseShebangOptions(inp));
+                    def filename = config.displayedFileName();
+
+                    try {
+                        ruby.runFromMain(inp, filename)
+                    } catch (RaiseException re) {
+                        if (re.exception.toString() != "exit" && re.exception.toString() != "Interrupt") {
+                            log.error("Error while running JRuby", re)
+                        } else if (re.exception.toString() == "exit" && !stopInProcess) {
+                            // User pressed CTRL-C which was intercepted by JRuby, terminating Grain
                             System.exit(0)
                         }
+                    } catch (t) {
+                        log.error("Error while running JRuby", t)
+                    } finally {
+                        if (serverSocket != null && !serverSocket.isClosed())
+                            serverSocket.close()
                     }
+                    log.info 'JRuby process finished...'
                 } catch (t) {
-                    log.error("Error while running JRuby", t)
-                } finally {
-                    if (serverSocket != null)
-                        serverSocket.close()
+                    log.error("Error launching JRuby", t)
                 }
-                log.info 'JRuby process finished...'
-            } catch (t) {
-                log.error("Error launching JRuby", t)
-            } finally {
-                latch.countDown()
             }
+
+            def socket = serverSocket.accept()
+
+            def executor = executorFactory.create(socket.inputStream, socket.outputStream)
+            executor.start()
+
+            def rpc = dispatcherFactory.create(executor)
+
+            rpc.Ipc.set_gem_home(new File("${settings.grainHome}/packages/ruby").canonicalPath)
+
+            this.rpc = rpc
+        } catch (t) {
+            if (serverSocket != null && !serverSocket.isClosed())
+                serverSocket.close()
+            throw t
         }
     }
 
@@ -148,23 +140,15 @@ public class JRuby implements com.sysgears.grain.rpc.ruby.Ruby {
      */
     @Override
     public void stop() {
-        if (latch) {
-            log.info 'Stopping JRuby process...'
-            latch.await()
-            stopInProcess = true
-            ruby?.threadService?.mainThread?.internalRaise(ruby?.interrupt)
-            thread.join()
-            stopInProcess = false
-            latch = null
-        }
+        log.info 'Stopping JRuby process...'
+        stopInProcess = true
+        ruby?.threadService?.mainThread?.internalRaise(ruby?.interrupt)
+        thread.join()
+        stopInProcess = false
     }
 
     @Override
     public RPCDispatcher getRpc() {
-        if (!latch) {
-            start()
-        }
-        latch.await()
         rpc
     }
 
