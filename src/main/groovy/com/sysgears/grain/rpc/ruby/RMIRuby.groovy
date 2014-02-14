@@ -83,8 +83,10 @@ public class RMIRuby implements Ruby {
             def rubyCmd = rubyFinder.cmd.command
             def ver = rubyFinder.cmd.version
             if (ver.startsWith('ruby 1.')) {
-                // 1.8.11 version is compatible with Ubuntu 12.04 LTS Ruby 1.9.3p0
+                // 1.8.11 version is compatible with Ubuntu 12.04 LTS Ruby 1.9.3
                 rubyGemsDir = installer.install('1.8.11')
+            } else if (ver.startsWith('ruby 2.0.')) {
+                rubyGemsDir = installer.install('2.0.13')
             } else {
                 rubyGemsDir = installer.install()
             }
