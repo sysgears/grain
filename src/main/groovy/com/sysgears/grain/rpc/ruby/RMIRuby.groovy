@@ -23,10 +23,10 @@ import com.sysgears.grain.rpc.RPCDispatcher
 import com.sysgears.grain.rpc.RPCDispatcherFactory
 import com.sysgears.grain.rpc.RPCExecutorFactory
 import com.sysgears.grain.rpc.TCPUtils
+import com.sysgears.grain.service.ServiceManager
 import groovy.util.logging.Slf4j
 
 import javax.inject.Inject
-import java.util.concurrent.CountDownLatch
 
 /**
  * RMI Ruby process launcher.
@@ -62,76 +62,64 @@ public class RMIRuby implements Ruby {
     /** Process streams logger */
     private StreamLogger streamLogger
 
-    /** Mutex for RMI Ruby starting */
-    private CountDownLatch latch
-
-    /** RMI Ruby process thread */
-    private Thread thread
+    /** IPC socket */
+    private ServerSocket serverSocket
+    
+    /** RMI Ruby process */
+    private Process process
 
     /**
      * Starts RMI Ruby process
      */
     public void start() {
-        latch = new CountDownLatch(1)
-        thread = Thread.start {
-            def serverSocket = null
-            try {
-                log.info "Launching RMI Ruby process..."
+        log.info "Launching RMI Ruby process..."
 
-                def rubyGemsDir
-                
-                rubyCmd = rubyFinder.cmd.command
-                def ver = rubyFinder.cmd.version
-                if (ver.startsWith('ruby 1.')) {
-                    // 1.8.11 version is compatible with Ubuntu 12.04 LTS Ruby 1.9.3p0
-                    rubyGemsDir = installer.install('1.8.11')
-                } else {
-                    rubyGemsDir = installer.install()
-                }
-
-                serverSocket = TCPUtils.firstAvailablePort
-                if (!serverSocket)
-                    throw new RuntimeException("Unable to allocate socket for IPC, all TCP ports are busy")
-                serverSocket.setSoTimeout(30000)
-                def port = serverSocket.getLocalPort()
-                
-                def cmdline = [rubyCmd, "${settings.toolsHome}/ruby-ipc/ipc.rb", port]
-
-                log.info cmdline.join(' ')
-
-                def process = cmdline.execute()
-
-                def socket = serverSocket.accept()
-
-                def executor = executorFactory.create(socket.inputStream, socket.outputStream) 
-                executor.start()
-                
-                def rpc = dispatcherFactory.create(executor)
-
-                streamLogger = streamLoggerFactory.create(process.in, process.err)
-                streamLogger.start()
-
-                rpc.Ipc.add_lib_path(rubyGemsDir)
-                rpc.Ipc.set_gem_home("${settings.grainHome}/packages/ruby")
-
-                this.rpc = rpc
-                latch.countDown()
-
-                def watcher = Thread.start {
-                    process.waitFor()
-                    streamLogger.interrupt()
-                }
-                streamLogger.join()
-                process.destroy()
-                watcher.join()
-                log.info 'RMI Ruby process finished...'
-            } catch (t) {
-                log.error("Error running RMI Ruby", t)
-            } finally {
-                if (serverSocket != null)
-                    serverSocket.close()
-                latch.countDown()
+        serverSocket = TCPUtils.firstAvailablePort
+        try {
+            if (!serverSocket)
+                throw new RuntimeException("Unable to allocate socket for IPC, all TCP ports are busy")
+            serverSocket.setSoTimeout(30000)
+            def port = serverSocket.getLocalPort()
+    
+            def rubyGemsDir
+            
+            rubyCmd = rubyFinder.cmd.command
+            def ver = rubyFinder.cmd.version
+            if (ver.startsWith('ruby 1.')) {
+                // 1.8.11 version is compatible with Ubuntu 12.04 LTS Ruby 1.9.3p0
+                rubyGemsDir = installer.install('1.8.11')
+            } else {
+                rubyGemsDir = installer.install()
             }
+    
+            def cmdline = [rubyCmd, "${settings.toolsHome}/ruby-ipc/ipc.rb", port]
+    
+            log.info cmdline.join(' ')
+    
+            process = cmdline.execute()
+    
+            def socket = serverSocket.accept()
+    
+            def executor = executorFactory.create(socket.inputStream, socket.outputStream) 
+            executor.start()
+            
+            def rpc = dispatcherFactory.create(executor)
+    
+            streamLogger = streamLoggerFactory.create(process.in, process.err)
+            streamLogger.start()
+
+            Thread.startDaemon {
+                process.waitFor()
+                streamLogger.interrupt()
+            }
+
+            rpc.Ipc.add_lib_path(rubyGemsDir)
+            rpc.Ipc.set_gem_home("${settings.grainHome}/packages/ruby")
+    
+            this.rpc = rpc    
+        } catch (e) {
+            serverSocket.close()
+            throw e
         }
     }
 
@@ -142,13 +130,13 @@ public class RMIRuby implements Ruby {
      */
     @Override
     public void stop() {
-        if (latch) {
-            log.info 'Stopping RMI Ruby process...'
-            latch.await()
-            streamLogger?.interrupt()
-            thread.join()
-            latch = null
-        }
+        log.info 'Stopping RMI Ruby process...'
+        streamLogger.interrupt()
+        streamLogger.join()
+        process.destroy()
+        serverSocket.close()
+        streamLogger.join()
+        log.info 'RMI Ruby process finished...'
     }
 
     /**
@@ -156,10 +144,6 @@ public class RMIRuby implements Ruby {
      */
     @Override
     public RPCDispatcher getRpc() {
-        if (!latch) {
-            start()
-        }
-        latch.await()
         rpc
     }
 
@@ -168,12 +152,9 @@ public class RMIRuby implements Ruby {
      */
     @Override
     public void configChanged() {
-        if (latch) {
-            latch.await()
-            if (rubyCmd != rubyFinder.cmd) {
-                stop()
-                start()
-            }
+        if (rubyCmd != rubyFinder.cmd) {
+            ServiceManager.stopService(this)
+            ServiceManager.startService(this)
         }
     }
 }

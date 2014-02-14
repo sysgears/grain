@@ -28,7 +28,6 @@ import org.jruby.RubyInstanceConfig
 import org.jruby.exceptions.RaiseException
 
 import javax.inject.Inject
-import java.util.concurrent.CountDownLatch
 
 /**
  * JRuby launcher.
@@ -57,6 +56,9 @@ public class JRuby implements com.sysgears.grain.rpc.ruby.Ruby {
     
     /** Whether stop is in process */
     private volatile stopInProcess = false
+    
+    /** IPC socket */ 
+    private ServerSocket serverSocket 
 
     /**
      * Starts JRuby process 
@@ -64,9 +66,8 @@ public class JRuby implements com.sysgears.grain.rpc.ruby.Ruby {
     public void start() {
         log.info "Launching JRuby process..."
 
-        ServerSocket serverSocket = null
+        serverSocket = TCPUtils.firstAvailablePort
         try {
-            serverSocket = TCPUtils.firstAvailablePort
             if (!serverSocket)
                 throw new RuntimeException("Unable to allocate socket for IPC, all TCP ports are busy")
             serverSocket.setSoTimeout(30000)
@@ -108,9 +109,6 @@ public class JRuby implements com.sysgears.grain.rpc.ruby.Ruby {
                         }
                     } catch (t) {
                         log.error("Error while running JRuby", t)
-                    } finally {
-                        if (serverSocket != null && !serverSocket.isClosed())
-                            serverSocket.close()
                     }
                     log.info 'JRuby process finished...'
                 } catch (t) {
@@ -128,12 +126,11 @@ public class JRuby implements com.sysgears.grain.rpc.ruby.Ruby {
             rpc.Ipc.set_gem_home(new File("${settings.grainHome}/packages/ruby").canonicalPath)
 
             this.rpc = rpc
-        } catch (t) {
-            if (serverSocket != null && !serverSocket.isClosed())
-                serverSocket.close()
-            throw t
+        } catch (e) {
+            serverSocket.close()
+            throw e
         }
-    }
+    }              
 
     /**
      * Shuts down JRuby process  
@@ -144,8 +141,9 @@ public class JRuby implements com.sysgears.grain.rpc.ruby.Ruby {
     public void stop() {
         log.info 'Stopping JRuby process...'
         stopInProcess = true
-        ruby?.threadService?.mainThread?.internalRaise(ruby?.interrupt)
+        ruby.threadService.mainThread.internalRaise(ruby.interrupt)
         thread.join()
+        serverSocket.close()
         stopInProcess = false
     }
 
