@@ -90,7 +90,7 @@ class GrainServlet extends HttpServlet {
             } else {
                 try {
                     def mimeType = servletContext.getMimeType(uri) ?: (uri.endsWith('/') ? 'text/html' : 'text/plain')
-                    response.setContentType("$mimeType; charset=utf-8")
+                    response.setContentType("$mimeType")
                     if (compressor.gzipEnabled) {
                         response.addHeader("Content-Encoding", "gzip")
                     }
