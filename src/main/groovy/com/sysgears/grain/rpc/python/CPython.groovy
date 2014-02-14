@@ -23,10 +23,10 @@ import com.sysgears.grain.rpc.RPCDispatcher
 import com.sysgears.grain.rpc.RPCDispatcherFactory
 import com.sysgears.grain.rpc.RPCExecutorFactory
 import com.sysgears.grain.rpc.TCPUtils
+import com.sysgears.grain.service.ServiceManager
 import groovy.util.logging.Slf4j
 
 import javax.inject.Inject
-import java.util.concurrent.CountDownLatch
 
 /**
  * CPython process launcher.
@@ -56,73 +56,62 @@ public class CPython implements Python {
     /** Python RPC implementation */
     private RPCDispatcher rpc
 
-    /** CPython thread */
-    private Thread thread
-
     /** Process streams logger */
     private StreamLogger streamLogger
 
-    /** Mutex for pygments starting and using */
-    private CountDownLatch latch
-
     /** Memorize Python command, to restart service when python command changes */
     private String pythonCmd
+
+    /** IPC socket */
+    private ServerSocket serverSocket
+
+    /** Python process */
+    private Process process
 
     /**
      * Starts CPython process.
      */
     public void start() {
-        latch = new CountDownLatch(1)
-        thread = Thread.start {
-            def serverSocket = null
-            try {
-                log.info 'Launching Python process...'
-                
-                def setupToolsPath = installer.install()
+        log.info 'Launching Python process...'
 
-                pythonCmd = pythonFinder.cmd.command
+        serverSocket = TCPUtils.firstAvailablePort
+        if (!serverSocket)
+            throw new RuntimeException("Unable to allocate socket for IPC, all TCP ports are busy")
+        
+        try {
+            serverSocket.setSoTimeout(30000)
+            def port = serverSocket.getLocalPort()
 
-                serverSocket = TCPUtils.firstAvailablePort
-                if (!serverSocket)
-                    throw new RuntimeException("Unable to allocate socket for IPC, all TCP ports are busy")
-                serverSocket.setSoTimeout(30000)
-                def port = serverSocket.getLocalPort()
+            def setupToolsPath = installer.install()
 
-                def cmdline = [pythonCmd, "${settings.toolsHome}/python-ipc/ipc.py", port]
+            pythonCmd = pythonFinder.cmd.command
 
-                log.info cmdline.join(' ')
+            def cmdline = [pythonCmd, "${settings.toolsHome}/python-ipc/ipc.py", port]
 
-                def process = cmdline.execute(["PYTHONUSERBASE=${settings.grainHome}/packages/python/"], new File("."))
+            log.info cmdline.join(' ')
 
-                def socket = serverSocket.accept()
+            process = cmdline.execute(["PYTHONUSERBASE=${settings.grainHome}/packages/python/"], new File("."))
 
-                def executor = executorFactory.create(socket.inputStream, socket.outputStream)
-                executor.start()
+            def socket = serverSocket.accept()
 
-                def rpc = dispatcherFactory.create(executor)
-                streamLogger = streamLoggerFactory.create(process.in, process.err)
-                streamLogger.start()
-                
-                rpc.ipc.add_lib_path(setupToolsPath)                
-                
-                this.rpc = rpc
-                latch.countDown()
-                
-                def watcher = Thread.start {
-                    process.waitFor()
-                    streamLogger.interrupt()
-                }
-                streamLogger.join()
-                process.destroy()
-                watcher.join()
-                log.info 'Python process finished...'
-            } catch (t) {
-                log.error("Error running Python", t)
-            } finally {
-                if (serverSocket != null)
-                    serverSocket.close()
-                latch.countDown()
+            def executor = executorFactory.create(socket.inputStream, socket.outputStream)
+            executor.start()
+
+            def rpc = dispatcherFactory.create(executor)
+            streamLogger = streamLoggerFactory.create(process.in, process.err)
+            streamLogger.start()
+            
+            rpc.ipc.add_lib_path(setupToolsPath)
+
+            Thread.startDaemon {
+                process.waitFor()
+                streamLogger.interrupt()
             }
+
+            this.rpc = rpc            
+        } catch (e) {
+            serverSocket.close()
+            throw e
         }
     }
 
@@ -133,13 +122,12 @@ public class CPython implements Python {
      */
     @Override
     public void stop() {
-        if (latch) {
-            log.info 'Stopping Python process...'
-            latch.await()
-            streamLogger?.interrupt()
-            thread.join()
-            latch = null
-        }
+        log.info 'Stopping Python process...'
+        streamLogger.interrupt()
+        streamLogger.join()
+        process.destroy()
+        serverSocket.close()
+        log.info 'Python process finished...'
     }
 
     /**
@@ -147,10 +135,6 @@ public class CPython implements Python {
      */
     @Override
     public RPCDispatcher getRpc() {
-        if (!latch) {
-            start()
-        }
-        latch.await()
         rpc
     }
 
@@ -159,12 +143,9 @@ public class CPython implements Python {
      */
     @Override
     public void configChanged() {
-        if (latch) {
-            latch.await()
-            if (pythonCmd != pythonFinder.cmd) {
-                stop()
-                start()
-            }
+        if (pythonCmd != pythonFinder.cmd) {
+            ServiceManager.stopService(this)
+            ServiceManager.startService(this)
         }
     }
 }
