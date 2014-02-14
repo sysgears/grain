@@ -106,8 +106,11 @@ public class ServiceManager implements Service {
                     log.debug "Service ${target.class} starting..."
                     def alarm = new AlarmThread("Still waiting for service ${target.class} to start", 30000L)
                     alarm.start()
-                    invokeOriginal('start')
-                    alarm.interrupt()
+                    try {
+                        invokeOriginal('start')
+                    } finally {
+                        alarm.interrupt()
+                    }
                     state.running = true
 
                     task {
@@ -161,8 +164,11 @@ public class ServiceManager implements Service {
                         log.debug "Service ${target.class} stopping..."
                         def alarm = new AlarmThread("Still waiting for service ${target.class} to stop", 10000L)
                         alarm.start()
-                        invokeOriginal('stop')
-                        alarm.interrupt()
+                        try {
+                            invokeOriginal('stop')
+                        } finally {
+                            alarm.interrupt()
+                        }
                         state.running = false
                         state.chained = chained
                         state.shutdown = shutdown
