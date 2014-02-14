@@ -67,9 +67,10 @@ public class JRuby implements com.sysgears.grain.rpc.ruby.Ruby {
         log.info "Launching JRuby process..."
 
         serverSocket = TCPUtils.firstAvailablePort
+        if (!serverSocket)
+            throw new RuntimeException("Unable to allocate socket for IPC, all TCP ports are busy")
+
         try {
-            if (!serverSocket)
-                throw new RuntimeException("Unable to allocate socket for IPC, all TCP ports are busy")
             serverSocket.setSoTimeout(30000)
             def port = serverSocket.getLocalPort()
 

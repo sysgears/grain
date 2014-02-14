@@ -75,9 +75,10 @@ public class RMIRuby implements Ruby {
         log.info "Launching RMI Ruby process..."
 
         serverSocket = TCPUtils.firstAvailablePort
+        if (!serverSocket)
+            throw new RuntimeException("Unable to allocate socket for IPC, all TCP ports are busy")
+
         try {
-            if (!serverSocket)
-                throw new RuntimeException("Unable to allocate socket for IPC, all TCP ports are busy")
             serverSocket.setSoTimeout(30000)
             def port = serverSocket.getLocalPort()
     
