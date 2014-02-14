@@ -44,11 +44,4 @@ class FakeHighlighter implements Highlighter {
     @Nullable String getCacheSubdir() {
         null // Return null to prevent any caching in CachedHighlighter
     }
-
-    /**
-     * @inheritDoc
-     */
-    @Override
-    public void configChanged() {
-    }
 }

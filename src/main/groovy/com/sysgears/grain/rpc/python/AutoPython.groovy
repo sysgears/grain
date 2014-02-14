@@ -26,7 +26,7 @@ import javax.inject.Inject
  * Service which launches available flavor of Python (CPython of Jython) in the system 
  */
 @javax.inject.Singleton
-public class AutoPython implements Ruby {
+public class AutoPython implements Python {
 
     /** Python command finder */
     @Inject private PythonFinder pythonFinder
@@ -63,9 +63,5 @@ public class AutoPython implements Ruby {
             start()
         }
         python.rpc
-    }
-
-    @Override
-    void configChanged() {
     }
 }

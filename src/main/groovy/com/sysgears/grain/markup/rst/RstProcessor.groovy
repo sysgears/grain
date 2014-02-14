@@ -68,10 +68,4 @@ public class RstProcessor implements Service {
     @Override
     void stop() {
     }
-
-    /**
-     * Does nothing.
-     */
-    void configChanged() {
-    }
 }

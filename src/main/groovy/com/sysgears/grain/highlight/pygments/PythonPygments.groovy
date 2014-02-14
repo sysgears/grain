@@ -72,8 +72,4 @@ public class PythonPygments implements Pygments {
     @Nullable String getCacheSubdir() {
         "pygments.${VERSION.replace('.', '_')}"
     }
-
-    @Override
-    void configChanged() {
-    }
 }

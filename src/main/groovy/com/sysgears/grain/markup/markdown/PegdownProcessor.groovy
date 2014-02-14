@@ -28,11 +28,4 @@ class PegdownProcessor implements MarkdownProcessor {
     String getCacheSubdir() {
         'pegdown.1_4_2'
     }
-    
-    /**
-     * @inheritDoc
-     */
-    @Override
-    public void configChanged() {
-    }
 }

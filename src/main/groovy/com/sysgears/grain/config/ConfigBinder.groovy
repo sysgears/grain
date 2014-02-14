@@ -26,7 +26,7 @@ import javax.inject.Inject
  */
 @javax.inject.Singleton
 @Slf4j
-public class ConfigBinder {
+public class ConfigBinder implements ConfigChangeListener {
     
     /** Site config */
     @Inject private Config config
@@ -34,10 +34,15 @@ public class ConfigBinder {
     /** Proxy manager */
     @Inject private ProxyManager proxyManager
     
-    public <T extends ConfigChangeListener> T bind(
+    /** All config proxies */
+    private Set<Object> proxies = [] as Set
+    
+    public <T> T bind(
             final Class<T> ifc, final String propertyName,
             final Map<String, Object> implMap) {
-        def proxy = proxyManager.createProxy(ifc, [configChanged: { args ->
+        def proxy = proxyManager.createProxy(ifc)
+        
+        proxy.metaClass.proxyConfigChanged = { args ->
             try {
                 def managerState = proxyManager.state
                 def propertyValue = propertyName.split(/\./).inject(config)
@@ -46,21 +51,31 @@ public class ConfigBinder {
                 if (impl == null) {
                     impl = implMap['default'] as T
                 }
-                def proxyTarget = managerState.getTarget(delegate.proxy)
+                def proxyTarget = managerState.getTarget(proxy)
                 def isService = Service.class.isAssignableFrom(ifc) && proxyTarget != impl
                 if (isService) {
                     log.info "Switching from ${proxyTarget?.class?.name ?: 'none'} to ${impl.class.name} service for ${propertyName}"
                     proxyTarget?.stop()
                 }
-                proxyManager.setTarget(delegate.proxy, impl)
+                proxyManager.setTarget(proxy, impl)
                 log.debug "Using proxy ${impl?.class?.name} for ${propertyName}"
             } catch (e) {
                 throw new RuntimeException("Error handling config change in binder", e)
             }
-        }])
+        }
+        
+        proxies += proxy
         
         proxyManager.setTarget(proxy, implMap['default'])
         
         proxy
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Override
+    void configChanged() {
+        proxies*.proxyConfigChanged()
     }
 }

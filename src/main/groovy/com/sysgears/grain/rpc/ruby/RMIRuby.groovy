@@ -142,11 +142,4 @@ public class RMIRuby implements Ruby {
     public RPCDispatcher getRpc() {
         rpc
     }
-
-    /**
-     * @inheritDoc
-     */
-    @Override
-    public void configChanged() {
-    }
 }

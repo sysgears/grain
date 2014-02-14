@@ -43,13 +43,6 @@ class FakePygments implements Pygments {
      * @inheritDoc
      */
     @Override
-    void configChanged() {
-    }
-
-    /**
-     * @inheritDoc
-     */
-    @Override
     void start() {
     }
 

@@ -152,9 +152,4 @@ public class JRuby implements com.sysgears.grain.rpc.ruby.Ruby {
     public RPCDispatcher getRpc() {
         rpc
     }
-
-    @Override
-    void configChanged() {
-    }
-
 }    

@@ -74,12 +74,4 @@ public class AsciiDoctorProcessor implements Service, MarkupProcessor {
     @Nullable String getCacheSubdir() {
         "asciidoctor.${VERSION.replace('.', '_')}"
     }
-
-    /**
-     * @inheritDoc
-     */
-    @Override
-    void configChanged() {
-    }
-
 }

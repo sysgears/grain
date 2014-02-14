@@ -133,11 +133,4 @@ public class CPython implements Python {
     public RPCDispatcher getRpc() {
         rpc
     }
-
-    /**
-     * @inheritDoc
-     */
-    @Override
-    public void configChanged() {
-    }
 }

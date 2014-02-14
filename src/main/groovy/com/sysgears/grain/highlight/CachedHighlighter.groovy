@@ -69,11 +69,4 @@ class CachedHighlighter implements Highlighter {
     @Nullable String getCacheSubdir() {
         null
     }
-
-    /**
-     * @inheritDoc
-     */
-    @Override
-    public void configChanged() {
-    }
 }

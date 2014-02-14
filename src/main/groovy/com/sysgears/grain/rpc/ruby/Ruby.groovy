@@ -23,7 +23,7 @@ import com.sysgears.grain.rpc.RPCDispatcher
 /**
  * Interface for Ruby integration.
  */
-public interface Ruby extends ConfigChangeListener, Service {
+public interface Ruby extends Service {
 
     /**
      * Return RPC implementation.

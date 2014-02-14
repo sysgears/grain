@@ -25,7 +25,7 @@ import javax.annotation.Nullable
  * <p>
  * Classes implementing this interface should be thread-safe.     
  */
-public interface Highlighter extends ConfigChangeListener {
+public interface Highlighter {
 
     /**
      * Generates highlighted HTML using source code in given language. 

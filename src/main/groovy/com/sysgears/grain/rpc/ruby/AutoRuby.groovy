@@ -63,8 +63,4 @@ public class AutoRuby implements Ruby {
         }
         ruby.rpc
     }
-
-    @Override
-    void configChanged() {
-    }
 }

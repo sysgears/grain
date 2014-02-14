@@ -29,10 +29,4 @@ class TxtMarkProcessor implements MarkdownProcessor {
         'txtmark.0_9'
     }
 
-    /**
-     * @inheritDoc
-     */
-    @Override
-    public void configChanged() {
-    }
 }

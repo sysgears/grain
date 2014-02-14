@@ -23,7 +23,7 @@ import com.sysgears.grain.service.Service
 /**
  * Interface for Python integration.
  */
-public interface Python extends ConfigChangeListener, Service {
+public interface Python extends Service {
 
     /**
      * Return RPC implementation.

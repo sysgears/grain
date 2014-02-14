@@ -14,29 +14,20 @@
  * limitations under the License.
  */
 
-
-
 package com.sysgears.grain.preview
 
 import com.google.inject.AbstractModule
 import com.google.inject.Provides
 import com.google.inject.name.Names
-import com.sysgears.grain.annotations.Uncached
-import com.sysgears.grain.css.compass.Compass
+import com.sysgears.grain.config.ConfigBinder
 import com.sysgears.grain.css.compass.RubyCompass
 import com.sysgears.grain.config.ConfigUpdater
-import com.sysgears.grain.highlight.Highlighter
-import com.sysgears.grain.highlight.pygments.Pygments
-import com.sysgears.grain.rpc.python.Python
 import com.sysgears.grain.rpc.python.PythonFinder
-import com.sysgears.grain.highlight.pygments.PythonPygments
-import com.sysgears.grain.markup.markdown.MarkdownProcessor
 import com.sysgears.grain.registry.CachedHeaderParser
 import com.sysgears.grain.registry.Registry
 import com.sysgears.grain.registry.URLRegistry
 import com.sysgears.grain.render.CachedTemplateEngine
 import com.sysgears.grain.render.GrainTemplateEngine
-import com.sysgears.grain.rpc.ruby.Ruby
 import com.sysgears.grain.rpc.ruby.RubyFinder
 
 /**
@@ -52,14 +43,11 @@ class PreviewModule extends AbstractModule {
 
     @Provides @javax.inject.Singleton
     public ConfigChangeBroadcaster provideConfigChangeBroadcaster(
-            ConfigUpdater configUpdater, Highlighter highlighter,  @Uncached Highlighter uncachedHighlighter,
-            Pygments pygments, MarkdownProcessor markdownProcessor,
-            PythonFinder pythonFinder, Python python, RubyFinder rubyFinder, Ruby ruby,
-            PythonPygments pythonPygments, 
-            RubyCompass rubyCompass, Compass compass) {
-        return new ConfigChangeBroadcaster(configUpdater,
-                markdownProcessor, pythonFinder, python, rubyFinder, ruby, pythonPygments,
-                rubyCompass, compass, highlighter, uncachedHighlighter, pygments)
+            ConfigUpdater configUpdater, ConfigBinder binder,
+            PythonFinder pythonFinder, RubyFinder rubyFinder, 
+            RubyCompass rubyCompass) {
+        return new ConfigChangeBroadcaster(configUpdater, binder, pythonFinder,
+                rubyFinder, rubyCompass)
     }
 
     @Provides @javax.inject.Singleton

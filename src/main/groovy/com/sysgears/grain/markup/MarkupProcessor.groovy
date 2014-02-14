@@ -9,7 +9,7 @@ import javax.annotation.Nullable
  * <p>
  * Classes implementing this interface should be thread-safe.     
  */
-public interface MarkupProcessor extends ConfigChangeListener {
+public interface MarkupProcessor {
 
     /**
      * Renders markup content.

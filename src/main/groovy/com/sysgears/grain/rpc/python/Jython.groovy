@@ -137,9 +137,4 @@ ipc.main($port)""")
     public RPCDispatcher getRpc() {
         rpc
     }
-
-    @Override
-    void configChanged() {
-    }
-    
 }
