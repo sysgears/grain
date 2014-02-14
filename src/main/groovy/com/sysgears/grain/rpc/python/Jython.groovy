@@ -27,7 +27,6 @@ import org.python.core.PyException
 import org.python.util.PythonInterpreter
 
 import javax.inject.Inject
-import java.util.concurrent.CountDownLatch
 
 /**
  * Jython launcher.
@@ -54,8 +53,8 @@ public class Jython implements Python {
     /** Jython RPC implementation */
     private RPCDispatcher rpc
 
-    /** Mutex for Jython starting */
-    private CountDownLatch latch
+    /** IPC socket */
+    private ServerSocket serverSocket
 
     /** Jython thread */
     private Thread thread
@@ -64,46 +63,33 @@ public class Jython implements Python {
      * Starts Jython process 
      */
     public void start() {
-        latch = new CountDownLatch(1)
-        thread = Thread.start {
-            ServerSocket serverSocket = null
-            try {
-                log.info "Launching Jython process..."
-                
-                def setupToolsPath = installer.install()
+        log.info "Launching Jython process..."
 
-                serverSocket = TCPUtils.firstAvailablePort
-                if (!serverSocket)
-                    throw new RuntimeException("Unable to allocate socket for IPC, all TCP ports are busy")
-                serverSocket.setSoTimeout(30000)
-                def port = serverSocket.getLocalPort()
-                def ipcPath = new File("${settings.toolsHome}/python-ipc/ipc.py").canonicalPath 
+        serverSocket = TCPUtils.firstAvailablePort
+        if (!serverSocket)
+            throw new RuntimeException("Unable to allocate socket for IPC, all TCP ports are busy")
 
-                def args = [ipcPath, port] as String[]
+        try {
+            serverSocket.setSoTimeout(30000)
+            def port = serverSocket.getLocalPort()
 
-                log.info args.join(' ')
+            def setupToolsPath = installer.install()
 
-                System.setProperty('python.executable', ipcPath)
+            def ipcPath = new File("${settings.toolsHome}/python-ipc/ipc.py").canonicalPath 
 
-                python = new PythonInterpreter()
-                python.setIn(new ByteArrayInputStream())
-                python.setOut(new LoggingOutputStream())
-                python.setErr(new LoggingOutputStream())
-                
-                Thread.startDaemon {
-                    try {
-                        def socket = serverSocket.accept()
+            def args = [ipcPath, port] as String[]
 
-                        def executor = executorFactory.create(socket.inputStream, socket.outputStream)
-                        executor.start()
+            log.info args.join(' ')
 
-                        rpc = dispatcherFactory.create(executor)
-                    } finally {
-                        latch.countDown()
-                    }
-                }
+            System.setProperty('python.executable', ipcPath)
 
+            thread = Thread.startDaemon {
                 try {
+                    python = new PythonInterpreter()
+                    python.setIn(new ByteArrayInputStream())
+                    python.setOut(new LoggingOutputStream())
+                    python.setErr(new LoggingOutputStream())
+
                     python.exec("""
 import os, sys
 sys.path.append('${new File(settings.toolsHome, 'python-ipc').canonicalPath}') 
@@ -112,20 +98,24 @@ ipc.set_user_base('${new File(settings.grainHome, 'packages/python').canonicalPa
 ipc.add_lib_path("${setupToolsPath}")
 ipc.main($port)""")
                 } catch (PyException pe) {
-                    pe.printStackTrace()
-                    log.error("Error while running Jython", pe)
+                    if (!pe.value.toString().contains('ClosedByInterruptException')) {
+                        log.error("Error while running Jython:\n${pe.traceback.dumpStack()}")
+                    }
                 } catch (t) {
                     log.error("Error while running Jython", t)
-                } finally {
-                    if (serverSocket != null)
-                        serverSocket.close()
-                }
+                } 
                 log.info 'Jython process finished...'
-            } catch (t) {
-                log.error("Error launching Jython", t)
-            } finally {
-                latch.countDown()
             }
+
+            def socket = serverSocket.accept()
+
+            def executor = executorFactory.create(socket.inputStream, socket.outputStream)
+            executor.start()
+
+            rpc = dispatcherFactory.create(executor)
+        } catch (e) {
+            serverSocket.close()
+            throw e
         }
     }
 
@@ -136,21 +126,15 @@ ipc.main($port)""")
      */
     @Override
     public void stop() {
-        if (latch) {
-            log.info 'Stopping Jython process...'
-            latch.await()
-            python?.cleanup()
-            python = null
-            latch = null
-        }
+        log.info 'Stopping Jython process...'
+        thread.interrupt()
+        thread.join()
+        serverSocket.close()
+        python.cleanup()
     }
 
     @Override
     public RPCDispatcher getRpc() {
-        if (!latch) {
-            start()
-        }
-        latch.await()
         rpc
     }
 
