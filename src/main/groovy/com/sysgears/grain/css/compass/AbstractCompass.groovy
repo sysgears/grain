@@ -19,6 +19,7 @@ package com.sysgears.grain.css.compass
 import com.sysgears.grain.config.Config
 import com.sysgears.grain.init.GrainSettings
 import com.sysgears.grain.service.ServiceManager
+import static groovyx.gpars.dataflow.Dataflow.task
 import groovy.util.logging.Slf4j
 
 import javax.inject.Inject
@@ -90,6 +91,8 @@ abstract class AbstractCompass implements Compass {
      */
     @Override
     public void configChanged() {
-        ServiceManager.startService(this)
+        task {
+            ServiceManager.startService(this)
+        }
     }
 }
