@@ -53,9 +53,6 @@ public class RMIRuby implements Ruby {
     /** RubyGems installer */
     @Inject private RubyGemsInstaller installer
 
-    /** Memorize Ruby command, to restart service when ruby command changes */
-    private String rubyCmd
-
     /** Ruby RPC implementation */
     private RPCDispatcher rpc
 
@@ -84,7 +81,7 @@ public class RMIRuby implements Ruby {
     
             def rubyGemsDir
             
-            rubyCmd = rubyFinder.cmd.command
+            def rubyCmd = rubyFinder.cmd.command
             def ver = rubyFinder.cmd.version
             if (ver.startsWith('ruby 1.')) {
                 // 1.8.11 version is compatible with Ubuntu 12.04 LTS Ruby 1.9.3p0
@@ -148,13 +145,9 @@ public class RMIRuby implements Ruby {
     }
 
     /**
-     * Restart Ruby when ruby command changes
+     * @inheritDoc
      */
     @Override
     public void configChanged() {
-        if (rubyCmd != rubyFinder.cmd) {
-            ServiceManager.stopService(this)
-            ServiceManager.startService(this)
-        }
     }
 }

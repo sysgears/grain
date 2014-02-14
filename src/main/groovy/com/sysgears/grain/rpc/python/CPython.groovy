@@ -59,9 +59,6 @@ public class CPython implements Python {
     /** Process streams logger */
     private StreamLogger streamLogger
 
-    /** Memorize Python command, to restart service when python command changes */
-    private String pythonCmd
-
     /** IPC socket */
     private ServerSocket serverSocket
 
@@ -84,7 +81,7 @@ public class CPython implements Python {
 
             def setupToolsPath = installer.install()
 
-            pythonCmd = pythonFinder.cmd.command
+            def pythonCmd = pythonFinder.cmd.command
 
             def cmdline = [pythonCmd, "${settings.toolsHome}/python-ipc/ipc.py", port]
 
@@ -139,13 +136,9 @@ public class CPython implements Python {
     }
 
     /**
-     * Restart Python when python command changes
+     * @inheritDoc
      */
     @Override
     public void configChanged() {
-        if (pythonCmd != pythonFinder.cmd) {
-            ServiceManager.stopService(this)
-            ServiceManager.startService(this)
-        }
     }
 }

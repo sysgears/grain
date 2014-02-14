@@ -1,6 +1,8 @@
 package com.sysgears.grain.rpc
 
 import com.sysgears.grain.preview.ConfigChangeListener
+import com.sysgears.grain.service.Service
+import com.sysgears.grain.service.ServiceManager
 
 import javax.annotation.Nonnull
 import javax.annotation.Nullable
@@ -8,21 +10,34 @@ import javax.annotation.Nullable
 /**
  * Search for a command among a user-configurable list of candidates.
  */
-abstract class ShellCommandFinder implements ConfigChangeListener {
+abstract class ShellCommandFinder implements ConfigChangeListener, Service {
 
     /** Shell command candidate currently used */
     @Nullable
     private ShellCommand currentCandidate
     
-    /** Whether we attempted to search for candidate after instantiation */
-    private boolean initialized = false
+    /**
+     * @inheritDoc
+     */
+    public void start() {        
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public void stop() {
+    }
 
     /**
      * @inheritDoc
      */
     @Override
     void configChanged() {
-        currentCandidate = findCandidate()
+        def candidate = findCandidate()
+        if (currentCandidate?.command != candidate?.command) {
+            ServiceManager.stopService(this)
+            currentCandidate = candidate
+        }
     }
 
     /**
@@ -30,11 +45,6 @@ abstract class ShellCommandFinder implements ConfigChangeListener {
      */
     @Nullable
     public ShellCommand getCmd() {
-        if (!initialized) {
-            currentCandidate = findCandidate()
-            initialized = true
-        }
-        
         currentCandidate
     }
 
