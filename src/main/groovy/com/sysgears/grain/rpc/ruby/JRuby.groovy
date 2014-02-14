@@ -89,6 +89,8 @@ public class JRuby implements com.sysgears.grain.rpc.ruby.Ruby {
 
             thread = Thread.startDaemon {
                 try {
+                    // JRuby binds ruby instance to the thread it was created in
+                    // So we need to create it in the separate thread to be able to interrupt JRuby 
                     ruby = Ruby.newInstance(config)
 
                     def inp = config.getScriptSource();
