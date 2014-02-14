@@ -135,7 +135,6 @@ public class RMIRuby implements Ruby {
         streamLogger.join()
         process.destroy()
         serverSocket.close()
-        streamLogger.join()
         log.info 'RMI Ruby process finished...'
     }
 
