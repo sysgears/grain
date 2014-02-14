@@ -23,7 +23,6 @@ import com.sysgears.grain.rpc.RPCDispatcher
 import com.sysgears.grain.rpc.RPCDispatcherFactory
 import com.sysgears.grain.rpc.RPCExecutorFactory
 import com.sysgears.grain.rpc.TCPUtils
-import com.sysgears.grain.service.ServiceManager
 import groovy.util.logging.Slf4j
 
 import javax.inject.Inject
