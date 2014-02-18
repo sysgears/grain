@@ -19,6 +19,7 @@ package com.sysgears.grain.registry
 import org.yaml.snakeyaml.Yaml
 
 import javax.inject.Inject
+import javax.inject.Provider
 
 /**
  * Resource YAML header parser. 
@@ -26,9 +27,10 @@ import javax.inject.Inject
 @javax.inject.Singleton
 class YAMLHeaderParser implements HeaderParser {
 
-    /** YAML parser */
-    @Inject private Yaml yaml
-    
+    /** YAML parser factory */
+    @Inject
+    private Provider<Yaml> yamlProvider
+
     /**
      * Parses resource YAML header
      *
@@ -54,7 +56,7 @@ class YAMLHeaderParser implements HeaderParser {
      */
     Map<String, Object> parse(File resourceFile, String header) throws HeaderParseException {
         try {
-            yaml.load(header) as Map ?: [:]
+            yamlProvider.get().load(header) as Map ?: [:]
         } catch (t) {
             throw new HeaderParseException("Error parsing header of resource at ${resourceFile}", t)
         }
