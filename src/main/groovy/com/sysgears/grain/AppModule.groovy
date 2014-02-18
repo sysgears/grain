@@ -43,7 +43,7 @@ class AppModule extends AbstractModule {
         new Random(new Date().time)
     }
 
-    @Provides @javax.inject.Singleton
+    @Provides
     public Yaml provideYaml() {
         new Yaml()
     }  
