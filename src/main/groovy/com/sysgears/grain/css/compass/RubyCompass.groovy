@@ -58,6 +58,11 @@ public class RubyCompass extends AbstractCompass {
         rpc.Ipc.require('compass_bridge')
         
         rpc.CompassBridge.start(mode, "${config.cache_dir}")
+
+        if (mode == 'compile') {
+            // Wait for the compass to compile stylesheets before returning control to a caller
+            rpc.CompassBridge.await()
+        }
     }
 
     /**
