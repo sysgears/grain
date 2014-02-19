@@ -56,13 +56,25 @@ class Ipc
           arg = read_string
           args <<= arg
         end
-  
+
         clazz = Kernel.const_get(class_name)
         result = clazz.send(func_name, *args).to_s
 
         write_string(result)
-      rescue SystemExit, Interrupt
-        # We raise critical errors so that JRuby wrapper know it needs to terminate Grain
+      rescue SystemExit
+        if RUBY_PLATFORM == "java"
+          runnable = Class.new do
+            def run
+              java.lang.System.exit(0)
+            end
+          end
+          thread = java.lang.Thread.new(runnable.new)
+          thread.setDaemon(true)
+          thread.start
+        else
+          raise
+        end
+      rescue Interrupt
         raise
       rescue IOError
         raise
