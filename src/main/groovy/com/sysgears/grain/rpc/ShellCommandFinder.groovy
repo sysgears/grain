@@ -15,11 +15,11 @@ abstract class ShellCommandFinder implements ConfigChangeListener, Service {
     /** Shell command candidate currently used */
     @Nullable
     private ShellCommand currentCandidate
-    
+
     /**
      * @inheritDoc
      */
-    public void start() {        
+    public void start() {
     }
 
     /**
@@ -34,7 +34,8 @@ abstract class ShellCommandFinder implements ConfigChangeListener, Service {
     @Override
     void configChanged() {
         def candidate = findCandidate()
-        if (currentCandidate?.command != candidate?.command) {
+        if (currentCandidate?.command != candidate?.command ||
+                currentCandidate?.pkgManager != candidate?.pkgManager) {
             ServiceManager.stopService(this)
             currentCandidate = candidate
         }
@@ -50,8 +51,8 @@ abstract class ShellCommandFinder implements ConfigChangeListener, Service {
 
     /**
      * Finds most appropriate command in the system.
-     *  
-     * @return command 
+     *
+     * @return command
      */
     private ShellCommand findCandidate() {
         def candidates = userConfiguredCandidates + defaultCandidates
@@ -62,7 +63,7 @@ abstract class ShellCommandFinder implements ConfigChangeListener, Service {
 
     /**
      * Detects whether we are running under Windows.
-     * 
+     *
      * @return whether we are running under Windows.
      */
     private static boolean isWindows() {
@@ -79,15 +80,15 @@ abstract class ShellCommandFinder implements ConfigChangeListener, Service {
 
     /**
      * Returns user configured candidates for shell command from SiteConfig.groovy 
-     * 
+     *
      * @return user configured candidates
      */
     @Nonnull
     abstract List<String> getUserConfiguredCandidates()
-    
+
     /**
      * Checks candidate and returns whether it is accepted or not.
-     * 
+     *
      * @return candidate command or null
      */
     @Nonnull

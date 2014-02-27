@@ -78,9 +78,10 @@ public class CPython implements Python {
             serverSocket.setSoTimeout(30000)
             def port = serverSocket.getLocalPort()
 
-            def setupToolsPath = installer.install()
-
             def pythonCmd = pythonFinder.cmd.command
+            def setupTools = pythonFinder.cmd.pkgManager
+
+            def setupToolsPath = setupTools ? installer.install(setupTools) : installer.install()
 
             def cmdline = [pythonCmd, "${settings.toolsHome}/python-ipc/ipc.py", port]
 

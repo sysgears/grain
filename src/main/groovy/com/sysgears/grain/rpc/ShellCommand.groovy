@@ -1,13 +1,16 @@
 package com.sysgears.grain.rpc
 
 /**
- * Created by victor on 2/6/14.
+ * Shell command to start IPC.
  */
 public class ShellCommand {
     
-    /** Shell command */
+    /** Shell command. */
     public String command
     
-    /** Command version */
+    /** Interpreter version. */
     public String version
+
+    /** Package manager version. */
+    public String pkgManager
 }

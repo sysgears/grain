@@ -21,15 +21,16 @@ public class SetupToolsInstaller {
 
     /**
      * Downloads and install Python setuptools into Grain local cache.
-     * 
+     *
      * @return installed setuptools egg path
      */
-    public String install() {
-        def setupToolsDir = new File("${settings.grainHome}/packages/python/setuptools")
-        if (!setupToolsDir.exists()) {
+    public String install(String version = VERSION) {
+        def setupToolsDir = "${settings.grainHome}/packages/python/setuptools"
+        def setupToolsEgg = new File("${settings.grainHome}/packages/python/setuptools/setuptools-${version}.egg")
+        if (!setupToolsEgg.exists()) {
             def tempDir = File.createTempDir()
             try {
-                def tarballName = "setuptools-${VERSION}.tar.gz"
+                def tarballName = "setuptools-${version}.tar.gz"
                 def baseUrl = 'https://pypi.python.org/packages/source/s/setuptools/'
                 def tarball = new File(tempDir, tarballName)
                 def ant = new AntBuilder()
@@ -39,15 +40,15 @@ public class SetupToolsInstaller {
                 def url = new URL(baseUrl + tarballName)
                 log.info "Downloading ${url}..."
                 tarball << url.openStream()
-    
+
                 def setupDir = new File(tempDir, 'setuptools')
                 setupDir.mkdir()
-                new File(setupDir, 'setuptools.pth') << "./setuptools-${VERSION}.egg\n"
-                def eggDir = new File(setupDir, "setuptools-${VERSION}.egg")
+                new File(setupDir, 'setuptools.pth') << "./setuptools-${version}.egg\n"
+                def eggDir = new File(setupDir, "setuptools-${version}.egg")
                 eggDir.mkdir()
-    
-                def sourceDir = new File(tempDir, "setuptools-${VERSION}")
-    
+
+                def sourceDir = new File(tempDir, "setuptools-${version}")
+
                 ant.sequential() {
                     untar(src: tarball, dest: tempDir, compression: 'gzip')
                     copy(todir:"${eggDir}/EGG-INFO") {
@@ -65,14 +66,22 @@ public class SetupToolsInstaller {
                             include(name: "pkg_resources.py")
                         }
                     }
-                    move(todir:"${settings.grainHome}/packages/python/setuptools") {
+                    move(todir: setupToolsDir) {
                         fileset(dir: setupDir)
                     }
                 }
             } finally {
                 FileUtils.deleteDirectory(tempDir)
             }
+        } else {
+            def confFile = new File(setupToolsDir, 'setuptools.pth')
+            def currentVersion = confFile.readLines().find { it =~ ~/setuptools-/ }?.find(/setuptools-(.*).egg/) {
+                match, v -> v }
+            if (currentVersion != version) {
+                confFile.newWriter()
+                confFile << "./setuptools-${version}.egg\n"
+            }
         }
-        new File("${setupToolsDir}/setuptools-${VERSION}.egg").canonicalPath
+        new File("${setupToolsDir}/setuptools-${version}.egg").canonicalPath
     }
 }

@@ -35,12 +35,14 @@ public class PythonFinder extends ShellCommandFinder {
      * @inheritDoc
      */
     @Override
-    public ShellCommand checkCandidate(String name) { 
+    public ShellCommand checkCandidate(String name) {
         try {
             def ver = new StringWriter()
             def proc = [name, '--version'].execute()
             proc.consumeProcessErrorStream(ver).join()
-            def command = new ShellCommand(command: name, version: ver.toString().readLines().first().trim())
+            def command = new ShellCommand(command: name,
+                    version: ver.toString().readLines().first().trim(),
+                    pkgManager: config.python?.setup_tools ?: '')
             command.version.startsWith('Python 2') ? command : null
         } catch (Throwable ignored) {
             null
