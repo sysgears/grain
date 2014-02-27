@@ -86,7 +86,7 @@ public class CPython implements Python {
 
             log.info cmdline.join(' ')
 
-            process = cmdline.execute(["PYTHONUSERBASE=${settings.grainHome}/packages/python/"], new File("."))
+            process = cmdline.execute(["PYTHONUSERBASE=${settings.grainHome}/packages/python"], new File("."))
 
             def socket = serverSocket.accept()
 
