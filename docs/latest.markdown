@@ -201,19 +201,42 @@ All files having `adoc` or `asciidoctor` extensions will be rendered using lates
   - `true` - cache highlighting results
   - `false` - do not cache highlighting results
 
-#####Python command selection
+#####Python interpreter
 
 Grain uses Python interpreter in your system to execute various Python packages. If Python interpreter is not found
 Grain falls back to Jython. You can specify an ordered list of Python command candidates in config.
 
 `python.cmd_candidates` - Python command candidates (default: ['python2', "python", "python2.7"])
 
-#####Ruby command selection
+It is possible to force Grain to use Jython by setting the `features.python` property to `jython`:
+
+`features.python` - Python interpreter (default to `auto`)
+ - `auto` - use Python if it is installed in the system, otherwise fall back to Jython
+ - `python` - use Python (requires Python installed)
+ - `jython` - use Jython
+
+Grain uses *setuptools* to manage Python packages. If required, you can change *setuptools* version
+via `python.setup_tools` option:
+
+`python.setup_tools` - Python Setup Tools version (default to `2.1`)
+
+#####Ruby interpreter
 
 Grain tries to find Ruby interpreter in your system to execute various Ruby gems. If Ruby interpreter is not found
 Grain falls back to JRuby. You can specify an ordered list of Ruby command candidates in config.
 
 `ruby.cmd_candidates` - Ruby command candidates (default: ["ruby", "ruby1.8.7", "ruby1.9.3", "user.home/.rvm/bin/ruby"])
+
+It is possible to force Grain to use JRuby by setting the `features.ruby` property to `jruby`:
+
+`features.ruby` - Ruby interpreter (default to `auto`)
+ - `auto` - use Ruby if it is installed in the system, otherwise fall back to JRuby
+ - `ruby` - use Ruby (requires Ruby installed)
+ - `jruby` - use JRuby
+
+You can change *RubyGems* package manager version via `ruby.ruby_gems` option:
+
+`ruby.ruby_gems` - Ruby Gems version (default value depends on Ruby version)
 
 ####SASS/Compass feature
 
