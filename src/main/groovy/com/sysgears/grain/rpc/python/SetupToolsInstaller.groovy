@@ -57,9 +57,7 @@ public class SetupToolsInstaller {
                         fileset(dir: "${sourceDir}/_markerlib")
                     }
                     copy(todir:"${eggDir}/setuptools") {
-                        fileset(dir: "${sourceDir}/setuptools") {
-                            include(name:"**/*.py")
-                        }
+                        fileset(dir: "${sourceDir}/setuptools")
                     }
                     copy(todir:"${eggDir}") {
                         fileset(dir: sourceDir) {
