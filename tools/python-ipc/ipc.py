@@ -127,6 +127,7 @@ def install_package(pkg_name):
         dist = pkg_resources.get_distribution(pkg_name)
     except:
         log.warn("Downloading package %s...", pkg_name)
+        mkdir_p(site.USER_SITE)
         easy_install.main(argv = ['--user', '-U', pkg_name])
         
         site.addsitedir(sysconfig.get_path('platlib', os.name + '_user'))
