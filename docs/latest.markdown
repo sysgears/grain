@@ -218,7 +218,7 @@ It is possible to force Grain to use Jython by setting the `features.python` pro
 Grain uses *setuptools* to manage Python packages. If required, you can change *setuptools* version
 via `python.setup_tools` option:
 
-`python.setup_tools` - Python Setup Tools version (default to `2.1`)
+`python.setup_tools` - Python *setuptools* version (default to `2.1`)
 
 #####Ruby interpreter
 
@@ -236,7 +236,7 @@ It is possible to force Grain to use JRuby by setting the `features.ruby` proper
 
 You can change *RubyGems* package manager version via `ruby.ruby_gems` option:
 
-`ruby.ruby_gems` - Ruby Gems version (default value depends on Ruby version)
+`ruby.ruby_gems` - *RubyGems* version (default value depends on Ruby version)
 
 ####SASS/Compass feature
 
