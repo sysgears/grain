@@ -92,14 +92,14 @@ public class Jython implements Python {
 
                     python.exec("""
 import os, sys
-sys.path.append('${new File(settings.toolsHome, 'python-ipc').canonicalPath}') 
+sys.path.append(r'${new File(settings.toolsHome, 'python-ipc').canonicalPath}')
 import ipc
-ipc.set_user_base('${new File(settings.grainHome, 'packages/python').canonicalPath}')
+ipc.set_user_base(r'${new File(settings.grainHome, 'packages/python').canonicalPath}')
 ipc.add_lib_path("${setupToolsPath}")
 ipc.main($port)""")
                 } catch (PyException pe) {
                     if (!pe.value.toString().contains('ClosedByInterruptException')) {
-                        log.error("Error while running Jython:\n${pe.traceback.dumpStack()}")
+                        log.error("Error while running Jython: $pe\n${pe.traceback?.dumpStack()}")
                     }
                 } catch (t) {
                     log.error("Error while running Jython", t)
