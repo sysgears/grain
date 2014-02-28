@@ -78,14 +78,12 @@ public class RMIRuby implements Ruby {
             serverSocket.setSoTimeout(30000)
             def port = serverSocket.getLocalPort()
 
-            def rubyGemsDir
-
             def rubyCmd = rubyFinder.cmd.command
             def ver = rubyFinder.cmd.version
 
             def mapping = ['1.9.3p0': '1.8.11', '1.9.3': '2.2.2', '1.': '1.8.11', '2.0': '2.0.13']
             def gems = rubyFinder.cmd.pkgManager ?: mapping.find { ver.startsWith("ruby $it.key") }?.value
-            gems ? installer.install(gems) : installer.install()
+            def rubyGemsDir = gems ? installer.install(gems) : installer.install()
 
             def cmdline = [rubyCmd, "${settings.toolsHome}/ruby-ipc/ipc.rb", port]
 
