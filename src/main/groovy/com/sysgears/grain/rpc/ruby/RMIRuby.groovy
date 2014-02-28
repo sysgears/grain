@@ -60,7 +60,7 @@ public class RMIRuby implements Ruby {
 
     /** IPC socket */
     private ServerSocket serverSocket
-    
+
     /** RMI Ruby process */
     private Process process
 
@@ -77,37 +77,29 @@ public class RMIRuby implements Ruby {
         try {
             serverSocket.setSoTimeout(30000)
             def port = serverSocket.getLocalPort()
-    
+
             def rubyGemsDir
-            
+
             def rubyCmd = rubyFinder.cmd.command
             def ver = rubyFinder.cmd.version
-            def gems = rubyFinder.cmd.pkgManager
 
-            if (gems) {
-                rubyGemsDir = installer.install(gems)
-            } else if (ver.startsWith('ruby 1.')) {
-                // 1.8.11 version is compatible with Ubuntu 12.04 LTS Ruby 1.9.3
-                rubyGemsDir = installer.install('1.8.11')
-            } else if (ver.startsWith('ruby 2.0.')) {
-                rubyGemsDir = installer.install('2.0.13')
-            } else {
-                rubyGemsDir = installer.install()
-            }
-    
+            def mapping = ['1.9.3p0': '1.8.11', '1.9.3': '2.2.2', '1.': '1.8.11', '2.0': '2.0.13']
+            def gems = rubyFinder.cmd.pkgManager ?: mapping.find { ver.startsWith("ruby $it.key") }?.value
+            gems ? installer.install(gems) : installer.install()
+
             def cmdline = [rubyCmd, "${settings.toolsHome}/ruby-ipc/ipc.rb", port]
-    
+
             log.info cmdline.join(' ')
-    
+
             process = cmdline.execute()
-    
+
             def socket = serverSocket.accept()
-    
-            def executor = executorFactory.create(socket.inputStream, socket.outputStream) 
+
+            def executor = executorFactory.create(socket.inputStream, socket.outputStream)
             executor.start()
-            
+
             def rpc = dispatcherFactory.create(executor)
-    
+
             streamLogger = streamLoggerFactory.create(process.in, process.err)
             streamLogger.start()
 
@@ -118,8 +110,8 @@ public class RMIRuby implements Ruby {
 
             rpc.Ipc.add_lib_path(rubyGemsDir)
             rpc.Ipc.set_gem_home("${settings.grainHome}/packages/ruby")
-    
-            this.rpc = rpc    
+
+            this.rpc = rpc
         } catch (e) {
             serverSocket.close()
             throw e
