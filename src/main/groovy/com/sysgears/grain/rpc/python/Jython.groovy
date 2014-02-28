@@ -94,7 +94,7 @@ public class Jython implements Python {
 import os, sys
 sys.path.append(r'${new File(settings.toolsHome, 'python-ipc').canonicalPath}')
 import ipc
-ipc.set_user_base(r'${new File(settings.grainHome, 'packages/python').canonicalPath}')
+ipc.set_user_base('${new File(settings.grainHome, 'packages/python').canonicalPath}')
 ipc.add_lib_path("${setupToolsPath}")
 ipc.main($port)""")
                 } catch (PyException pe) {
