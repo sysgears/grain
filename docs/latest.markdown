@@ -13,7 +13,7 @@ Grain comes with the following high-level features:
  - support of embedded Groovy code for any content files
  - conventions that allow to process content sources using Groovy code
  - support of Markdown, reStructuredText and AsciiDoctor
- - support of SASS/SCSS and LESS CSS
+ - support of SASS/SCSS
  - code highlighting via Pygments
  - sources compression and minification
 
