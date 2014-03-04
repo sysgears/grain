@@ -81,8 +81,15 @@ public class RMIRuby implements Ruby {
             def rubyCmd = rubyFinder.cmd.command
             def ver = rubyFinder.cmd.version
 
-            def mapping = ['1.9.3p0': '1.8.11', '1.9.3': '2.2.2', '1.': '1.8.11', '2.0': '2.0.13']
-            def gems = rubyFinder.cmd.pkgManager ?: mapping.find { ver.startsWith("ruby $it.key") }?.value
+            def unixGemMapping = ['1.9.3p0': '1.8.11', '1.9.3': '2.2.2', '1.': '1.8.11', '2.0': '2.0.13']
+            def windowsGemMapping = unixGemMapping.entrySet().inject([:]) { map, entry -> map.put(entry.key, entry.value); map }
+            windowsGemMapping.putAll(['1.9.3': '1.8.11'])
+            def locateProperGem = { isWindows ->
+                def properMapping = isWindows ? windowsGemMapping : unixGemMapping
+                properMapping.find { ver.startsWith("ruby $it.key") }?.value
+            }
+            def gems = rubyFinder.cmd.pkgManager ?:
+                locateProperGem(System.getProperty("os.name").toLowerCase().contains('win'))
             def rubyGemsDir = gems ? installer.install(gems) : installer.install()
 
             def cmdline = [rubyCmd, "${settings.toolsHome}/ruby-ipc/ipc.rb", port]
