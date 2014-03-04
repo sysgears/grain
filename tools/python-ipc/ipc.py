@@ -36,7 +36,7 @@ def mkdir_p(path):
 # Adds path to Python's sys.path
 def add_lib_path(path):
     sys.path.insert(1, path)
-    
+
 # Sets PYTHONUSERBASE for Jython
 def set_user_base(user_base):
     os.environ['PYTHONUSERBASE'] = user_base
@@ -45,6 +45,9 @@ def set_user_base(user_base):
 
 # Installs python package from PyPI and returns package version
 def install_package(pkg_name):
+    import setuptools, pkg_resources, site, sysconfig
+    from setuptools.command import easy_install
+
     if sys.platform.startswith('java'):
         from distutils.command.install import INSTALL_SCHEMES
         INSTALL_SCHEMES['java_user'] = {
@@ -121,22 +124,29 @@ def install_package(pkg_name):
 
         urllib2.urlopen = new_urlopen
 
-    import setuptools, pkg_resources, site, sysconfig
-    from setuptools.command import easy_install
+        old_rmtree = easy_install.rmtree
+        def new_rmtree(path, ignore_errors=False, onerror=easy_install.auto_chmod):
+            try:
+                old_rmtree(path, ignore_errors, onerror)
+            except:
+                sys.stderr.write("Unable to remove temporary directory : %s\n"%((path)))
+                sys.stderr.flush()
+        easy_install.rmtree = new_rmtree
     try:
         dist = pkg_resources.get_distribution(pkg_name)
     except:
         log.warn("Downloading package %s...", pkg_name)
         mkdir_p(site.USER_SITE)
         easy_install.main(argv = ['--user', '-U', pkg_name])
-        
+
         site.addsitedir(sysconfig.get_path('platlib', os.name + '_user'))
         reload(pkg_resources)
-        
+
         dist = pkg_resources.get_distribution(pkg_name)
         dist.activate()
     if sys.platform.startswith('java'):
         urllib2.urlopen = org_urlopen
+        easy_install.rmtree = old_rmtree
     return dist.version
 
 def main(port):
@@ -173,7 +183,7 @@ def main(port):
 
             _write_string(sf, result)
         except KeyboardInterrupt:
-            return 
+            return
         except IOError:
             raise
         except:
