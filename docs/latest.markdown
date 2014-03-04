@@ -208,9 +208,9 @@ Grain falls back to Jython. You can specify an ordered list of Python command ca
 
 `python.cmd_candidates` - Python command candidates (default: ['python2', "python", "python2.7"])
 
-It is possible to force Grain to use Jython by setting the `features.python` property to `jython`:
+It is possible to force Grain to use Jython by setting the `python.interpreter` property to `jython`:
 
-`features.python` - Python interpreter (default to `auto`)
+`python.interpreter` - Python interpreter (default to `auto`)
  - `auto` - use Python if it is installed in the system, otherwise fall back to Jython
  - `python` - use Python (requires Python installed)
  - `jython` - use Jython
@@ -227,9 +227,9 @@ Grain falls back to JRuby. You can specify an ordered list of Ruby command candi
 
 `ruby.cmd_candidates` - Ruby command candidates (default: ["ruby", "ruby1.8.7", "ruby1.9.3", "user.home/.rvm/bin/ruby"])
 
-It is possible to force Grain to use JRuby by setting the `features.ruby` property to `jruby`:
+It is possible to force Grain to use JRuby by setting the `ruby.interpreter` property to `jruby`:
 
-`features.ruby` - Ruby interpreter (default to `auto`)
+`ruby.interpreter` - Ruby interpreter (default to `auto`)
  - `auto` - use Ruby if it is installed in the system, otherwise fall back to JRuby
  - `ruby` - use Ruby (requires Ruby installed)
  - `jruby` - use JRuby

@@ -28,7 +28,7 @@ class RubyModule extends AbstractModule {
     @Provides @javax.inject.Singleton
     public Ruby provideRuby(ConfigBinder binder,
             AutoRuby auto, RMIRuby rmi, JRuby jruby) {
-        binder.bind(Ruby, 'features.ruby',
+        binder.bind(Ruby, 'ruby.interpreter',
                 [default: auto, auto: auto, ruby: rmi, jruby: jruby])
     }
 

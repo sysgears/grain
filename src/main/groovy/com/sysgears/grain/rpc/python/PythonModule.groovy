@@ -28,7 +28,7 @@ class PythonModule extends AbstractModule {
     @Provides @javax.inject.Singleton
     public Python providePython(ConfigBinder binder,
             AutoPython auto, CPython cPython, Jython jython) {
-        binder.bind(Python, 'features.python',
+        binder.bind(Python, 'python.interpreter',
                 [default: auto, auto: auto, python: cPython,
                  jython: jython])
     }
