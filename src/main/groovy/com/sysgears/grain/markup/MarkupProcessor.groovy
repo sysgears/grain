@@ -1,7 +1,5 @@
 package com.sysgears.grain.markup
 
-import com.sysgears.grain.preview.ConfigChangeListener
-
 import javax.annotation.Nullable
 
 /**

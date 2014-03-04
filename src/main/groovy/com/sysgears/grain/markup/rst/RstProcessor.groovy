@@ -17,10 +17,12 @@
 package com.sysgears.grain.markup.rst
 
 import com.sysgears.grain.init.GrainSettings
+import com.sysgears.grain.markup.MarkupProcessor
 import com.sysgears.grain.rpc.python.Python
 import com.sysgears.grain.service.Service
 import groovy.util.logging.Slf4j
 
+import javax.annotation.Nullable
 import javax.inject.Inject
 
 /**
@@ -28,7 +30,7 @@ import javax.inject.Inject
  */
 @Slf4j
 @javax.inject.Singleton
-public class RstProcessor implements Service {
+public class RstProcessor implements Service, MarkupProcessor {
 
     /** Docutils version. */
     private static final String VERSION = "0.11"
@@ -58,7 +60,7 @@ public class RstProcessor implements Service {
     @Override
     void start() {
         def ipc = python.rpc.ipc
-        ipc.install_package("docutils=${VERSION}")
+        ipc.install_package("docutils==${VERSION}")
         ipc.add_lib_path new File(settings.toolsHome, 'docutils-bridge').canonicalPath
     }
 
@@ -67,5 +69,12 @@ public class RstProcessor implements Service {
      */
     @Override
     void stop() {
+    }
+
+    /**
+     * @inheritDoc
+     */
+    @Nullable String getCacheSubdir() {
+        "rst.${VERSION.replace('.', '_')}"
     }
 }
