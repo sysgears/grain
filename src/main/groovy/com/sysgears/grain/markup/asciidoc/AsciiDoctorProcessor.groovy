@@ -56,7 +56,7 @@ public class AsciiDoctorProcessor implements Service, MarkupProcessor {
     @Override
     void start() {
         ruby.rpc.with {
-            this.version = Ipc.install_gem('asciidoctor', "=${VERSION}")
+            Ipc.install_gem('asciidoctor', "=${VERSION}")
             Ipc.require('asciidoctor')
         }
     }
