@@ -82,7 +82,7 @@ public class RMIRuby implements Ruby {
             def ver = rubyFinder.cmd.version
 
             def unixGemMapping = ['1.9.3p0': '1.8.11', '1.9.3': '2.2.2', '1.': '1.8.11', '2.0': '2.0.13']
-            def windowsGemMapping = unixGemMapping.entrySet().inject([:]) { map, entry -> map.put(entry.key, entry.value); map }
+            def windowsGemMapping = unixGemMapping.clone()
             windowsGemMapping.putAll(['1.9.3': '1.8.11'])
             def locateProperGem = { isWindows ->
                 def properMapping = isWindows ? windowsGemMapping : unixGemMapping
