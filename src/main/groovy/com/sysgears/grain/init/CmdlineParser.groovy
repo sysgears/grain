@@ -51,6 +51,7 @@ help                      Print out this help
 preview                   Run the site in preview mode on local web server
 generate                  Generate site from source
 deploy                    Deploy the static site
+clean                     Clean Grain directories
 Options:
 ''')
         cli.with {
