@@ -16,6 +16,7 @@
 
 package com.sysgears.grain
 
+import com.sysgears.grain.clean.GrainCleaner
 import com.sysgears.grain.config.Config
 import com.sysgears.grain.deploy.SiteDeployer
 import com.sysgears.grain.expando.GrainDynamicMethods
@@ -54,6 +55,9 @@ class Application {
 
     /** Grain site deployer */
     @Inject private SiteDeployer deployer
+
+    /** Grain cleaner */
+    @Inject private GrainCleaner cleaner
 
     /** Grain dynamic methods registrar */
     @Inject private GrainDynamicMethods grainDynamicMethods
@@ -132,6 +136,9 @@ class Application {
                 break
             case 'deploy':
                 deployer.deploy()
+                break
+            case 'clean':
+                cleaner.clean()
                 break
             default:
                 def command = config?.commands?.getAt(settings.command) as Closure
