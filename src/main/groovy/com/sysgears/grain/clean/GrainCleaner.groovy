@@ -14,21 +14,21 @@ import javax.inject.Inject
 @Slf4j
 class GrainCleaner {
 
-    /** Site config */
+    /** Site config. */
     @Inject private Config config
 
-    /** Stream logger factory */
+    /** Stream logger factory. */
     @Inject private StreamLoggerFactory streamLoggerFactory
 
     /**
-     * Cleans Grain directories
+     * Cleans Grain temporary directories.
      */
     public void clean() {
-        log.info 'Cleaning cache and target directories...'
+        log.info 'Cleaning cache and destination directories...'
         def cacheDir = new File(config.cache_dir.toString())
         def destDir = new File(config.destination_dir.toString())
         FileUtils.removeDir(cacheDir)
         FileUtils.removeDir(destDir)
-        log.info 'Grain directories cleaned'
+        log.info 'Grain temporary directories have been cleaned.'
     }
 }
