@@ -1,3 +1,8 @@
+## 0.6.1 / 2014-03-14
+
+
+  * Implemented the 'clean' command which allows to remove project temporary directories
+
 ## 0.6.0 / 2014-02-17
 
 
