@@ -83,6 +83,8 @@ class ScriptWriter {
         if (text.length() > 0) {
             def maxChars = calculateMaxChars(statement)
             if (text.length() > maxChars && !indivisible) {
+                def m = text.substring(0, maxChars) =~ /[\\]+$/
+                maxChars = m.find() ? m.start() : maxChars
                 write(text.substring(0, maxChars), statement)
                 write(text.substring(maxChars), statement)
             } else {
