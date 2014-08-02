@@ -14,7 +14,7 @@ layout_dir = ["${theme_dir}/layouts"]
 destination_dir = "${base_dir}/target"
 
 // Binary files
-binary_files = [/(?i).*\.(png|jpg|jpeg|gif|ico|bmp|swf|avi|mkv|ogg|mp3|mp4)$/]
+binary_files = [/(?i).*\.(png|jpg|jpeg|gif|ico|bmp|swf|avi|mkv|ogg|mp3|mp4|eot|otf|ttf|woff)$/]
 
 // Absolute links
 generate_absolute_links = false
