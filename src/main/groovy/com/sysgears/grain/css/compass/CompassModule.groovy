@@ -29,7 +29,7 @@ class CompassModule extends AbstractModule {
     public Compass provideCompass(ConfigBinder binder,
             FakeCompass fake, RubyCompass ruby, ShellCompass shell) {
         binder.bind(Compass, 'features.compass',
-                [default: fake, auto: ruby, jruby: ruby, ruby: ruby, shell: shell])
+                [default: ruby, auto: ruby, jruby: ruby, ruby: ruby, shell: shell, none: fake])
     }
 
     @Override
