@@ -1,3 +1,11 @@
+## 0.6.2 / 2014-10-09
+
+
+  * Added 'none' option for the compass setting to disable compass processing
+  * Fixed the script parsing issue, when Groovy expressions could be escaped incorrectly for script files that
+    exceed 30k characters
+  * Added font files to the list of default binary files
+
 ## 0.6.1 / 2014-03-14
 
 
