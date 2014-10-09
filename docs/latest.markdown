@@ -55,6 +55,7 @@ to the location of your choice.
 
 ###Preview website
 Navigate to the location of your newly created website `cd /path/to/your_site` and run the command
+
 ``` sh:nl
 ./grainw
 ```
@@ -69,6 +70,7 @@ files of your website and see all changes in the web browser immediately after r
 
 ###Generate and deploy
 When your site is ready for going live you can generate all the website files by executing
+
 ``` sh:nl
 ./grainw generate
 ```
@@ -76,9 +78,11 @@ When your site is ready for going live you can generate all the website files by
 The files of website will be generated to `/path/to/your_site/target` directory. 
 
 You can deploy the resulting files either manually or with the help of Grain:
+
 ``` sh:nl
 ./grainw deploy
 ```
+
 Check the deployment section for more information.
 
 ##IDE Integration
@@ -288,6 +292,7 @@ Deployment of final website is implemented as shell command execution.
 `deploy` - a shell command or list of shell commands to deploy a website, that are executed sequentially
  
 ***Example***
+
 ``` groovy:nl
 s3_bucket = "www.example.com"
 deploy = "s3cmd sync --acl-public --reduced-redundancy ${destination_dir}/ s3://${s3_bucket}/"
@@ -298,6 +303,7 @@ Different modes of Grain operation are associated with different configuration e
 environments can be used to provide environment specific configuration. 
 
 ***Example***
+
 ``` groovy:nl SiteConfig.groovy
 environments {
     dev {
@@ -337,7 +343,8 @@ config_posthandler = { println 'Config has been just rereaded' }
 ###Page file source
 
 Typical Grain page consists of page header and page content. Page header contains static page configuration parameters
-formatted using YAML markup. 
+formatted using YAML markup.
+
 ``` yaml:nl
 ---
 layout: page
@@ -354,17 +361,21 @@ on page file extension.
 
 Embedded Groovy code can be included anywhere in a page content, but not in the page header.
 To include a simple Groovy expression one can use this notation:
+
 ``` groovy:nl
 ${2 + 2}
 ```
 
 Or this
+
 ``` groovy:nl
 <%= 2 + 2 %>
 ```
+
 In both cases 4 will be inserted into the content of the page as the result of evaluation of these Groovy expressions.
 
 To include large blocks of Groovy code one can use notation below:
+
 ``` jsp:nl
 <%
     def foo = 2 + 2
@@ -393,6 +404,7 @@ These variables are reserved:
 `page` variable provides access to all the keys of pages YAML headers.
 
 For example to get page title one can use the following code snippet:
+
 ``` jsp:nl
 ${page.title}
 ```
@@ -417,6 +429,7 @@ they will not be visible to other pages.
 
 `site` variable provides access to all the properties declared in SiteConfig.groovy. For example, in order to get
 configured URL of the site one can use this code:
+
 ``` jsp:nl
 <a href="${site.url}">Home</a>
 ```
@@ -424,6 +437,7 @@ configured URL of the site one can use this code:
 `site` also exposes all the pages of the site in `site.pages`, all the asset files of the site
 in `site.assets` and both assets and pages in `site.resources`. For example to dump the value of title
 defined in every site page one could do:
+
 ``` jsp:nl
 <%= site.pages.collect { it.title } %>
 ```
@@ -434,6 +448,7 @@ defined in every site page one could do:
 Rendered page content usually wrapped up by layout, where most of the presentation logic is held.
 
 Here is an example of a layout:
+
 ``` jsp /theme/layout/default.html
 <html>
 <head>
@@ -455,6 +470,7 @@ Please note that rendered page contents is passed in `content` variable to the l
 
 ###Layout nesting 
 One layout can be based on another layout. For example, here is some page layout, based on default layout above:
+
 ``` jsp /theme/layout/page.html
 ---
 layout: default
@@ -469,10 +485,11 @@ Layout nesting can be unlimited.
 
 ##Includes
 
-###Concept
+###General idea
 Common page presentation parts can be kept in separate files and then included into layouts.
 
 For example in the code below sidebar.html is included into layout:
+
 ``` jsp /theme/layout/page.html
 ---
 layout: default
@@ -484,6 +501,7 @@ ${include 'sidebar.html'}
 
 ###Passing custom model
 In some cases you would want to pass some variables to the included parts:
+
 ``` jsp /theme/layout/blog.html
 ---
 layout: page
@@ -526,6 +544,7 @@ The list of all the resources after any site change is passed to the `SiteConfig
 The closure is expected to build new list of resources that may have customized URLs, different resource variables, etc.
 
 For example the input list of resources might look like this:
+
 ``` groovy:nl
 [
     [location: '/articles/my-new-post-title.markdown', url: '/articles/my-new-post-title/'],
@@ -536,6 +555,7 @@ For example the input list of resources might look like this:
 ```
 
 And the output could be as follows:
+
 ``` groovy:nl
 [
     [location: '/articles/post-sample-with-code.markdown',
@@ -565,10 +585,12 @@ receive additional model variable `posts`.
 ***Return value***: transformed resource models to be used for actual rendering of resources
 
 ***Example***
+
 ``` groovy:nl
 resource_mapper = { resources ->
     resources.collect { Map resource ->
-        if (resource.location =~/\/blog\/.*/) { //Select all the resources, which content files placed under /blog dir
+        if (resource.location =~/\/blog\/.*/) {
+            // Select all the resources, which content files placed under /blog dir
             // Rewrite url for blog posts
             def unParsedDate = resource.date //Date specified in content file's header
             def date = Date.parse(site.datetime_format, resource.date).format('yyyy/MM/dd/')
@@ -586,9 +608,10 @@ Resource in Grain can be rendered dynamically anywhere, to do this one should as
 method render() on it.
 
 Example:
+
 ``` groovy:nl
 [source: '**Bold text**', markup: 'adoc'].render()
-``` groovy:nl
+```
 
 Example of using dynamic rendering inside page:
 
@@ -611,6 +634,7 @@ The standard tags are:
       1. Resource location
           
     ***Example***
+
     ``` jsp:nl
 <link href="${r '/favicon.png'}" rel="icon"> ```
 1. **`rs`** - looks up multiple resource URLs by their locations
@@ -619,6 +643,7 @@ The standard tags are:
       1. Resource location list
       
     ***Example***
+
     ``` jsp:nl
 <% rs(['/javascripts/libs/jquery.min.js',
        '/javascripts/modernizr-2.0.js',
@@ -635,6 +660,7 @@ The standard tags are:
       1. *(Optional)* Additional model variables added to `page` map      
 
     ***Example***
+
     ``` jsp:nl
 ${include 'tags.html', [tags: post.categories]} ```
 1. **`md5`** - calculates md5 hash of a byte array
@@ -643,6 +669,7 @@ ${include 'tags.html', [tags: post.categories]} ```
       1. Byte array
 
     ***Example***
+
     ``` jsp:nl
 md5(resource.render().bytes) ```
 
@@ -653,6 +680,7 @@ Class with tag closures should be added into the list of tag libs in `SiteConfig
 The tag lib class constructor should expect one argument - standard Grain taglib.
  
 Example:
+
 ``` groovy:nl SiteConfig.groovy
 tag_libs = [OctopressTagLib, MyTagLib]
 ```
@@ -697,6 +725,7 @@ All the commands supported by theme should be stored into `commands` list proper
 in this list is a closure that accepts zero or more String parameters that is passed from command-line.
 
 ***Example***
+
 ``` groovy:nl
 commands = [
 new_post: { String postTitle ->

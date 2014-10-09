@@ -17,7 +17,7 @@
 package com.sysgears.grain.generate
 
 import com.sysgears.grain.PerfMetrics
-import com.sysgears.grain.css.compass.RubyCompass
+import com.sysgears.grain.css.compass.Compass
 import com.sysgears.grain.compress.ResourceCompressor
 import com.sysgears.grain.config.Config
 import com.sysgears.grain.log.StreamLoggerFactory
@@ -43,7 +43,7 @@ class SiteGenerator {
     @Inject private Config config
 
     /** Compass launcher */
-    @Inject private RubyCompass compass
+    @Inject private Compass compass
 
     /** Stream logger factory */
     @Inject private StreamLoggerFactory streamLoggerFactory

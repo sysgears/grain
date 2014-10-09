@@ -20,7 +20,7 @@ import com.google.inject.AbstractModule
 import com.google.inject.Provides
 import com.google.inject.name.Names
 import com.sysgears.grain.config.ConfigBinder
-import com.sysgears.grain.css.compass.RubyCompass
+import com.sysgears.grain.css.compass.Compass
 import com.sysgears.grain.config.ConfigUpdater
 import com.sysgears.grain.rpc.python.PythonFinder
 import com.sysgears.grain.registry.CachedHeaderParser
@@ -45,9 +45,9 @@ class PreviewModule extends AbstractModule {
     public ConfigChangeBroadcaster provideConfigChangeBroadcaster(
             ConfigUpdater configUpdater, ConfigBinder binder,
             PythonFinder pythonFinder, RubyFinder rubyFinder, 
-            RubyCompass rubyCompass) {
+            Compass compass) {
         return new ConfigChangeBroadcaster(configUpdater, binder, pythonFinder,
-                rubyFinder, rubyCompass)
+                rubyFinder, compass)
     }
 
     @Provides @javax.inject.Singleton
