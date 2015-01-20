@@ -16,6 +16,7 @@
 
 package com.sysgears.grain.markup.asciidoc
 
+import com.sysgears.grain.init.GrainSettings
 import com.sysgears.grain.markup.MarkupProcessor
 import com.sysgears.grain.rpc.ruby.Ruby
 import com.sysgears.grain.service.Service
@@ -32,11 +33,17 @@ import javax.inject.Inject
 public class AsciiDoctorProcessor implements Service, MarkupProcessor {
 
     /** AsciiDoctor gem version used */
-    @Inject private static final String VERSION = '0.1.4'
+    @Inject private static final String VERSION = '1.5.2'
+
+    /** Pygments.rb gem version used */
+    @Inject private static final String CODERAY_VERSION = '1.1.0'
     
     /** Ruby implementation */
     @Inject private Ruby ruby
     
+    /** Grain settings */
+    @Inject private GrainSettings settings
+
     /**
      * Renders AsciiDoctor content.
      * 
@@ -46,7 +53,7 @@ public class AsciiDoctorProcessor implements Service, MarkupProcessor {
      */
     public String process(String source) {
         ruby.rpc.with {
-            Asciidoctor.render(source)
+            AsciidocBridge.convert(source, 'coderay')
         }
     }
 
@@ -55,10 +62,10 @@ public class AsciiDoctorProcessor implements Service, MarkupProcessor {
      */
     @Override
     void start() {
-        ruby.rpc.with {
-            Ipc.install_gem('asciidoctor', "=${VERSION}")
-            Ipc.require('asciidoctor')
-        }
+        ruby.rpc.Ipc.install_gem('asciidoctor', "=${VERSION}")
+        ruby.rpc.Ipc.install_gem('coderay', "=${CODERAY_VERSION}")
+        ruby.rpc.Ipc.add_lib_path new File(settings.toolsHome, 'asciidoc-bridge').canonicalPath
+        ruby.rpc.Ipc.require('asciidoc_bridge')
     }
 
     /**

@@ -46,7 +46,7 @@ class MarkupRenderer {
         def processor = ['md': markdownProcessor, 'rst': rstProcessor, 'adoc': adocProcessor].
                 get(markup) as MarkupProcessor
 
-        if (markup in ['rst', 'adoc']) {
+        if (markup in ['rst']) {
             def uniqueName = processor.cacheSubdir
 
             def cacheDir = new File(site.cache_dir.toString(), "markup/" + uniqueName)
