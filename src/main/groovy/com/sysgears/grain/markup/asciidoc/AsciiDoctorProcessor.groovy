@@ -53,7 +53,7 @@ public class AsciiDoctorProcessor implements Service, MarkupProcessor {
      */
     public String process(String source) {
         ruby.rpc.with {
-            AsciidocBridge.convert(source, 'coderay')
+            AsciidocBridge.convert(source)
         }
     }
 
