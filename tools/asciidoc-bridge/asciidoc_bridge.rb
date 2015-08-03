@@ -1,9 +1,9 @@
 require 'asciidoctor'
 
 module AsciidocBridge
-  def convert(source)
+  def convert(source, attributes)
     begin
-      return Asciidoctor.convert(source, :safe => 0, :attributes => { "source-highlighter" => "coderay" })
+      return Asciidoctor.convert(source, :safe => 0, :attributes => attributes)
     rescue Exception => e
       STDERR.puts e.inspect
       STDERR.puts e.backtrace
