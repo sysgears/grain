@@ -1,3 +1,21 @@
+## 0.6.5 / 2015-08-04
+
+
+  * Configured the Asciidoctor module to use custom document processing attributes from the site configuration
+  * Updated the RPC executor to handle a map of string key-value pairs in order to pass Asciidoctor attributes
+
+## 0.6.4 / 2015-06-22
+
+
+  * Enabled Asciidoctor include support
+  * Added exception dumping for the Asciidoctor
+
+## 0.6.3 / 2015-01-20
+
+
+  * Updated Asciidoctor version to 1.5.2
+  * Enabled syntax highlighting in Asciidoctor using Coderay
+
 ## 0.6.2 / 2014-10-09
 
 
