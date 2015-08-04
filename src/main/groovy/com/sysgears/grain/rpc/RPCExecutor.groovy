@@ -28,6 +28,16 @@ import javax.inject.Inject
 @Slf4j
 class RPCExecutor extends DefaultActor {
 
+    /** Parameter data types that are supported for marshaling by the RPC */
+    private interface ParamDataTypes {
+
+        /** A single value of type String (java.lang.String) */
+        static final int STRING = 0
+
+        /** A set of key -> value pairs (java.util.Map), both keys and values can only by of type String */
+        static final int MAP = 1
+    }
+
     /** IPC input stream */
     private DataInputStream is
 
@@ -59,7 +69,16 @@ class RPCExecutor extends DefaultActor {
                     writeString(os, call.procName)
                     writeInt(os, call.args.size())
                     for (Object arg: call.args) {
-                        writeString(os, arg.toString())
+                        switch (arg) {
+                            case { it instanceof Map }:
+                                writeInt(os, ParamDataTypes.MAP)
+                                writeMap(os, arg as Map)
+                                break
+                            default:
+                                writeInt(os, ParamDataTypes.STRING)
+                                writeString(os, arg.toString())
+                                break
+                        }
                     }
                     os.flush()
                     def result = readString(is)
@@ -95,6 +114,20 @@ class RPCExecutor extends DefaultActor {
     private static void writeString(DataOutputStream out, String str) {
         out.writeInt(str.bytes.length)
         out.write(str.bytes)
+    }
+
+    /**
+     * Writes map to a binary stream
+     *
+     * @param out output stream
+     * @param map map to write
+     */
+    private static void writeMap(DataOutputStream out, Map map) {
+        writeInt(out, map.size())
+        map.each {key, value ->
+            writeString(out, key.toString())
+            writeString(out, value.toString())
+        }
     }
 
     /**

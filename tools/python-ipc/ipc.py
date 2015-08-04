@@ -4,11 +4,23 @@ import os, sys, struct, socket, traceback, urllib2, errno, tempfile
 
 from distutils import log
 
+# Parameter data types that are supported for deconversion by the IPC
+PARAM_DATA_TYPES = {'string' : 0, 'dictionary' : 1}
+
 def _read_integer(sf):
     return struct.unpack('>i', sf.read(4))[0]
 
 def _read_string(sf):
     return sf.read(_read_integer(sf))
+
+def _read_dictionary(sf):
+    dictionary = {}
+    size = _read_integer(sf)
+    for _ in xrange(size):
+        key = _read_string(sf)
+        value = _read_string(sf)
+        dictionary[key] = value
+    return dictionary
 
 def _write_string(sf, result):
     if result == None:
@@ -166,8 +178,13 @@ def main(port):
 
             args = []
             for _ in xrange(args_count):
-                arg = _read_string(sf)
-                args.append(arg)
+                type = _read_integer(sf)
+                if type == PARAM_DATA_TYPES['string']:
+                    args.append(_read_string(sf))
+                elif type == PARAM_DATA_TYPES['dictionary']:
+                    args.append(_read_dictionary(sf))
+                else:
+                    raise ValueError("Can't recognize parameter data type with id %s" % type)
 
             module =  __import__ (module_name)
             func = getattr(module, func_name)

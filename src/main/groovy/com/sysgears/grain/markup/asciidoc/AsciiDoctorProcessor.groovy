@@ -16,6 +16,7 @@
 
 package com.sysgears.grain.markup.asciidoc
 
+import com.sysgears.grain.config.Config
 import com.sysgears.grain.init.GrainSettings
 import com.sysgears.grain.markup.MarkupProcessor
 import com.sysgears.grain.rpc.ruby.Ruby
@@ -44,6 +45,9 @@ public class AsciiDoctorProcessor implements Service, MarkupProcessor {
     /** Grain settings */
     @Inject private GrainSettings settings
 
+    /** Site config */
+    @Inject private Config config
+
     /**
      * Renders AsciiDoctor content.
      * 
@@ -52,8 +56,9 @@ public class AsciiDoctorProcessor implements Service, MarkupProcessor {
      * @return rendered output 
      */
     public String process(String source) {
+        def options = config.features?.asciidoc?.opts?: [:]
         ruby.rpc.with {
-            AsciidocBridge.convert(source)
+            AsciidocBridge.convert(source, options)
         }
     }
 

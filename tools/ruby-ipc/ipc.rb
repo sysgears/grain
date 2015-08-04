@@ -7,6 +7,9 @@ class Ipc
     @socket = socket
   end
 
+  # Parameter data types that are supported for deconversion by the IPC
+  PARAM_DATA_TYPES = { :string => 0, :hash => 1 }
+
   # Checks if gem installed
   def self.gem_installed(name, version = Gem::Requirement.default)
     require 'rubygems'
@@ -41,7 +44,7 @@ class Ipc
   def self.add_lib_path libpath
     $LOAD_PATH.unshift(libpath)
   end
-  
+
   # Loops forever reading RPC requests, executing them and sending return value in response
   def run
     while true do
@@ -53,8 +56,15 @@ class Ipc
         args = []
   
         args_count.times do
-          arg = read_string
-          args <<= arg
+          type = read_integer
+          case type
+            when PARAM_DATA_TYPES[:string]
+              args <<= read_string
+            when PARAM_DATA_TYPES[:hash]
+              args <<= read_hash
+            else
+              raise ArgumentError, "Can't recognize parameter data type with id #{type}"
+          end
         end
 
         clazz = Kernel.const_get(class_name)
@@ -94,6 +104,16 @@ class Ipc
   def read_string
     len = read_integer
     @socket.read(len).unpack("a*")[0]
+  end
+
+  # Reads hash in network format from stdin
+  def read_hash
+    hash = Hash.new
+    size = read_integer
+    size.times do
+      hash[read_string] = read_string
+    end
+    hash
   end
 
   # Writes string to stdout
