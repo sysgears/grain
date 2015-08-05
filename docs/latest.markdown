@@ -189,9 +189,26 @@ section of the configuration file.
 There is only one implementation of reStructuredText at this time - via Python docutils. All files having `rst`
 extension will be rendered using this implementation.
 
-####AsciiDoctor markup feature
+####Asciidoctor markup feature
 
 All files having `adoc` or `asciidoctor` extensions will be rendered using latest asciidoc Ruby gem.
+
+The files are converted to HTML5 with help of the `Asciidoctor.convert` method:
+
+```ruby
+Asciidoctor.convert(source, :safe => 0, :attributes => attributes)
+```
+
+You can provide the custom attributes for the document conversion in the following way:
+
+```groovy
+features {
+    asciidoc {
+        opts = ['source-highlighter': 'coderay',
+                'icons': 'font']
+    }
+}
+```
 
 ####Syntax highlighting feature
 
