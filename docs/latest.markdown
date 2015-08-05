@@ -406,6 +406,15 @@ To include large blocks of Groovy code one can use notation below:
 The `if` above will work as expected, e.g. the span will be rendered into page contents only when the criteria is met.
 Also note that variables declared in one piece of embedded code will be available anywhere on the page.
 
+####Disable Groovy code interpolation
+
+To render embedded Groovy code as is, you need to disable Groovy code interpolation by using the following form of
+escaping:
+
+```
+`!`${2 + 2}`!`
+```
+
 ###Variables on a page
 Grain has several variables reserved, others can be freely introduced on a page.
 
