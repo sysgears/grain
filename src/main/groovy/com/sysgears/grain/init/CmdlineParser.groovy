@@ -16,6 +16,8 @@
 
 package com.sysgears.grain.init
 
+import groovy.util.logging.Slf4j
+
 import java.util.jar.Manifest
 
 /**
@@ -23,6 +25,7 @@ import java.util.jar.Manifest
  * <p>
  * In case of facing wrong cmdline arguments dumps help and shutdowns the application
  */
+@Slf4j
 @javax.inject.Singleton
 class CmdlineParser {
 
@@ -191,9 +194,9 @@ Options:
     /**
      * Validates Grain version specified in theme.
      *
-     * @param grainVersion current running Grain version
+     * @param version current running Grain version
      */
-    private static validateGrainVersion(String grainVersion) {
+    private static validateGrainVersion(String version) {
         def propertiesFile = new File(PROPERTIES_FILE_NAME)
         if (!propertiesFile.exists() || !propertiesFile.isFile()) {
             throw new RuntimeException("Unable to locate properties file: ${propertiesFile.canonicalPath}")
@@ -201,15 +204,23 @@ Options:
 
         def themeProps = new Properties()
         themeProps.load(new FileInputStream(propertiesFile))
-        def themeGrainVersion = themeProps.getProperty('grain.version')
 
-        if (!themeGrainVersion) {
+        if (!themeProps.getProperty('grain.version')) {
             throw new RuntimeException("Grain version not specified in properties file: ${propertiesFile.canonicalPath}")
         }
 
-        if (!new GrainVersion(grainVersion).isBackwardCompatibleTo(new GrainVersion(themeGrainVersion))) {
-            throw new RuntimeException("""Grain versions are not compatible: \nGrain version of the theme: ${themeGrainVersion}.
-Current Grain version: ${grainVersion}.""")
+        def currentVersion = new GrainVersion(version)
+        def themeVersion = new GrainVersion(themeProps.getProperty('grain.version'))
+
+        if (!currentVersion.isBackwardCompatible(themeVersion)) {
+            throw new RuntimeException("Current Grain version is not compatible with the theme version: " +
+                    "found ${currentVersion}, required ${themeVersion}.")
+        }
+
+        // warn users if the versions are compatible but not interchangeable
+        if (!currentVersion.isInterchangeable(themeVersion)) {
+            log.warn("Current Grain version does not match the theme version: " +
+                    "found ${currentVersion}, required ${themeVersion}. Please continue with caution.")
         }
     }
 
