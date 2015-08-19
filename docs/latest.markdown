@@ -148,25 +148,105 @@ may use set of pre-defined variables. These variables are:
 Though in many situations you wouldn't touch default conventions, in some cases it is still beneficial
 to have the possibility for more fine-grained control over Grain website structure on the filesystem.
 
-You can control website filesystem layout by modifying the following parameters in `SiteConfig.Groovy`:
+> Default configuration settings can be found in the
+[src/main/resources/DefaultConfig.groovy](https://github.com/sysgears/grain/blob/master/src/main/resources/DefaultConfig.groovy)
+file.
 
-`cache_dir` - directory where cache files of various Grain subsystems are stored (default: ".cache") 
+You can control website filesystem layout by modifying the following parameters in the `/SiteConfig.groovy`:
 
-`source_dir` - directory or list of directories with website sources. The directories are handled sequentially
+`destination_dir` - destination directory for generated website files, default: <br />
+
+``` groovy
+destination_dir = "${base_dir}/target"
+```
+
+`cache_dir` - directory where cache files of various Grain subsystems are stored, default: <br />
+
+``` groovy
+cache_dir = "${base_dir}/.cache"
+```
+
+`source_dir` - directory or a list of directories with website sources. The directories are handled sequentially
 by Grain and if the same files with same relative locations appear in each directory, then the file from the directory
-listed later takes precedence (default: ["content", "theme", ".cache/compass"])
+listed later takes precedence. Default: <br />
 
-`include_dir` - directory or list of directories with includes (default: ["includes"])
+``` groovy
+source_dir = ["${base_dir}/content", "${base_dir}/theme", "${cache_dir}/compass"]
+```
 
-`layout_dir` - directory or list of directories with layouts (default: ["layouts"])
+`include_dir` - directory or a list of directories with includes, default: <br />
 
-`destination_dir` - destination directory for generated website files (default: "target")
+``` groovy
+include_dir = ["${theme_dir}/includes"]
+```
 
-`excludes` - a list of regular expressions, that match locations of files or directories to be excluded
-             from final website: ['/sass/.*', '/src/.*', '/target/.*'])
+`layout_dir` - directory or a list of directories with layouts, default: <br />
+
+``` groovy
+layout_dir = ["${theme_dir}/layouts"]
+```
+
+####Customizing filesystem layout
+
+Custom destination and cache folders can be specified as the following:
+
+``` groovy
+destination_dir = "${base_dir}/site"
+
+cache_dir = "${base_dir}/.site_cache"
+```
+
+To redefine the source, include or layout folders, you should provide a list of directories, or,
+if you want to keep the default settings, add your directories to the existing list loaded from
+the default configuration:
+
+``` groovy
+// adding a directory to the predefined list
+source_dir << "${base_dir}/assets"
+
+// redefining the folders altogether:
+source_dir = ["${base_dir}/content", "${base_dir}/theme", "${base_dir}/assets"]
+```
+
+###Source processing configuration
+
+This settings can be used for excluding files or directories located in the source folders, or for
+defining assets that must be copied to the destination folder without additional processing.
+
+`excludes` - a list of regular expressions that match locations of files or directories that must be completely
+excluded from processing. These files are ignored by Grain and won't be copied to the destination directory. Default:
+
+``` groovy
+excludes = ['/sass/.*', '/src/.*', '/target/.*']
+```
              
-`binary_files` - a list of regular expressions, that match locations of <br/>
-binary files (default: [/(?i).*\.(png|jpg|jpeg|gif|ico|bmp|swf|avi|mkv|ogg|mp3|mp4)$/])                
+`binary_files` - a list of regular expressions that match locations of binary files. Binary files are excluded from
+processing, but, contrary to the files from the excludes list, will be copied to the destination directory. Default:
+
+``` groovy
+binary_files = [/(?i).*\.(png|jpg|jpeg|gif|ico|bmp|swf ... eot|otf|ttf|woff)$/]
+```
+
+`non_script_files` - a list of regular expressions that match locations of files which content
+(see [file source](http://localhost:4000/grain/docs/latest/#page-file-source)) must be left
+unprocessed. The file headers still will be parsed, which is useful when you need to pass
+some configuration options, but do not want Grain to process the content and run embedded Groovy
+code. Default:
+
+``` groovy
+non_script_files = [/(?i).*\.(js|css)$/]
+```
+
+####Customizing source processing settings
+
+It is generally recommended to add new regular expressions to the default processing configuration instead of
+overwriting the settings with new values:
+
+``` groovy
+excludes << '/misc/.*' // additionally excludes the 'misc' directory
+
+excludes = ['/src/.*', '/target/.*'] // overwrites the default configuration
+```
 
 ###Preview configuration
 
