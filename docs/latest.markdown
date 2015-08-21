@@ -156,13 +156,13 @@ You can control website filesystem layout by modifying the following parameters 
 
 `destination_dir` - destination directory for generated website files, default: <br />
 
-``` groovy
+``` groovy:nl
 destination_dir = "${base_dir}/target"
 ```
 
 `cache_dir` - directory where cache files of various Grain subsystems are stored, default: <br />
 
-``` groovy
+``` groovy:nl
 cache_dir = "${base_dir}/.cache"
 ```
 
@@ -170,19 +170,19 @@ cache_dir = "${base_dir}/.cache"
 by Grain and if the same files with same relative locations appear in each directory, then the file from the directory
 listed later takes precedence. Default: <br />
 
-``` groovy
+``` groovy:nl
 source_dir = ["${base_dir}/content", "${base_dir}/theme", "${cache_dir}/compass"]
 ```
 
 `include_dir` - directory or a list of directories with includes, default: <br />
 
-``` groovy
+``` groovy:nl
 include_dir = ["${theme_dir}/includes"]
 ```
 
 `layout_dir` - directory or a list of directories with layouts, default: <br />
 
-``` groovy
+``` groovy:nl
 layout_dir = ["${theme_dir}/layouts"]
 ```
 
@@ -190,7 +190,7 @@ layout_dir = ["${theme_dir}/layouts"]
 
 Custom destination and cache folders can be specified as the following:
 
-``` groovy
+``` groovy:nl
 destination_dir = "${base_dir}/site"
 
 cache_dir = "${base_dir}/.site_cache"
@@ -200,7 +200,7 @@ To redefine the source, include or layout folders, you should provide a list of 
 if you want to keep the default settings, add your directories to the existing list loaded from
 the default configuration:
 
-``` groovy
+``` groovy:nl
 // adding a directory to the predefined list
 source_dir << "${base_dir}/assets"
 
@@ -216,14 +216,14 @@ defining assets that must be copied to the destination folder without additional
 `excludes` - a list of regular expressions that match locations of files or directories that must be completely
 excluded from processing. These files are ignored by Grain and won't be copied to the destination directory. Default:
 
-``` groovy
+``` groovy:nl
 excludes = ['/sass/.*', '/src/.*', '/target/.*']
 ```
              
 `binary_files` - a list of regular expressions that match locations of binary files. Binary files are excluded from
 processing, but, contrary to the files from the excludes list, will be copied to the destination directory. Default:
 
-``` groovy
+``` groovy:nl
 binary_files = [/(?i).*\.(png|jpg|jpeg|gif|ico|bmp|swf ... eot|otf|ttf|woff)$/]
 ```
 
@@ -232,7 +232,7 @@ binary_files = [/(?i).*\.(png|jpg|jpeg|gif|ico|bmp|swf ... eot|otf|ttf|woff)$/]
 unprocessed. The file headers still will be parsed, which is useful when you need to pass
 some configuration options, but do not want Grain to run embedded Groovy code. Default:
 
-``` groovy
+``` groovy:nl
 non_script_files = [/(?i).*\.(js|css)$/]
 ```
 
@@ -241,7 +241,7 @@ non_script_files = [/(?i).*\.(js|css)$/]
 It is generally recommended to add new regular expressions to the default processing configuration and keep
 the default settings, but, if required, you can completely redefine the configuration:
 
-``` groovy
+``` groovy:nl
 excludes << '/misc/.*' // additionally excludes the 'misc' directory
 
 excludes = ['/src/.*', '/target/.*'] // overwrites the default configuration
@@ -274,13 +274,13 @@ All files having `adoc` or `asciidoctor` extensions will be rendered using lates
 
 The files are converted to HTML5 with help of the `Asciidoctor.convert` method:
 
-```ruby
+```ruby:nl
 Asciidoctor.convert(source, :safe => 0, :attributes => attributes)
 ```
 
 You can provide the custom attributes for the document conversion in the following way:
 
-```groovy
+```groovy:nl
 features {
     asciidoc {
         opts = ['source-highlighter': 'coderay',
