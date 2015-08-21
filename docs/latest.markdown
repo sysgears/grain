@@ -167,8 +167,8 @@ cache_dir = "${base_dir}/.cache"
 ```
 
 `source_dir` - directory or a list of directories with website sources. The directories are handled sequentially
-by Grain and if the same files with same relative locations appear in each directory, then the file from the directory
-listed later takes precedence. Default: <br />
+by Grain, and if the same files with same relative locations appear in each directory, then the file from the directory
+listed first takes precedence. Default: <br />
 
 ``` groovy:nl
 source_dir = ["${base_dir}/content", "${base_dir}/theme", "${cache_dir}/compass"]
