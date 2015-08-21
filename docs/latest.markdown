@@ -136,8 +136,8 @@ Grain has the following conventions for website files and directories:
 ###Predefined variables
 
 Grain provides `SiteConfig.groovy` file for general configuration. For specifying configuration in this file, use
-[ConfigSlurper](http://groovy.codehaus.org/ConfigSlurper) syntax. When working with `SiteConfig.groovy`, you
-may use a set of pre-defined variables. These variables are:
+<a href="http://docs.groovy-lang.org/latest/html/gapi/groovy/util/ConfigSlurper.html" target="_blank">ConfigSlurper</a>
+syntax. When working with `SiteConfig.groovy`, you may use a set of pre-defined variables. These variables are:
 
 `site` - access point to website resources and configuration
 
