@@ -137,7 +137,7 @@ Grain has the following conventions for website files and directories:
 
 Grain provides `SiteConfig.groovy` file for general configuration. For specifying configuration in this file, use
 [ConfigSlurper](http://groovy.codehaus.org/ConfigSlurper) syntax. When working with `SiteConfig.groovy`, you
-may use set of pre-defined variables. These variables are:
+may use a set of pre-defined variables. These variables are:
 
 `site` - access point to website resources and configuration
 
@@ -230,8 +230,7 @@ binary_files = [/(?i).*\.(png|jpg|jpeg|gif|ico|bmp|swf ... eot|otf|ttf|woff)$/]
 `non_script_files` - a list of regular expressions that match locations of files which content
 (see [file source](http://localhost:4000/grain/docs/latest/#page-file-source)) must be left
 unprocessed. The file headers still will be parsed, which is useful when you need to pass
-some configuration options, but do not want Grain to process the content and run embedded Groovy
-code. Default:
+some configuration options, but do not want Grain to run embedded Groovy code. Default:
 
 ``` groovy
 non_script_files = [/(?i).*\.(js|css)$/]
@@ -239,8 +238,8 @@ non_script_files = [/(?i).*\.(js|css)$/]
 
 ####Customizing source processing settings
 
-It is generally recommended to add new regular expressions to the default processing configuration instead of
-overwriting the settings with new values:
+It is generally recommended to add new regular expressions to the default processing configuration and keep
+the default settings, but, if required, you can completely redefine the configuration:
 
 ``` groovy
 excludes << '/misc/.*' // additionally excludes the 'misc' directory
@@ -486,7 +485,7 @@ To include large blocks of Groovy code one can use notation below:
 The `if` above will work as expected, e.g. the span will be rendered into page contents only when the criteria is met.
 Also note that variables declared in one piece of embedded code will be available anywhere on the page.
 
-####Disable Groovy code interpolation
+####Disabling Groovy code interpolation
 
 To render embedded Groovy code as is, you need to disable Groovy code interpolation by using the following form of
 escaping:
@@ -526,6 +525,8 @@ Grain generates the following header keys on initial loading of resource from so
   - `lastUpdated` - resource file last update time in milliseconds
   - `text` - text contents of resource file
   - `bytes` - byte contents of resource file
+  - `script` - indicates whether the embedded Groovy code processing is enabled for the file (false if the file location
+  matches an expression from the `non_script_files` configuration list, true otherwise)
 
 `page` variable is just a Groovy map. You can add keys to this map in the page code
 or make other changes, but these changes are only visible to the page itself,
@@ -547,6 +548,25 @@ defined in every site page one could do:
 ``` jsp:nl
 <%= site.pages.collect { it.title } %>
 ```
+
+###Disabling code processing
+
+Besides defining whether the page content will be processed using the `non_script_files` configuration setting:
+
+``` groovy:nl
+non_script_files = [/(?i).*\.(js|css)$/]
+```
+
+You can overwrite the configuration for a single file by changing the value of the `script` key in the header:
+
+``` yaml:nl
+---
+script: true # true - evaluate embedded Groovy expressions, false - render the page content as is
+#...
+---
+```
+
+This usually comes in handy when you need to pass variables to stylesheet or javascript files.
 
 ##Layouts
 
