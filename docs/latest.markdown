@@ -149,8 +149,8 @@ Though in many situations you wouldn't touch default conventions, in some cases 
 to have the possibility for more fine-grained control over Grain website structure on the filesystem.
 
 > Default configuration settings can be found in the
-[src/main/resources/DefaultConfig.groovy](https://github.com/sysgears/grain/blob/master/src/main/resources/DefaultConfig.groovy)
-file.
+<a href="https://github.com/sysgears/grain/blob/master/src/main/resources/DefaultConfig.groovy" target="_blank">
+src/main/resources/DefaultConfig.groovy</a> file.
 
 You can control website filesystem layout by modifying the following parameters in the `/SiteConfig.groovy`:
 
@@ -228,9 +228,9 @@ binary_files = [/(?i).*\.(png|jpg|jpeg|gif|ico|bmp|swf ... eot|otf|ttf|woff)$/]
 ```
 
 `non_script_files` - a list of regular expressions that match locations of files which content
-(see [file source](http://localhost:4000/grain/docs/latest/#page-file-source)) must be left
-unprocessed. The file headers still will be parsed, which is useful when you need to pass
-some configuration options, but do not want Grain to run embedded Groovy code. Default:
+(see [file source](#page-file-source)) must be left unprocessed. The file headers still will be parsed,
+which is useful when you need to pass some configuration options, but do not want Grain to run embedded
+Groovy code. Default:
 
 ``` groovy:nl
 non_script_files = [/(?i).*\.(js|css)$/]
