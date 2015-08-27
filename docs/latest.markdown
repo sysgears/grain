@@ -136,8 +136,8 @@ Grain has the following conventions for website files and directories:
 ###Predefined variables
 
 Grain provides `SiteConfig.groovy` file for general configuration. For specifying configuration in this file, use
-[ConfigSlurper](http://groovy.codehaus.org/ConfigSlurper) syntax. When working with `SiteConfig.groovy`, you
-may use set of pre-defined variables. These variables are:
+<a href="http://docs.groovy-lang.org/latest/html/gapi/groovy/util/ConfigSlurper.html" target="_blank">ConfigSlurper</a>
+syntax. When working with `SiteConfig.groovy`, you may use a set of pre-defined variables. These variables are:
 
 `site` - access point to website resources and configuration
 
@@ -148,25 +148,104 @@ may use set of pre-defined variables. These variables are:
 Though in many situations you wouldn't touch default conventions, in some cases it is still beneficial
 to have the possibility for more fine-grained control over Grain website structure on the filesystem.
 
-You can control website filesystem layout by modifying the following parameters in `SiteConfig.Groovy`:
+> Default configuration settings can be found in the
+<a href="https://github.com/sysgears/grain/blob/master/src/main/resources/DefaultConfig.groovy" target="_blank">
+src/main/resources/DefaultConfig.groovy</a> file.
 
-`cache_dir` - directory where cache files of various Grain subsystems are stored (default: ".cache") 
+You can control website filesystem layout by modifying the following parameters in the `/SiteConfig.groovy`:
 
-`source_dir` - directory or list of directories with website sources. The directories are handled sequentially
-by Grain and if the same files with same relative locations appear in each directory, then the file from the directory
-listed later takes precedence (default: ["content", "theme", ".cache/compass"])
+`destination_dir` - destination directory for generated website files, default: <br />
 
-`include_dir` - directory or list of directories with includes (default: ["includes"])
+``` groovy:nl
+destination_dir = "${base_dir}/target"
+```
 
-`layout_dir` - directory or list of directories with layouts (default: ["layouts"])
+`cache_dir` - directory where cache files of various Grain subsystems are stored, default: <br />
 
-`destination_dir` - destination directory for generated website files (default: "target")
+``` groovy:nl
+cache_dir = "${base_dir}/.cache"
+```
 
-`excludes` - a list of regular expressions, that match locations of files or directories to be excluded
-             from final website: ['/sass/.*', '/src/.*', '/target/.*'])
+`source_dir` - directory or a list of directories with website sources. The directories are handled sequentially
+by Grain, and if the same files with same relative locations appear in each directory, then the file from the directory
+listed first takes precedence. Default: <br />
+
+``` groovy:nl
+source_dir = ["${base_dir}/content", "${base_dir}/theme", "${cache_dir}/compass"]
+```
+
+`include_dir` - directory or a list of directories with includes, default: <br />
+
+``` groovy:nl
+include_dir = ["${theme_dir}/includes"]
+```
+
+`layout_dir` - directory or a list of directories with layouts, default: <br />
+
+``` groovy:nl
+layout_dir = ["${theme_dir}/layouts"]
+```
+
+####Customizing filesystem layout
+
+Custom destination and cache folders can be specified as the following:
+
+``` groovy:nl
+destination_dir = "${base_dir}/site"
+
+cache_dir = "${base_dir}/.site_cache"
+```
+
+To redefine the source, include or layout folders, you should provide a list of directories, or,
+if you want to keep the default settings, add your directories to the existing list loaded from
+the default configuration:
+
+``` groovy:nl
+// adding a directory to the predefined list
+source_dir << "${base_dir}/assets"
+
+// redefining the folders altogether:
+source_dir = ["${base_dir}/content", "${base_dir}/theme", "${base_dir}/assets"]
+```
+
+###Source processing configuration
+
+This settings can be used for excluding files or directories located in the source folders, or for
+defining assets that must be copied to the destination folder without additional processing.
+
+`excludes` - a list of regular expressions that match locations of files or directories that must be completely
+excluded from processing. These files are ignored by Grain and won't be copied to the destination directory. Default:
+
+``` groovy:nl
+excludes = ['/sass/.*', '/src/.*', '/target/.*']
+```
              
-`binary_files` - a list of regular expressions, that match locations of <br/>
-binary files (default: [/(?i).*\.(png|jpg|jpeg|gif|ico|bmp|swf|avi|mkv|ogg|mp3|mp4)$/])                
+`binary_files` - a list of regular expressions that match locations of binary files. Binary files are excluded from
+processing, but, contrary to the files from the excludes list, will be copied to the destination directory. Default:
+
+``` groovy:nl
+binary_files = [/(?i).*\.(png|jpg|jpeg|gif|ico|bmp|swf ... eot|otf|ttf|woff)$/]
+```
+
+`non_script_files` - a list of regular expressions that match locations of files which content
+(see [file source](#page-file-source)) must be left unprocessed. The file headers still will be parsed,
+which is useful when you need to pass some configuration options, but do not want Grain to run embedded
+Groovy code. Default:
+
+``` groovy:nl
+non_script_files = [/(?i).*\.(js|css)$/]
+```
+
+####Customizing source processing settings
+
+It is generally recommended to add new regular expressions to the default processing configuration and keep
+the default settings, but, if required, you can completely redefine the configuration:
+
+``` groovy:nl
+excludes << '/misc/.*' // additionally excludes the 'misc' directory
+
+excludes = ['/src/.*', '/target/.*'] // overwrites the default configuration
+```
 
 ###Preview configuration
 
@@ -189,9 +268,26 @@ section of the configuration file.
 There is only one implementation of reStructuredText at this time - via Python docutils. All files having `rst`
 extension will be rendered using this implementation.
 
-####AsciiDoctor markup feature
+####Asciidoctor markup feature
 
 All files having `adoc` or `asciidoctor` extensions will be rendered using latest asciidoc Ruby gem.
+
+The files are converted to HTML5 with help of the `Asciidoctor.convert` method:
+
+```ruby:nl
+Asciidoctor.convert(source, :safe => 0, :attributes => attributes)
+```
+
+You can provide the custom attributes for the document conversion in the following way:
+
+```groovy:nl
+features {
+    asciidoc {
+        opts = ['source-highlighter': 'coderay',
+                'icons': 'font']
+    }
+}
+```
 
 ####Syntax highlighting feature
 
@@ -389,6 +485,15 @@ To include large blocks of Groovy code one can use notation below:
 The `if` above will work as expected, e.g. the span will be rendered into page contents only when the criteria is met.
 Also note that variables declared in one piece of embedded code will be available anywhere on the page.
 
+####Disabling Groovy code interpolation
+
+To render embedded Groovy code as is, you need to disable Groovy code interpolation by using the following form of
+escaping:
+
+```
+`!`${2 + 2}`!`
+```
+
 ###Variables on a page
 Grain has several variables reserved, others can be freely introduced on a page.
 
@@ -420,6 +525,8 @@ Grain generates the following header keys on initial loading of resource from so
   - `lastUpdated` - resource file last update time in milliseconds
   - `text` - text contents of resource file
   - `bytes` - byte contents of resource file
+  - `script` - indicates whether the embedded Groovy code processing is enabled for the file (false if the file location
+  matches an expression from the `non_script_files` configuration list, true otherwise)
 
 `page` variable is just a Groovy map. You can add keys to this map in the page code
 or make other changes, but these changes are only visible to the page itself,
@@ -441,6 +548,25 @@ defined in every site page one could do:
 ``` jsp:nl
 <%= site.pages.collect { it.title } %>
 ```
+
+###Disabling code processing
+
+Besides defining whether the page content will be processed using the `non_script_files` configuration setting:
+
+``` groovy:nl
+non_script_files = [/(?i).*\.(js|css)$/]
+```
+
+You can overwrite the configuration for a single file by changing the value of the `script` key in the header:
+
+``` yaml:nl
+---
+script: true # true - evaluate embedded Groovy expressions, false - render the page content as is
+#...
+---
+```
+
+This usually comes in handy when you need to pass variables to stylesheet or javascript files.
 
 ##Layouts
 

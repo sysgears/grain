@@ -170,7 +170,8 @@ class Registry implements FileChangeListener, Service {
         }
         resourceConfig.dateCreated = resourceFile.dateCreated()
         resourceConfig.lastUpdated =  resourceFile.lastModified()
-        resourceConfig.script = nonScriptFiles.every { !resourceFile.canonicalPath.matches(it as String) }
+        resourceConfig.script = resourceConfig.script != null ? resourceConfig.script :
+            nonScriptFiles.every { !resourceFile.canonicalPath.matches(it as String) }
         resourceConfig.url = defaultUrl
         resourceConfig.location = location
         resourceConfig.markup = markup
