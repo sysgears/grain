@@ -1,3 +1,13 @@
+## 0.6.6 / 2015-08-27
+
+
+  * Added support of dynamic revision numbers, like 0.6.+. Concrete values still must be specified for the major
+  and minor numbers of the Grain version -- declarations like 0+, 0.+ or 0.6+ won't accepted. This is done on purpose
+  to ensure that a theme always uses compatible Grain version
+  * Fixed an issue when a value of the `script` header key was overwritten during parsing
+  * Added defaults for `non_script_files` site configuration option, see
+  <a href="http://sysgears.com/grain/docs/latest/#source-processing-configuration" target="_blank">source processing</a>
+
 ## 0.6.5 / 2015-08-04
 
 
