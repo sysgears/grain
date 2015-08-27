@@ -4,14 +4,6 @@ apply plugin: 'maven'
 apply plugin: 'groovy'
 apply plugin: 'idea'
 apply plugin: 'signing'
-group = 'com.sysgears.grain'
-version = '0.7.0-SNAPSHOT'
-defaultTasks 'build'
-
-def mainClassName = 'com.sysgears.grain.Main'
-def compatibilityVersion = 1.6
-sourceCompatibility = compatibilityVersion
-targetCompatibility = compatibilityVersion
 
 buildscript {
     repositories { mavenCentral() }
@@ -19,13 +11,28 @@ buildscript {
 }
 
 ext {
+    applicationProperties = new Properties()
+    applicationProperties.load(new FileInputStream("$project.projectDir/src/main/resources/application.properties"))
+
+    grainVersion = applicationProperties.getProperty('grain.version')
+    if (!grainVersion) { throw new RuntimeException('Grain version is not set in the properties file') }
+
     title = 'Grain Static Website Building Framework'
     url = 'http://www.sysgears.com/grain'
     licenseName = 'Apache License, Version 2.0'
     licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
     localGHPagesRepoDir = '../grain.gh-pages'
     localGHPagesRepoCanonicalPath = new File(localGHPagesRepoDir).canonicalPath
+    javaCompatibilityVersion = 1.6
+    mainClassName = 'com.sysgears.grain.Main'
 }
+
+group = 'com.sysgears.grain'
+version = project.grainVersion
+sourceCompatibility = project.javaCompatibilityVersion
+targetCompatibility = project.javaCompatibilityVersion
+
+defaultTasks 'build'
 
 configurations.all {
     exclude group: 'commons-logging'
@@ -38,9 +45,6 @@ configurations {
 
 repositories {
     mavenCentral()
-    maven {
-        url 'http://repo.sysgears.com/releases/'
-    }
 }
 
 dependencies {
@@ -128,7 +132,7 @@ task createSharedManifest(dependsOn: getToolsMD5Checksum) {
                 'Built-Rev': project.toolsMD5,
                 'Built-Date': new Date(),
                 'Built-JDK': System.getProperty('java.version'),
-                'Main-Class': mainClassName
+                'Main-Class': project.mainClassName
     }
 }
 
