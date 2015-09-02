@@ -156,12 +156,21 @@ class Registry implements FileChangeListener, Service {
      */
     private void add(final File resourceFile) {
         log.debug "Adding file ${resourceFile} to registry"
-        def location = locator.getLocation(resourceFile)
-        def defaultUrl = location.replaceAll(/\/index\.?[^.]*$/, '/')
-        def markup = markupDetector.getMarkupType(resourceFile) 
-        def page = !(markup in ['binary', 'text'])  
+
         def resourceConfig = [:]
         def nonScriptFiles = config.non_script_files ?: []
+
+        def location = locator.getLocation(resourceFile)
+        def markup = markupDetector.getMarkupType(resourceFile)
+
+        // sets the resource type to page for html, htm, markdown, md, asciidoctor, adoc and rst files
+        def page = !(markup in ['binary', 'text'])
+
+        // sets the default resource url to the resource location. If the resource is a page then
+        //  - removes a file name from the url for all index files: '/test/index.markdown' -> '/test/'
+        //  - rewrites a file extension for all the other files to .html: '/test/test.markdown' -> '/test/test.html'
+        def defaultUrl = !page ? location : location.matches(/.*\/index\.?[^.]*$/) ?
+            location.replaceAll(/\/index\.?[^.]*$/, '/') : location.replaceAll(/\.[^.\/]*$/, '.html')
 
         if (markup != 'binary') {
             def resourceParser = new ResourceParser(resourceFile)
