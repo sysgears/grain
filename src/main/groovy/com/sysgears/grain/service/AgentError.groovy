@@ -1,7 +1,7 @@
 package com.sysgears.grain.service
 
 /**
- * Created by victor on 2/12/14.
+ * Holds the error thrown by an agent state.
  */
 class AgentError {
     public Throwable cause

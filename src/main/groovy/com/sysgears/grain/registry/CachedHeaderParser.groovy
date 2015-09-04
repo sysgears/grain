@@ -18,6 +18,8 @@ package com.sysgears.grain.registry
 
 import com.sysgears.grain.annotations.Uncached
 import com.sysgears.grain.preview.FileChangeListener
+import com.sysgears.grain.service.AgentError
+import groovyx.gpars.agent.Agent
 
 import javax.inject.Inject
 
@@ -30,18 +32,15 @@ class CachedHeaderParser implements HeaderParser, FileChangeListener {
     /** Uncached header parser */
     @Inject @Uncached private HeaderParser headerParser
 
-    /** Location -> header cache */
-    private final Map<File, Map> cache = [:]
+    /** Header cache state agent */
+    private final Agent cache = new Agent(new HeaderCacheState())
 
     /**
      * @inheritDoc
      */
     @Override
     Map<String, Object> parse(File resourceFile) throws HeaderParseException {
-        if (!cache[resourceFile]) {
-            cache[resourceFile] = headerParser.parse(resourceFile)
-        }
-        (Map)cache[resourceFile].clone()
+        cache.sendAndWait { it.get(resourceFile, { headerParser.parse(resourceFile) }) }.getOrThrowError().clone()
     }
 
     /**
@@ -49,10 +48,7 @@ class CachedHeaderParser implements HeaderParser, FileChangeListener {
      */
     @Override
     Map<String, Object> parse(File resourceFile, String header) throws HeaderParseException {
-        if (!cache[resourceFile]) {
-            cache[resourceFile] = headerParser.parse(resourceFile, header)
-        }
-        (Map)cache[resourceFile].clone()
+        cache.sendAndWait { it.get(resourceFile, {headerParser.parse(resourceFile, header)}) }.getOrThrowError().clone()
     }
 
     /**
@@ -60,6 +56,53 @@ class CachedHeaderParser implements HeaderParser, FileChangeListener {
      */
     @Override
     public void fileChanged(File file) {
-        cache.remove(file)
+        cache << { it.remove(file) }
+    }
+
+    /**
+     * The state provides methods for accessing the header cache.
+     */
+    private static class HeaderCacheState {
+
+        /* The location -> header cache map */
+        private final Map<File, Map> headers = [:]
+
+        /**
+         * Returns the headers for the given file location.
+         *
+         * @param location a file location
+         * @param closure must provide the headers that will be cached if the value is not found for the location
+         * @return the cached or resolved headers for the given file location, agent error in case of exception
+         */
+        public StateResponse get(File location, closure) {
+            try {
+                if (headers[location] == null) { headers[location] = closure() }
+                [response: headers[location]] as StateResponse
+            } catch (e) {
+                [error: new AgentError(cause: e)] as StateResponse
+            }
+        }
+
+        /**
+         * Removes the headers from the cache for a file location.
+         * @param location a file location to remove headers for
+         */
+        public void remove(File location) {
+            headers.remove(location)
+        }
+
+        /**
+         * Agent state response holder.
+         */
+        static class StateResponse {
+
+            Map response
+            AgentError error
+
+            def getOrThrowError() {
+                if (error) { throw error.cause }
+                response
+            }
+        }
     }
 }
