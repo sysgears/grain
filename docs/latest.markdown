@@ -667,6 +667,35 @@ what markup should be used for rendering
 
 Along with these keys, resource representation holds all the properties specified in content files' headers.
 
+###Resource mapping
+
+Grain assigns a default resource URL based on the resource location. For example: if the favicon.ico is placed
+in the /images/icons/ folder, the icon's default url will be the /images/icons/favicon.ico.
+
+Additionally, Grain removes a file name from the url for index page files:
+
+``` :nl
+file location    -> file url
+
+/index           -> /
+/index.html      -> /
+/index.md        -> /
+/test/index.html -> /test/
+/test/index.rst  -> /test/
+/test/index.adoc -> /test/
+```
+
+and rewrites a file extension for `.md`, `.adoc` and `.rst` files, so they can be rendered by a browser:
+
+``` :nl
+file location    -> file url
+
+/test.adoc       -> /test.html
+/test.markdown   -> /test.html
+/test/test.adoc  -> /test/test.html
+/test/test.rst   -> /test/test.html
+```
+
 ###Mapping customization
 
 The list of all the resources after any site change is passed to the `SiteConfig.groovy -> resource_mapper` closure.
