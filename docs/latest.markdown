@@ -10,19 +10,19 @@ implementing custom static sites or generating software documentation.
 Grain comes with the following high-level features:
 
  - preview mode that allows to make and see changes on the fly
- - support of embedded Groovy code for any content files
- - conventions that allow to process content sources using Groovy code
- - support of Markdown, reStructuredText and AsciiDoctor
- - support of SASS/SCSS
- - code highlighting via Pygments
- - sources compression and minification
+ - support of embedded Groovy code for any content files (including stylesheet and JS files)
+ - configurable conventions that allow to process content sources using Groovy code
+ - Markdown, reStructuredText and AsciiDoctor markup support
+ - code highlighting via Python Pygments
+ - built-in SASS/SCSS support
+ - compression and minification for sources
 
 ####Grain themes
 
 Grain website project is called *theme*. Theme defines site structure, appearance and content arrangement.
 Typically, Grain theme ships with:
 
- - website and Grain features configuration
+ - website and Grain configuration
  - HTML page templates, called *layouts*
  - stylesheets, javascripts and images
  - code sources to process site pages (for instance, apply pagination)
@@ -42,9 +42,9 @@ Download and install the appropriate JDK for your operating system.
 No installation required. Just download one of the [themes](http://sysgears.com/grain/themes/) and Grain will be
 loaded automatically as a JAR dependency.
 
-If you are new to Grain, we recommend to start with ready-made Grain [Octopress](http://sysgears.com/grain/themes/octopress/) theme,
-it would give you a good overview on how to efficiently use Grain features.
-To build website from scratch, download Grain theme [template](http://sysgears.com/grain/themes/template/).
+If you are new to Grain, we recommend to start with the ready-made [Grain Octopress](http://sysgears.com/grain/themes/octopress/)
+theme, it will give you a good overview on how to efficiently use most of the Grain features. To build a website from
+scratch, download the Grain [Theme Template](http://sysgears.com/grain/themes/template/).
 
 ##Getting Started
 
@@ -65,8 +65,8 @@ to launch your website in preview mode.
 > Here and further command-line snippets work for Unix-like systems only. In case you are running Grain from
 Windows simply use `grainw` command instead of `./grainw`.
 
-After that you can view your website by pointing a web browser to `http://localhost:4000`, then you can add/change/delete
-files of your website and see all changes in the web browser immediately after refreshing the page.
+After that you can view your website by pointing a web browser to `http://localhost:4000`. You can add, change or delete
+website files, and see all changes in the web browser immediately after refreshing the page.
 
 ###Generate and deploy
 When your site is ready for going live you can generate all the website files by executing
@@ -126,18 +126,21 @@ Grain has the following conventions for website files and directories:
   - content - website content, organized the same way as in resulting website
   - theme - top level directory for the site content representation theme
     - includes - common page parts, included at the layouts side, such as header, footer, etc.
-    - layouts - page layouts
+    - layouts - page layouts (templates)
     - src - any Groovy classes used for processing content
     - ... - other assets, organized the same way as in resulting website
   - SiteConfig.groovy - website configuration parameters
   
 ##Configuration
 
+Grain provides `SiteConfig.groovy` file for general configuration, this file is located right in the root folder of any
+Grain theme. Configuration settings are specified with the
+<a href="http://docs.groovy-lang.org/latest/html/gapi/groovy/util/ConfigSlurper.html" target="_blank">ConfigSlurper</a>
+syntax.
+
 ###Predefined variables
 
-Grain provides `SiteConfig.groovy` file for general configuration. For specifying configuration in this file, use
-<a href="http://docs.groovy-lang.org/latest/html/gapi/groovy/util/ConfigSlurper.html" target="_blank">ConfigSlurper</a>
-syntax. When working with `SiteConfig.groovy`, you may use a set of pre-defined variables. These variables are:
+When working with `SiteConfig.groovy`, you may use a couple of pre-defined variables:
 
 `site` - access point to website resources and configuration
 
