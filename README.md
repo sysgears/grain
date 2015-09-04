@@ -1,10 +1,15 @@
 Grain
 =====
 
-Grain is a lightweight and yet powerful static website generator for [Groovy][] which purpose is
+Grain is a lightweight and yet powerful static website generator for Groovy which purpose is
 to make demanding site implementation intuitive and enjoyable. Grain framework is equally well-suited
 for any static website, whether it is a complex company site or a neat blog. The framework applies
 simple website building concepts and allows to develop rapidly by making and seeing changes on the fly.
+
+Getting Started
+===============
+
+For further information please visit [Grain project website][Grain].
 
 Grain Community
 ===============
@@ -14,11 +19,6 @@ There are many ways of getting involved:
 - [Mailing List][] - reach us or ask the community for help
 - [Issue Tracker][] - make Grain better by suggesting improvements
 - [Twitter][] - keep up with the latest Grain news and announcements
-
-Getting Started
-===============
-
-For further information please visit [Grain project website][Grain].
 
 Contributing
 ============
@@ -109,7 +109,6 @@ License
 Grain is licensed under the terms of the [Apache License, Version 2.0][].
 
 [Grain]: http://sysgears.com/grain/
-[Groovy]: http://groovy.codehaus.org/
 [Apache License, Version 2.0]: http://www.apache.org/licenses/LICENSE-2.0.html
 [Developer Certificate of Origin]: https://raw.github.com/sysgears/grain/master/DCO
 [Mailing List]: https://groups.google.com/forum/#!forum/grain-user
