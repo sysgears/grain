@@ -1,5 +1,4 @@
-Grain
-=====
+![Banner](https://raw.githubusercontent.com/sysgears/grain/master/banner.png)
 
 Grain is a lightweight and yet powerful static website generator for Groovy which purpose is
 to make demanding site implementation intuitive and enjoyable. Grain framework is equally well-suited
