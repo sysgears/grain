@@ -840,6 +840,8 @@ The tag lib class constructor should expect one argument - standard Grain taglib
 Example:
 
 ``` groovy:nl SiteConfig.groovy
+import com.example.grain.taglib.MyTagLib
+...
 tag_libs = [OctopressTagLib, MyTagLib]
 ```
 
