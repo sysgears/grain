@@ -51,8 +51,8 @@ public class RubyCompass extends AbstractCompass {
 
         def rpc = ruby.rpc
 
-        rpc.Ipc.install_gem('sass', '3.3.0.alpha.149')
-        rpc.Ipc.install_gem('compass', '0.12.2')
+        rpc.Ipc.install_gem('sass', '3.4.19')
+        rpc.Ipc.install_gem('compass', '1.0.3')
         
         rpc.Ipc.add_lib_path new File(settings.toolsHome, 'compass-bridge').canonicalPath
         rpc.Ipc.require('compass_bridge')
