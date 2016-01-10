@@ -79,6 +79,9 @@ class SiteGenerator {
 
         log.info "Generating resources... Time elapsed: ${System.currentTimeMillis() - startTime}"
         urlRegistry.resources.each { resource ->
+            if (!resource.url) {
+                throw new RuntimeException("Wrong url '${resource.url}' for resource at ${resource.location}")
+            }
             try {
                 def url = resource.url
                 def name = url.endsWith('/') ? url + 'index.html' : url
