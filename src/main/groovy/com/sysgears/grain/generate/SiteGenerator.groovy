@@ -79,19 +79,19 @@ class SiteGenerator {
 
         log.info "Generating resources... Time elapsed: ${System.currentTimeMillis() - startTime}"
         urlRegistry.resources.each { resource ->
-            def url = resource.url
-            def name = url.endsWith('/') ? url + 'index.html' : url
-            def file = new File(destDir, name)
-            def parentDir = file.parentFile
-            if (!parentDir.exists() && !parentDir.mkdirs()) {
-                throw new RuntimeException("Failed to create dirs for file: ${file}")
-            }
-            file.withOutputStream { os ->
-                try {
-                    os.write(compressor.compress(resource.location, resource.render().bytes))
-                } catch (Throwable t) {
-                    throw new RuntimeException("While generating ${resource.location}", t)
+            try {
+                def url = resource.url
+                def name = url.endsWith('/') ? url + 'index.html' : url
+                def file = new File(destDir, name)
+                def parentDir = file.parentFile
+                if (!parentDir.exists() && !parentDir.mkdirs()) {
+                    throw new RuntimeException("Failed to create dirs for file: ${file}")
                 }
+                file.withOutputStream { os ->
+                    os.write(compressor.compress(resource.location, resource.render().bytes))
+                }
+            } catch (Throwable t) {
+                throw new RuntimeException("While generating ${resource.location}", t)
             }
         }
         log.info "Perf data: ${perf}"
