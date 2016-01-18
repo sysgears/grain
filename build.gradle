@@ -66,25 +66,18 @@ dependencies {
     compile 'commons-io:commons-io:2.4'
     compile 'commons-cli:commons-cli:1.2'
     compile 'org.codehaus.groovy:groovy-xml:2.1.2'
-    compile 'org.jsoup:jsoup:1.7.2'
     compile('ch.qos.logback:logback-classic:1.0.13') {
         exclude group: 'org.slf4j'
     }
     compile 'org.slf4j:jcl-over-slf4j:1.7.5'
 
-    compile 'oauth.signpost:signpost-core:1.2.1.2'
-    compile 'oauth.signpost:signpost-commonshttp4:1.2.1.2'
-
     compile 'com.google.inject:guice:4.0-beta'
     compile 'com.google.inject.extensions:guice-assistedinject:4.0-beta'
 
-    compile 'javax.inject:javax.inject:1'
-
     compile 'org.codehaus.groovy:groovy-ant:2.2.1'
 
-    
     compile 'org.pegdown:pegdown:1.4.2'
-    
+
     testCompile('org.spockframework:spock-core:0.7-groovy-2.0') {
         exclude module: 'groovy-all'
     }
@@ -92,7 +85,7 @@ dependencies {
         exclude module: 'groovy-all'
     }
 
-    compile 'org.codehaus.groovy:groovy:2.2.1'
+    compile 'org.codehaus.groovy:groovy:2.4.5'
 
     deployerJars 'org.apache.maven.wagon:wagon-ssh:2.2'
 }
