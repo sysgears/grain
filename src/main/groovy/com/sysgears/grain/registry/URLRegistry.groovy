@@ -92,10 +92,16 @@ class URLRegistry implements SiteChangeListener {
 
         def resourceMapper = config.resource_mapper
         if (resourceMapper) {
-            urlMap = resourceMapper(urlMap.values()).
-                    collectEntries {
-                        [it.url as String, it]
-                    }
+            // Gets data from ResourceMapper first.
+            def resources = resourceMapper(urlMap.values())
+            // Checks whether resources contain maps with the same urls.
+            // If so, RuntimeException is thrown.
+            resources.groupBy { it.url }.find { it.value.size() > 1 }?.value?.head()?.with { res ->
+                throw new RuntimeException("Encountered duplicate resource URL: ${res.url}")
+            }
+            urlMap = resources.collectEntries {
+                [it.url as String, it]
+            }
             locationMap = urlMap.values().collectEntries { [it.location as String, it.url as String] }
         }
 
