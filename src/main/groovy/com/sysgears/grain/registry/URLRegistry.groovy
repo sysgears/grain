@@ -94,8 +94,8 @@ class URLRegistry implements SiteChangeListener {
         if (resourceMapper) {
             // Gets data from ResourceMapper first.
             def resources = resourceMapper(urlMap.values())
-            // Checks whether resources contain maps with the same urls.
-            // If so, RuntimeException is thrown.
+            // Checks if there are resources that share the same url,
+            // and throws runtime exception if this is the case
             resources.groupBy { it.url }.find { it.value.size() > 1 }?.value?.head()?.with { res ->
                 throw new RuntimeException("Encountered duplicate resource URL: ${res.url}")
             }
