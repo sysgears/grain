@@ -15,7 +15,7 @@ layout_dir = ["${theme_dir}/layouts"]
 
 
 // Excluded files or directories.
-excludes = ['/sass/.*', '/src/.*', '/target/.*', '.*.swp']
+excludes = ['/sass/.*', '/src/.*', '/target/.*', '.*\\.swp']
 
 // Binary files or directories that contain binary files.
 binary_files = [/(?i).*\.(png|jpg|jpeg|gif|ico|bmp|swf|avi|mkv|ogg|mp3|mp4|eot|otf|ttf|woff)$/]
