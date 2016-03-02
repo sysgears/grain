@@ -80,6 +80,9 @@ class GrainServlet extends HttpServlet {
 
         synchronized (mutex) {
             def resource = urlRegistry.getResource(uri)
+            // If the resource has not been found and filename at the end of url is not specified
+            // then tries to find the resource by adding index.html prefix to the path.
+            if (!resource && uri.endsWith("/")) resource = urlRegistry.getResource(uri + "index.html")
             if (!resource) {
                 if (urlRegistry.getResource(uri + "/")) {
                     response.setHeader('Location', "$uri/")
