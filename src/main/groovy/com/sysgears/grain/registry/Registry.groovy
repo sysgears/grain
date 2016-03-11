@@ -167,8 +167,10 @@ class Registry implements FileChangeListener, Service {
         def page = !(markup in ['binary', 'text'])
 
         // sets the default resource url to the resource location. If the resource is a page then
-        // rewrites a file extension for all the other files to .html: '/test/test.markdown' -> '/test/test.html'
-        def defaultUrl = !page ? location : location.replaceAll(/\.[^.\/]*$/, '.html')
+        //  - removes a file name from the url for all index files: '/test/index.markdown' -> '/test/'
+        //  - rewrites a file extension for all the other files to .html: '/test/test.markdown' -> '/test/test.html'
+        def defaultUrl = !page ? location : location.matches(/.*\/index\.?[^.]*$/) ?
+            location.replaceAll(/\/index\.?[^.]*$/, '/') : location.replaceAll(/\.[^.\/]*$/, '.html')
 
         if (markup != 'binary') {
             def resourceParser = new ResourceParser(resourceFile)
