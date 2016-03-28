@@ -18,7 +18,7 @@ layout_dir = ["${theme_dir}/layouts"]
 excludes = ['/sass/.*', '/src/.*', '/target/.*', '.*\\.swp']
 
 // Binary files or directories that contain binary files.
-binary_files = [/(?i).*\.(png|jpg|jpeg|gif|ico|bmp|swf|avi|mkv|ogg|mp3|mp4|eot|otf|ttf|woff)$/]
+binary_files = [/(?i).*\.(png|jpg|jpeg|gif|ico|bmp|swf|avi|mkv|ogg|mp3|mp4|eot|otf|ttf|woff|woff2)$/]
 
 // Non-script files or directories with non-script files.
 non_script_files = [/(?i).*\.(js|css)$/]
