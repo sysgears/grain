@@ -227,7 +227,7 @@ excludes = ['/sass/.*', '/src/.*', '/target/.*']
 processing, but, contrary to the files from the excludes list, will be copied to the destination directory. Default:
 
 ``` groovy:nl
-binary_files = [/(?i).*\.(png|jpg|jpeg|gif|ico|bmp|swf ... eot|otf|ttf|woff)$/]
+binary_files = [/(?i).*\.(png|jpg|jpeg|gif|ico|bmp|swf ... eot|otf|ttf|woff|woff2)$/]
 ```
 
 `non_script_files` - a list of regular expressions that match locations of files which content
