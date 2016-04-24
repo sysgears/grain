@@ -19,10 +19,16 @@ package com.sysgears.grain.preview
 import com.sysgears.grain.config.Config
 import com.sysgears.grain.init.GrainSettings
 import groovy.util.logging.Slf4j
-import name.pachler.nio.file.*
 
 import javax.inject.Inject
 import javax.inject.Named
+import java.nio.file.ClosedWatchServiceException
+import java.nio.file.FileSystems
+import java.nio.file.Paths
+import java.nio.file.StandardWatchEventKinds
+import java.nio.file.WatchEvent
+import java.nio.file.WatchKey
+import java.nio.file.WatchService
 
 /**
  * File change watcher.
@@ -34,7 +40,7 @@ import javax.inject.Named
 class FileWatcher extends Thread {
 
     /** File watching service */
-    private WatchService watchService = FileSystems.default.newWatchService()
+    private WatchService watchService = FileSystems.getDefault().newWatchService()
 
     /** Watch key to watch directory map */
     private Map<WatchKey, File> keys = [:]
@@ -59,9 +65,9 @@ class FileWatcher extends Thread {
     
     /** Monitored watch events */
     private static final WatchEvent.Kind[] EVENTS = [
-            StandardWatchEventKind.ENTRY_DELETE,
-            StandardWatchEventKind.ENTRY_CREATE,
-            StandardWatchEventKind.ENTRY_MODIFY]
+            StandardWatchEventKinds.ENTRY_DELETE,
+            StandardWatchEventKinds.ENTRY_CREATE,
+            StandardWatchEventKinds.ENTRY_MODIFY]
 
     /**
      * Watches for changes of site files in a background thread.

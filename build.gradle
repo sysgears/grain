@@ -23,7 +23,7 @@ ext {
     licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
     localGHPagesRepoDir = '../grain.gh-pages'
     localGHPagesRepoCanonicalPath = new File(localGHPagesRepoDir).canonicalPath
-    javaCompatibilityVersion = 1.6
+    javaCompatibilityVersion = 1.7
     mainClassName = 'com.sysgears.grain.Main'
 }
 
@@ -51,7 +51,6 @@ dependencies {
     compile('org.codehaus.groovy.modules.http-builder:http-builder:0.5.2') {
         exclude module: 'groovy'
     }
-    compile 'net.sf.jpathwatch:jpathwatch:0.95'
     compile 'org.eclipse.jetty:jetty-server:8.1.8.v20121106'
     compile 'org.eclipse.jetty:jetty-servlet:8.1.8.v20121106'
     compile 'javax.servlet:javax.servlet-api:3.0.1'
