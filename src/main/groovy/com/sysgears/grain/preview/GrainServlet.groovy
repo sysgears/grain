@@ -100,7 +100,7 @@ class GrainServlet extends HttpServlet {
                     response.getOutputStream().write(compressor.compress(resource.location, resource.render().bytes))
                     response.flushBuffer()
                 } catch (EofException e) {
-                    println("Connection closed by client")
+                    log "Server connection closed by client"
                 } catch (t) {
                     t.printStackTrace()
                 }
