@@ -18,6 +18,7 @@ package com.sysgears.grain.preview
 
 import com.sysgears.grain.compress.ResourceCompressor
 import com.sysgears.grain.registry.URLRegistry
+import org.eclipse.jetty.io.EofException
 
 import javax.servlet.ServletConfig
 import javax.servlet.ServletContext
@@ -98,6 +99,8 @@ class GrainServlet extends HttpServlet {
                     response.setStatus(HttpServletResponse.SC_OK)
                     response.getOutputStream().write(compressor.compress(resource.location, resource.render().bytes))
                     response.flushBuffer()
+                } catch (EofException e) {
+                    log "Server connection closed by client"
                 } catch (t) {
                     t.printStackTrace()
                 }

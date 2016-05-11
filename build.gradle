@@ -51,8 +51,8 @@ dependencies {
     compile('org.codehaus.groovy.modules.http-builder:http-builder:0.5.2') {
         exclude module: 'groovy'
     }
-    compile 'org.eclipse.jetty:jetty-server:8.1.8.v20121106'
-    compile 'org.eclipse.jetty:jetty-servlet:8.1.8.v20121106'
+    compile 'org.eclipse.jetty:jetty-server:9.2.15.v20160210'
+    compile 'org.eclipse.jetty:jetty-servlet:9.2.15.v20160210'
     compile 'javax.servlet:javax.servlet-api:3.0.1'
     compile 'org.yaml:snakeyaml:1.11'
     compile 'org.codehaus.gpars:gpars:1.0.0'
