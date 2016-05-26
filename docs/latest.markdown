@@ -644,6 +644,27 @@ layout: page
 
 After that, inside tags.html, you will have `page.tags` set to the value of `page.categories`.
 
+##Theme building phases
+
+Before we move on to the explanation of the resource mapping mechanism, it is crucial to figure out the phases which
+take place within loading and processing resources by Grain.
+
+###Resources processing
+
+During this phase Grain scans all the directories listed in `source_dir` of the SiteConfig.groovy (which was described
+<a href="#filesystem-layout">previously</a>). Then parses headers of all the found resources (no resources are added to
+the url registry at this point). All in all, passes all the found resources to the ResourceMapper. ResourceMapper can
+modify the list of resources in any way: add new pages or assets, change their URLs, update content and headers,
+remove pages, etc. The outcome of this phase is modified list of resources, which can contain new images and pages
+(learn more about <a href="#url-and-resource-mapping">URL and resource mapping</a>).
+
+###Page rendering
+
+Grain adds all the resources returned by the ResourceMapper to the url registry and generates pages.
+Also within this phase Grain tag libraries are being executed (tag libraries will be discussed <a href="#tag-libraries">further</a>).
+
+This way all the resources are generated in one place, and only then they become available for tag libraries that rely on the url registry.
+
 ##URL and resource mapping
 
 ###Introduction
@@ -655,37 +676,23 @@ All sorts of this transformations can be made by using resource mapping mechanis
 it is important to be familiar with how website resources are represented in Grain.
 
 ###Resource representation
-In Grain each resource is represented as plain Groovy map. Each resource should have at least three keys in its map:
+In Grain each resource is represented as a plain Groovy map. Each resource should have at least three keys in its map:
 
--  either `location` - pointing to the resource file in filesystem, or `source` - resource contents
-- `markup` - resource markup used, one of 'html', 'md', 'rst', 'adoc', 'text' or 'binary', `markup` can be omitted
-             if `location` is present   
-- `url` - representing the URL of the resource
+-  either `location` which points to the resource file in filesystem, or `source` which contains resource content
+- `markup` - resource markup, one of 'html', 'md', 'rst', 'adoc', 'text' or 'binary' (it is optional if `location` is defined)
+- `url` - the URL of the resource (it is not strictly tied to the resource location, and can be modified)
 
-`source` and `markup` have higher priority over `location`, when Grain decides what contents should be rendered and 
+Both `source` and `markup` have higher priority over `location` when Grain decides what contents should be rendered and
 what markup should be used for rendering
 
 Along with these keys, resource representation holds all the properties specified in content files' headers.
 
-###Resource mapping
+###Default Resource URL
 
 Grain assigns a default resource URL based on the resource location. For example: if the favicon.ico is placed
 in the /images/icons/ folder, the icon's default url will be the /images/icons/favicon.ico.
 
-Additionally, Grain removes a file name from the url for index page files:
-
-``` :nl
-file location    -> file url
-
-/index           -> /
-/index.html      -> /
-/index.md        -> /
-/test/index.html -> /test/
-/test/index.rst  -> /test/
-/test/index.adoc -> /test/
-```
-
-and rewrites a file extension for `.md`, `.adoc` and `.rst` files, so they can be rendered by a browser:
+Additionally, Grain rewrites a file extension for `.md`, `.adoc` and `.rst` files, so they can be rendered by a browser:
 
 ``` :nl
 file location    -> file url
@@ -696,10 +703,23 @@ file location    -> file url
 /test/test.rst   -> /test/test.html
 ```
 
+###Resource processing phases
+
+Grain processes all the resources located in the source directories in the following way:
+
+ - scans all the `source_dirs` listed in the `SiteConfig.groovy`, and loads the raw list of resources
+ - parses headers of all the found non-binary resources, and then puts the headers as well as other important
+information, like resource `location`, `url`, and `markup`, to the resource representation map
+ - passes all the found resources to the ResourceMapper closure. You can use this closure (described in the next section)
+to modify the list of resources in any way: add new pages or assets, change their URLs, update content and headers, remove
+pages, etc. The outcome of this phase is a modified list of resources, which may contain new assets and pages.
+ - adds all the resources returned by the resource mapper to the url registry and generates the pages by resolving
+layouts and executing tag libraries.
+
 ###Mapping customization
 
-The list of all the resources after any site change is passed to the `SiteConfig.groovy -> resource_mapper` closure.
-The closure is expected to build new list of resources that may have customized URLs, different resource variables, etc.
+As mentioned above, the list of all the site resources is passed to the `SiteConfig.groovy -> resource_mapper` closure.
+The closure is expected to build a new list of resources that may have customized URLs, modified resource variables, etc.
 
 For example the input list of resources might look like this:
 
@@ -783,23 +803,29 @@ Example of using dynamic rendering inside page:
 
 ###Standard tag library
 Grain provides standard tags for most vital tasks, additional tags are recommended to be added to custom theme tag lib.
-    
+
 The standard tags are:
 
-1. **`r`** - looks up resource URL by resource location
-    
+ - **`r`** - looks up resource URL by resource location. This tag allows you to insert both absolute and relative links.
+Relative links are inserted by default. To insert absolute links, you can: set the **`site.generate_absolute_links`**
+variable as **true** (using this parameter prefixes resource relative location with the `site.url` variable); or set the
+**`site.url`** variable so that it doesn't match the standard URL format (for example, setting the `'.'` value as a
+parameter of the `site.url` will result in creating an absolute path - *./path/to/resource.ext*. Note, Grain always
+extracts path from `site.url` (*http://domain.com/your-app*) and adds it to a relative link to create a valid reference
+(*/your-app/path/to/resource.ext*).
+
     ***Parameters***
       1. Resource location
-          
+
     ***Example***
 
     ``` jsp:nl
 <link href="${r '/favicon.png'}" rel="icon"> ```
-1. **`rs`** - looks up multiple resource URLs by their locations
+ - **`rs`** - looks up multiple resource URLs by their locations
 
     ***Parameters***
       1. Resource location list
-      
+
     ***Example***
 
     ``` jsp:nl
@@ -811,17 +837,17 @@ The standard tags are:
        '/javascripts/twitter-options.js']).each { script -> %>
     <script src="${script}" type="text/javascript"></script>
 <% } %> ```
-1. **`include`** - inserts rendered resource contents
+ - **`include`** - inserts rendered resource contents
 
     ***Parameters***
       1. Template location
-      1. *(Optional)* Additional model variables added to `page` map      
+      1. *(Optional)* Additional model variables added to `page` map
 
     ***Example***
 
     ``` jsp:nl
 ${include 'tags.html', [tags: post.categories]} ```
-1. **`md5`** - calculates md5 hash of a byte array
+ - **`md5`** - calculates md5 hash of a byte array
 
     ***Parameters***
       1. Byte array
@@ -830,6 +856,79 @@ ${include 'tags.html', [tags: post.categories]} ```
 
     ``` jsp:nl
 md5(resource.render().bytes) ```
+
+###Getting resources using r tag
+The **`r`** tag was designed to simplify work with resources and make it more flexible, so that at the design stage
+it is no need to know what URL type will be used at the end of development. Thus, the **`r`** tag provides a mechanism
+of setting the type of resources "on the fly" without any changes in your code. For example, having relative paths
+for all the resources in the application, you can easily change them to an absolute. To do so
+the **`site.url`** and **`site.generate_absolute_links`** properties are used.
+
+Grain offers to configure previously mentioned properties in several ways.
+######Relative paths.
+By default, Grain compiles relative links with **`r`** tag:
+
+1. Using domain name only:
+
+```js
+// SiteConfig.groovy
+url = "http://domain.com"
+// html
+input: <link href="${r '/path/to/resource.ext'}">
+output: <link href="/path/to/resource.ext">
+```
+
+2. Using domain name with deploying directory:
+
+```js
+// SiteConfig.groovy
+url = "http://domain.com/your-app"
+// html
+input: <link href="${r '/path/to/resource.ext'}">
+output: <link href="/your-app/path/to/resource.ext">
+
+```
+
+As can be seen from the second example, Grain automatically cuts the sub path and adds it to a relative link
+to compose a valid reference. Therefore, even if an application changes its deploying folder, it is no need to
+update all the links within html, but only one property.
+
+######Absolute paths.
+
+1. Absolute path for local resources:
+
+```js
+// SiteConfig.groovy
+url = "."
+// html
+input: <link href="${r '/path/to/resource.ext'}">
+output: <link href="./path/to/resource.ext">
+```
+
+2. Absolute path using domain name:
+
+```js
+// SiteConfig.groovy
+url = "http://domain.com"
+generate_absolute_links = true
+// html
+input: <link href="${r '/path/to/resource.ext'}">
+output: <link href="http://domain.com/path/to/resource.ext">
+
+```
+
+######CDN
+
+```js
+// SiteConfig.groovy
+cdn_urls = ["http://cdn1.domain.com", "http://cdn2.domain.com"]
+// html
+input: <link href="${r '/path/to/resource.ext'}">
+output: <link href="http://cdn1.domain.com/path/to/resource.ext">
+
+```
+
+You can also set a list of CDNs to the **`cdn_urls`** and Grain automatically building links using these URLs.
 
 ###Custom tag libraries
 You can add your own tags in your website theme. This can be made by implementing your tags as Groovy closures.
