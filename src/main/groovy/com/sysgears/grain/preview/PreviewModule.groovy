@@ -28,6 +28,7 @@ import com.sysgears.grain.registry.Registry
 import com.sysgears.grain.registry.URLRegistry
 import com.sysgears.grain.render.CachedTemplateEngine
 import com.sysgears.grain.render.GrainTemplateEngine
+import com.sysgears.grain.rpc.ruby.GemFinder
 import com.sysgears.grain.rpc.ruby.RubyFinder
 
 /**
@@ -44,10 +45,10 @@ class PreviewModule extends AbstractModule {
     @Provides @javax.inject.Singleton
     public ConfigChangeBroadcaster provideConfigChangeBroadcaster(
             ConfigUpdater configUpdater, ConfigBinder binder,
-            PythonFinder pythonFinder, RubyFinder rubyFinder, 
+            PythonFinder pythonFinder, RubyFinder rubyFinder, GemFinder gemFinder,
             Compass compass) {
         return new ConfigChangeBroadcaster(configUpdater, binder, pythonFinder,
-                rubyFinder, compass)
+                rubyFinder, gemFinder, compass)
     }
 
     @Provides @javax.inject.Singleton

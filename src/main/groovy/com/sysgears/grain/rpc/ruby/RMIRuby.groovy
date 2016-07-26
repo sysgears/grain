@@ -43,6 +43,9 @@ public class RMIRuby implements Ruby {
     /** Ruby system command finder */
     @Inject private RubyFinder rubyFinder
 
+    /** Gem system command finder */
+    @Inject private GemFinder gemFinder
+
     /** RPC executor factory */
     @Inject private RPCExecutorFactory executorFactory
 
@@ -89,9 +92,13 @@ public class RMIRuby implements Ruby {
                 def properMapping = isWindows ? windowsGemMapping : unixGemMapping
                 properMapping.find { ver.startsWith("ruby $it.key") }?.value
             }
-            def gems = rubyFinder.cmd.pkgManager ?:
-                locateProperGem(System.getProperty("os.name").toLowerCase().contains('win'))
-            def rubyGemsDir = gems ? installer.install(gems) : installer.install()
+            def gemVer = rubyFinder.cmd.pkgManager ?:
+                    (gemFinder.cmd?.version ?:
+                    locateProperGem(System.getProperty("os.name").toLowerCase().contains('win')))
+
+            log.info "RMI Ruby version: ${ver}, GEM version: ${gemVer}"
+
+            def rubyGemsDir = gemVer ? installer.install(gemVer) : installer.install()
 
             def cmdline = [rubyCmd, "${settings.toolsHome}/ruby-ipc/ipc.rb", port]
 
