@@ -82,20 +82,27 @@ class ScriptWriter {
     public void write(String text, StatementType statement = StatementType.GSTRING_WRITE, Boolean indivisible = false) {
         if (text.length() > 0) {
             def maxChars = calculateMaxChars(statement)
-            if (text.length() > maxChars && !indivisible) {
-                def m = text.substring(0, maxChars) =~ /[\\]+$/
-                maxChars = m.find() ? m.start() : maxChars
-                write(text.substring(0, maxChars), statement)
-                write(text.substring(maxChars), statement)
-            } else {
-                if (curStatement != statement || (indivisible && (text.length() > maxChars))) {
+            def remText = text
+            while (remText.length() > 0) {
+                def chunk
+                if (remText.length() > maxChars && !indivisible) {
+                    def m = remText.substring(0, maxChars) =~ /[\\]+$/
+                    maxChars = m.find() ? m.start() : maxChars
+
+                    chunk = remText.substring(0, maxChars)
+                } else {
+                    chunk = remText
+                }
+
+                if (curStatement != statement || (indivisible && (chunk.length() > maxChars))) {
                     openNewStatement(statement)
                 }
-                sw.write(text)
-                lineLength += text.length()
+                sw.write(chunk)
+                lineLength += chunk.length()
                 if (lineLength + statement.closeStr.length() >= MAX_LINE_LENGTH) {
                     openNewStatement(statement)
                 }
+                remText = remText.substring(chunk.length())
             }
         }
     }

@@ -132,9 +132,10 @@ class GrainTemplateEngine implements TemplateEngine, SiteChangeListener {
         
         def template
         if (res.script != false) {
-            String source = scriptTranslator.translate(text)
-            perf.scriptParseTime += (System.currentTimeMillis() - startScriptParse)
+            String source = null
             try {
+                source = scriptTranslator.translate(text)
+                perf.scriptParseTime += (System.currentTimeMillis() - startScriptParse)
                 long startScriptCompileTime = System.currentTimeMillis()
                 def script = groovyShell.parse(source, scriptName)
                 template = groovyTemplateFactory.create(res, source, script)
@@ -145,6 +146,9 @@ class GrainTemplateEngine implements TemplateEngine, SiteChangeListener {
                 def sw = new StringWriter()
                 t.printStackTrace(new PrintWriter(sw))
                 def src = new StringWriter()
+                if (source == null) {
+                    source = text
+                }
                 source.readLines().eachWithIndex { String line, int i -> src.append("${i+1}: ${line}\n")}
                 throw new RenderException("Failed to parse ${file} script: " + sw.toString() + "\nScript source:\n${src}")
             }
