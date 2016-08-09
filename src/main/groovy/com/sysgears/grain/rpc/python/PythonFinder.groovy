@@ -38,7 +38,7 @@ public class PythonFinder extends ShellCommandFinder {
     public ShellCommand checkCandidate(String name) {
         try {
             def ver = new StringWriter()
-            def proc = [name, '--version'].execute()
+            def proc = "${name} --version".execute()
             proc.consumeProcessErrorStream(ver).join()
             def command = new ShellCommand(command: name,
                     version: ver.toString().readLines().first().trim(),

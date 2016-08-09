@@ -57,7 +57,7 @@ abstract class ShellCommandFinder implements ConfigChangeListener, Service {
     private ShellCommand findCandidate() {
         def candidates = userConfiguredCandidates + defaultCandidates
 
-        candidates = isWindows() ? candidates.collect { it + ".exe" } : candidates
+        candidates = isWindows() ? candidates.collect { "cmd /c ${it}" } : candidates
         candidates.findResult { checkCandidate(it.toString()) }
     }
 
