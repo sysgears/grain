@@ -316,7 +316,7 @@ can use website configuration parameters and have embedded Groovy code. The Comp
 
 The generated files of website can be minified and compressed in various ways.
 
-#####Minification
+***Minification***
  
 `minify_xml` - minify XML files (default: none)
 
@@ -338,7 +338,7 @@ The generated files of website can be minified and compressed in various ways.
   - `none` - do not minify CSS files
   - `true` - minify CSS files 
 
-#####Compression
+***Compression***
 
 `compress` - compress all generated files (default: none)
 
@@ -435,7 +435,7 @@ Grain uses the following environments:
 
 ``` groovy:nl
 config_posthandler = { println 'Config has been just rereaded' }
-``` 
+```
 
 ##Page structure
 
