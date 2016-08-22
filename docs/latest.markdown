@@ -785,21 +785,31 @@ Grain provides standard tags for most vital tasks, additional tags are recommend
 
 The standard tags are:
 
- - **`r`** - looks up resource URL by resource location. This tag allows you to insert both absolute and relative links.
-Relative links are inserted by default. To insert absolute links, you can: set the **`site.generate_absolute_links`**
-variable as **true** (using this parameter prefixes resource relative location with the `site.url` variable); or set the
-**`site.url`** variable so that it doesn't match the standard URL format (for example, setting the `'.'` value as a
-parameter of the `site.url` will result in creating an absolute path - *./path/to/resource.ext*. Note, Grain always
-extracts path from `site.url` (*http://domain.com/your-app*) and adds it to a relative link to create a valid reference
-(*/your-app/path/to/resource.ext*).
-
-    ***Parameters***
-      1. Resource location
-
-    ***Example***
-
-    ``` jsp:nl
-<link href="${r '/favicon.png'}" rel="icon"> ```
+ - **`r`** - looks up resource URL by resource location. Defines a relative url to the resource and finds CDN url in
+ config or generates proper url using the **`link`** tag otherwise.
+ 
+     ***Parameters***
+       1. Resource location
+ 
+     ***Example***
+ 
+     ``` jsp:nl
+ <link href="${r '/favicon.png'}" rel="icon"> ```
+  - **`link`** - generates proper url from a relative link to a resource. This tag allows you to insert both absolute and
+ relative links. Relative links are inserted by default. To insert absolute links, you can: set the
+ **`site.generate_absolute_links`** variable as **true** (using this parameter prefixes resource relative location with
+ the `site.url` variable); or set the **`site.url`** variable so that it doesn't match the standard URL format (for
+ example, setting the `'.'` value as a parameter of the `site.url` will result in creating an absolute path -
+ *./path/to/resource.ext*. Note, Grain always extracts path from `site.url` (http://domain.com/your-app) and adds it to
+ a relative link to create a valid reference (*/your-app/path/to/resource.ext).
+ 
+      ***Parameters***
+        1. Relative link
+  
+      ***Example***
+  
+      ``` jsp:nl
+  <link href="${link '/blog/post'}"> ```
  - **`rs`** - looks up multiple resource URLs by their locations
 
     ***Parameters***
