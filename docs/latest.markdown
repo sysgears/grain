@@ -794,9 +794,8 @@ The standard tags are:
      ***Example***
  
      ``` jsp:nl
- <link href="${r '/favicon.png'}" rel="icon"> ```
- 
-  - **`link`** - generates proper url from a relative link to a resource. This tag allows you to insert both absolute and
+     <link href="${r '/favicon.png'}" rel="icon"> ```
+ - **`link`** - generates proper url from a relative link to a resource. This tag allows you to insert both absolute and
  relative links. Relative links are inserted by default. To insert absolute links, you can: set the
  **`site.generate_absolute_links`** variable as **true** (using this parameter prefixes resource relative location with
  the `site.url` variable); or set the **`site.url`** variable so that it doesn't match the standard URL format (for
@@ -810,8 +809,7 @@ The standard tags are:
       ***Example***
   
       ``` jsp:nl
-  <link href="${link '/blog/post'}"> ```
-  
+      <link href="${link '/blog/post'}"> ```
  - **`rs`** - looks up multiple resource URLs by their locations
 
     ***Parameters***
@@ -820,14 +818,14 @@ The standard tags are:
     ***Example***
 
     ``` jsp:nl
-<% rs(['/javascripts/libs/jquery.min.js',
+    <% rs(['/javascripts/libs/jquery.min.js',
        '/javascripts/modernizr-2.0.js',
        '/javascripts/octopress.js',
        '/javascripts/github.js',
        '/javascripts/jquery.tweet.js',
        '/javascripts/twitter-options.js']).each { script -> %>
-    <script src="${script}" type="text/javascript"></script>
-<% } %> ```
+            <script src="${script}" type="text/javascript"></script>
+    <% } %> ```
  - **`include`** - inserts rendered resource contents
 
     ***Parameters***
@@ -837,7 +835,7 @@ The standard tags are:
     ***Example***
 
     ``` jsp:nl
-${include 'tags.html', [tags: post.categories]} ```
+    ${include 'tags.html', [tags: post.categories]} ```
  - **`md5`** - calculates md5 hash of a byte array
 
     ***Parameters***
@@ -846,7 +844,7 @@ ${include 'tags.html', [tags: post.categories]} ```
     ***Example***
 
     ``` jsp:nl
-md5(resource.render().bytes) ```
+    md5(resource.render().bytes) ```
 
 ###Custom tag libraries
 You can add your own tags in your website theme. This can be made by implementing your tags as Groovy closures.
