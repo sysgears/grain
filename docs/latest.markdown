@@ -785,17 +785,15 @@ Grain provides standard tags for most vital tasks, additional tags are recommend
 
 The standard tags are:
 
- - **`r`** - looks up resource URL by resource location. Defines a relative url to the resource and finds CDN url in
- config or generates proper url using the **`link`** tag otherwise.
- 
-     ***Parameters***
+ - **`r`** - looks up resource URL by resource location. Finds CDN url of the resource if `cdn_urls` property is defined
+ in the `SiteConfig.groovy`, or, alternatively, generates the resource url using the `link` tag.
+
+    ######Parameters:
        1. Resource location
  
-     ***Example***
- 
-     ``` jsp:nl
-     <link href="${r '/favicon.png'}" rel="icon">
-     ```
+    ######Example:
+    ``` jsp:nl
+    <link href="${r '/favicon.png'}" rel="icon">```
  - **`link`** - generates proper url from a relative link to a resource. This tag allows you to insert both absolute and
  relative links. Relative links are inserted by default. To insert absolute links, you can: set the
  **`site.generate_absolute_links`** variable as **true** (using this parameter prefixes resource relative location with
@@ -804,21 +802,18 @@ The standard tags are:
  *./path/to/resource.ext*. Note, Grain always extracts path from `site.url` (http://domain.com/your-app) and adds it to
  a relative link to create a valid reference (*/your-app/path/to/resource.ext).
  
-      ***Parameters***
-        1. Relative link
+    ######Parameters:
+       1. Relative link
   
-      ***Example***
-  
-      ``` jsp:nl
-      <link href="${link '/blog/post'}">
-      ```
+    ######Example:
+    ``` jsp:nl
+    <link href="${link '/blog/post'}">```
  - **`rs`** - looks up multiple resource URLs by their locations
 
-    ***Parameters***
+    ######Parameters:
       1. Resource location list
 
-    ***Example***
-
+    ######Example:
     ``` jsp:nl
     <% rs(['/javascripts/libs/jquery.min.js',
     '/javascripts/modernizr-2.0.js',
@@ -826,29 +821,24 @@ The standard tags are:
     '/javascripts/github.js',
     '/javascripts/jquery.tweet.js',
     '/javascripts/twitter-options.js']).each { script -> %>
-    <script src="${script}" type="text/javascript"></script><% } %>
-    ```
+    <script src="${script}" type="text/javascript"></script><% } %>```
  - **`include`** - inserts rendered resource contents
 
-    ***Parameters***
+    ######Parameters:
       1. Template location
       1. *(Optional)* Additional model variables added to `page` map
 
-    ***Example***
-
+    ######Example:
     ``` jsp:nl
-    ${include 'tags.html', [tags: post.categories]}
-    ```
+    ${include 'tags.html', [tags: post.categories]}```
  - **`md5`** - calculates md5 hash of a byte array
 
-    ***Parameters***
+    ######Parameters:
       1. Byte array
 
-    ***Example***
-
+    ######Example:
     ``` jsp:nl
-    md5(resource.render().bytes)
-    ```
+    md5(resource.render().bytes)```
 
 ###Custom tag libraries
 You can add your own tags in your website theme. This can be made by implementing your tags as Groovy closures.
