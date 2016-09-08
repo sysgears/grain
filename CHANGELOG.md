@@ -6,18 +6,18 @@
   * Updated the Compass version to 1.0.3.
   * Switched to Java 7 NIO to watch file changes.
   * Removed some obsolete dependencies: jsoup, signpost, etc. to speed up dependency download.
-  * Reworked how Grain finds the right RubyGems version for RMI Ruby, now it tries to determine the gems
-    version from system 'gem' command and only if it fails refers to the Ruby to RubyGems mapping. Updated
+  * Reworked how Grain finds the right RubyGems version for RMI Ruby. Now it tries to determine the gems
+    version from system 'gem' command and, only if this fails, refers to the Ruby to RubyGems mapping. Updated
     the Ruby to RubyGems mapping to account newer Ruby versions.
   * Updated URL registry to automatically change a file extension for .md, .adoc and .rst files to .html,
     so these files can be properly rendered by a browser.
-  * Updated how index pages can be accessed in preview mode, now Grain returns the same page, either browser
+  * Updated how index pages can be accessed in preview mode. Now Grain returns the same page, either browser
     points to the directory or to the index page, so http://example.com/ and http://example.com/index.html
     will return the same page.
   * Updated the link tag to return an absolute URL if the `site.generate_absolute_links` property is set to
     true or if the site url is not valid. The same way as before, the tag automatically adds an additional
     path from the `site.url` property to generate a proper relative URL, for example, if `site.url` is
-    *http://sysgears.com/additionalpath*, the resulting relative URL will be */additionalpath/relativeurl*.
+    *http://sysgears.com/additionalpath*, the resulting relative URL will be *http://additionalpath/relativeurl*.
   * Added the *.swp* files created by the Vi text editor to the list of files excluded from processing. Excluded
     files are ignored by Grain when a Grain site is generated.
   * Added the *.woff2* files to the list of binary files. Binary files are excluded from processing, but, contrary
