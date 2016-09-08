@@ -1,3 +1,42 @@
+## 0.7.0
+
+
+  * Updated the Groovy version to 2.4.5.
+  * Updated the Jetty version to 9.2.15.
+  * Updated the Compass version to 1.0.3.
+  * Switched to Java 7 NIO to watch file changes.
+  * Removed some obsolete dependencies: jsoup, signpost, etc. to speed up dependency download.
+  * Reworked how Grain finds the right RubyGems version for RMI Ruby, now it tries to determine the gems
+    version from system 'gem' command and only if it fails refers to the Ruby to RubyGems mapping. Updated
+    the Ruby to RubyGems mapping to account newer Ruby versions.
+  * Updated URL registry to automatically change a file extension for .md, .adoc and .rst files to .html,
+    so these files can be properly rendered by a browser.
+  * Updated how index pages can be accessed in preview mode, now Grain returns the same page, either browser
+    points to the directory or to the index page, so http://example.com/ and http://example.com/index.html
+    will return the same page.
+  * Updated the link tag to return an absolute URL if the `site.generate_absolute_links` property is set to
+    true or if the site url is not valid. The same way as before, the tag automatically adds an additional
+    path from the `site.url` property to generate a proper relative URL, for example, if `site.url` is
+    *http://sysgears.com/additionalpath*, the resulting relative URL will be */additionalpath/relativeurl*.
+  * Added the *.swp* files created by the Vi text editor to the list of files excluded from processing. Excluded
+    files are ignored by Grain when a Grain site is generated.
+  * Added the *.woff2* files to the list of binary files. Binary files are excluded from processing, but, contrary
+    to the files from the excludes list, will be copied to the destination directory when the site is generated.
+  * Fixed a rare, concurrency issue related to the resource header cache, when occasionally Grain failed to
+    initialize the site preview mode due to unhandled concurrent access to the cache.
+  * Suppressed the broken pipe exception produced by Jetty on page load. Jetty sometimes throws the broken pipe
+    exception when, for example, a website page is quickly reloaded several times in preview mode. This is an
+    ordinary behavior for Jetty which is aimed to prevent an application from generating and writing content
+    that cannot be sent.
+  * Modified the template engine to use iteration instead of recursion while generating Groovy script code in
+    order to prevent Stack Overflows and log file path that Grain was unable to parse if any exception occurs.
+  * Updated the url registry to detect if the resources that are returned by the ResourceMapper closure have
+    identical URLs or do not have the URL property defined.
+  * Improved error handling for the Pygments highlighting to display the code snippet that caused the error as
+    well as the language specified for the snippet.
+  * Disabled the separate SASS installation. Compass automatically fetches the right SASS dependency.
+  * Set the default encoding for Pygments lexers to UTF-8.
+
 ## 0.6.6 / 2015-08-27
 
 
