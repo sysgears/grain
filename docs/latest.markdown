@@ -34,7 +34,7 @@ manage content and set up your site.
 
 ###Requirements
 
-To run Grain framework you need [JDK 6 or later](http://www.oracle.com/technetwork/java/javase/downloads/index.html).
+To run Grain framework you need [JDK 7 or later](http://www.oracle.com/technetwork/java/javase/downloads/index.html).
 Download and install the appropriate JDK for your operating system.
 
 ###Installation
