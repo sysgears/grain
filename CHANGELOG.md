@@ -29,9 +29,9 @@
     ordinary behavior for Jetty which is aimed to prevent an application from generating and writing content
     that cannot be sent.
   * Modified the template engine to use iteration instead of recursion while generating Groovy script code in
-    order to prevent Stack Overflows and log file path that Grain was unable to parse if any exception occurs.
-  * Updated the url registry to detect if the resources that are returned by the ResourceMapper closure have
-    identical URLs or do not have the URL property defined.
+    order to prevent stack overflows and log file path that Grain was unable to parse if any exception occurs.
+  * Updated the URL registry to detect if the resources that are returned by the `resource_mapper` closure have
+    identical URLs or do not have the `url` property defined.
   * Improved error handling for the Pygments highlighting to display the code snippet that caused the error as
     well as the language specified for the snippet.
   * Disabled the separate SASS installation. Compass automatically fetches the right SASS dependency.
