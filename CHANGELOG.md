@@ -15,9 +15,9 @@
     points to the directory or to the index page, so http://example.com/ and http://example.com/index.html
     will return the same page.
   * Updated the link tag to return an absolute URL if the `site.generate_absolute_links` property is set to
-    true or if the site url is not valid. The same way as before, the tag automatically adds an additional
-    path from the `site.url` property to generate a proper relative URL, for example, if `site.url` is
-    *http://sysgears.com/additionalpath*, the resulting relative URL will be *http://additionalpath/relativeurl*.
+    true or if the site url is not valid. The same way as before, the tag automatically adds the path from the
+    `site.url` property to generate a proper relative URL, for example, if `site.url` is *http://example.com/path*,
+    the resulting relative URL will be */path/relativeurl*.
   * Added the *.swp* files created by the Vi text editor to the list of files excluded from processing. Excluded
     files are ignored by Grain when a Grain site is generated.
   * Added the *.woff2* files to the list of binary files. Binary files are excluded from processing, but, contrary
