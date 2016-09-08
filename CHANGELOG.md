@@ -1,4 +1,4 @@
-## 0.7.0
+## 0.7.0 / 2016-09-09
 
 
   * Updated the Groovy version to 2.4.5.
@@ -16,10 +16,10 @@
     will return the same page.
   * Updated the link tag to return an absolute URL if the `site.generate_absolute_links` property is set to
     true or if the site url is not valid. The same way as before, the tag automatically adds the path from the
-    `site.url` property to generate a proper relative URL, for example, if `site.url` is *http://example.com/path*,
-    the resulting relative URL will be */path/relativeurl*.
+    `site.url` property to generate a proper relative URL, for example, if the `site.url` property is
+    *http://example.com/path*, the resulting relative URL will be */path/originalrelativeurl*.
   * Added the *.swp* files created by the Vi text editor to the list of files excluded from processing. Excluded
-    files are ignored by Grain when a Grain site is generated.
+    files are ignored by Grain when the site is generated.
   * Added the *.woff2* files to the list of binary files. Binary files are excluded from processing, but, contrary
     to the files from the excludes list, will be copied to the destination directory when the site is generated.
   * Fixed a rare, concurrency issue related to the resource header cache, when occasionally Grain failed to
