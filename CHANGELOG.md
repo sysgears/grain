@@ -1,4 +1,4 @@
-## 0.7.0 / 2016-09-09
+## 0.7.0 / 2016-09-19
 
 
   * Updated the Groovy version to 2.4.5.
