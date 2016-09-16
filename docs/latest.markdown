@@ -793,14 +793,14 @@ The standard tags are:
  
     ######Example:
     ``` jsp:nl
-    <link href="${r '/favicon.png'}" rel="icon">```
- - **`link`** - generates proper url from a relative link to a resource. This tag allows you to insert both absolute and
- relative links. Relative links are inserted by default. To insert absolute links, you can: set the
- **`site.generate_absolute_links`** variable as **true** (using this parameter prefixes resource relative location with
- the `site.url` variable); or set the **`site.url`** variable so that it doesn't match the standard URL format (for
- example, setting the `'.'` value as a parameter of the `site.url` will result in creating an absolute path -
- *./path/to/resource.ext*. Note, Grain always extracts path from `site.url` (http://domain.com/your-app) and adds it to
- a relative link to create a valid reference (*/your-app/path/to/resource.ext).
+    <link href="${r '/favicon.png'}" rel="icon">``` 
+  - **`link`** - generates an url from a relative link to a resource (for example, */path/to/resource.ext*). 
+  This tag allows you to insert absolute or relative links depending on a value of the `site.generate_absolute_links` 
+  boolean variable. In both cases, a path from the `site.url` variable is extracted (*http://domain.com/your-app*). 
+  If `site.generate_absolute_links` variable is set to **true**, then Grain just concatenates a `site.url` 
+  and a resource link (for example, setting the `'.'` value as a parameter of the `site.url` will result in creating 
+  an absolute path - *./path/to/resource.ext*), and if it is set to **false** or is not set at all then Grain tries 
+  to extract a relative path from the `site.url` and prepend it to the resource link (*/your-app/path/to/resource.ext*). 
  
     ######Parameters:
        1. Relative link
