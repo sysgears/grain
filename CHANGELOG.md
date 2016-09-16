@@ -14,10 +14,6 @@
   * Updated how index pages can be accessed in preview mode. Now Grain returns the same page, either browser
     points to the directory or to the index page, so http://example.com/ and http://example.com/index.html
     will return the same page.
-  * Updated the link tag to return an absolute URL if the `site.generate_absolute_links` property is set to
-    true or if the site url is not valid. The same way as before, the tag automatically adds the path from the
-    `site.url` property to generate a proper relative URL, for example, if the `site.url` property is
-    *http://example.com/path*, the resulting relative URL will be */path/originalrelativeurl*.
   * Added the *.swp* files created by the Vi text editor to the list of files excluded from processing. Excluded
     files are ignored by Grain when the site is generated.
   * Added the *.woff2* files to the list of binary files. Binary files are excluded from processing, but, contrary
