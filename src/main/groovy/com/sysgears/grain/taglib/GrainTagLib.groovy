@@ -107,11 +107,8 @@ class GrainTagLib extends GrainUtils {
      */
     def link = { String relativeUrl ->
         def resultUrl
-        // Checks whether `site.url` property matches the standard URL address with http(s) protocol.
-        def urlMatcher = site.url =~ '^(https?://)([\\da-z\\.-]+)(\\.[a-z\\.]{2,6})?(:\\d{2,})?([/\\w \\.-]*)*/?$'
         // Concatenates `site.url` and relative path if the `site.generate_absolute_links` is true
-        // and `site.url` property contains something different from the standard URL address.
-        if (site.generate_absolute_links || !urlMatcher.matches()) {
+        if (site.generate_absolute_links) {
             resultUrl = "$site.url$relativeUrl"
         } else {
             // Checks whether the `site.url` contains additional path, for example - http://sysgears.com/additionalpath.
