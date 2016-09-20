@@ -796,11 +796,11 @@ The standard tags are:
     <link href="${r '/favicon.png'}" rel="icon">``` 
   - **`link`** - generates an url from a relative link to a resource (for example, */path/to/resource.ext*). 
   This tag allows you to insert absolute or relative links depending on a value of the `site.generate_absolute_links` 
-  boolean variable. In both cases, a path from the `site.url` variable is extracted (*http://domain.com/your-app*). 
-  If `site.generate_absolute_links` variable is set to **true**, then Grain just concatenates a `site.url` 
-  and a resource link (for example, setting the `'.'` value as a parameter of the `site.url` will result in creating 
-  an absolute path - *./path/to/resource.ext*), and if it is set to **false** or is not set at all then Grain tries 
-  to extract a relative path from the `site.url` and prepend it to the resource link (*/your-app/path/to/resource.ext*). 
+  boolean variable. If `site.generate_absolute_links` variable is set to **true**, then Grain just concatenates the 
+  `site.url` property (*http://domain.com/your-app*) and a resource link (for example, setting the `'.'` value as a 
+  parameter of the `site.url` will result in creating an absolute path - *./path/to/resource.ext*). And if 
+  `site.generate_absolute_links` variable is set to **false**, or is not set at all, then Grain tries to extract a 
+  path from the `site.url` and prepend it to the resource link (*/your-app/path/to/resource.ext*). 
  
     ######Parameters:
        1. Relative link
