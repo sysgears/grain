@@ -1,6 +1,7 @@
 package com.sysgears.grain.markup
 
-import javax.annotation.Nullable
+import org.jetbrains.annotations.Nullable
+
 
 /**
  * Interface for markup processing

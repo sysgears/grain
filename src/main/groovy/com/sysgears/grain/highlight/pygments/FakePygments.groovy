@@ -16,7 +16,8 @@
 
 package com.sysgears.grain.highlight.pygments
 
-import javax.annotation.Nullable
+import org.jetbrains.annotations.Nullable
+
 
 /**
  * Fake pygments integration, i.e. does nothing

@@ -19,9 +19,8 @@ package com.sysgears.grain.highlight
 import com.sysgears.grain.annotations.Uncached
 import com.sysgears.grain.config.Config
 import com.sysgears.grain.taglib.GrainUtils
-import com.sysgears.grain.taglib.Site
+import org.jetbrains.annotations.Nullable
 
-import javax.annotation.Nullable
 import javax.inject.Inject
 
 /**

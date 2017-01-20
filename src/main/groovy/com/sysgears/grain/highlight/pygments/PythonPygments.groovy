@@ -19,8 +19,8 @@ package com.sysgears.grain.highlight.pygments
 import com.sysgears.grain.init.GrainSettings
 import com.sysgears.grain.rpc.python.Python
 import groovy.util.logging.Slf4j
+import org.jetbrains.annotations.Nullable
 
-import javax.annotation.Nullable
 import javax.inject.Inject
 
 /**

@@ -22,8 +22,8 @@ import com.sysgears.grain.markup.MarkupProcessor
 import com.sysgears.grain.rpc.ruby.Ruby
 import com.sysgears.grain.service.Service
 import groovy.util.logging.Slf4j
+import org.jetbrains.annotations.Nullable
 
-import javax.annotation.Nullable
 import javax.inject.Inject
 
 /**

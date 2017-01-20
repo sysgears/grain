@@ -3,9 +3,9 @@ package com.sysgears.grain.rpc
 import com.sysgears.grain.preview.ConfigChangeListener
 import com.sysgears.grain.service.Service
 import com.sysgears.grain.service.ServiceManager
+import org.jetbrains.annotations.NotNull
+import org.jetbrains.annotations.Nullable
 
-import javax.annotation.Nonnull
-import javax.annotation.Nullable
 
 /**
  * Search for a command among a user-configurable list of candidates.
@@ -75,7 +75,7 @@ abstract class ShellCommandFinder implements ConfigChangeListener, Service {
      *
      * @return default candidates for shell command 
      */
-    @Nonnull
+    @NotNull
     abstract List<String> getDefaultCandidates()
 
     /**
@@ -83,7 +83,7 @@ abstract class ShellCommandFinder implements ConfigChangeListener, Service {
      *
      * @return user configured candidates
      */
-    @Nonnull
+    @NotNull
     abstract List<String> getUserConfiguredCandidates()
 
     /**
@@ -91,6 +91,6 @@ abstract class ShellCommandFinder implements ConfigChangeListener, Service {
      *
      * @return candidate command or null
      */
-    @Nonnull
+    @NotNull
     abstract ShellCommand checkCandidate(String name)
 }
