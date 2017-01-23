@@ -71,7 +71,7 @@ Options:
             cli.usage()
             System.exit(0)
         }
-        
+
         opts.configFile = configFile.canonicalFile
         opts.globalConfigFile = new File("${System.getProperty('user.home')}/.grain",
                 GLOBAL_CONFIG_FILE_NAME)
@@ -105,17 +105,18 @@ Options:
 
         def grainVersion = getGrainVersion()
 
-        if (!opts.showUsageAndExit)
-            validateGrainVersion(grainVersion)
+//        if (!opts.showUsageAndExit) {
+//            validateGrainVersion(grainVersion)
+//        }
 
         opts.grainVersion = grainVersion
-        
+
         opts.grainHome = new File(System.getProperty('user.home'), ".grain").canonicalFile
 
         opts.toolsHome = getToolsHome()
 
         opts.args = commands
-        
+
         if (opts.showUsageAndExit) {
             opts.env = 'cmd'
         }
