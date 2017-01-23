@@ -16,31 +16,31 @@
 
 package com.sysgears.grain.highlight
 
-import com.sysgears.grain.preview.ConfigChangeListener
+import org.jetbrains.annotations.Nullable
 
-import javax.annotation.Nullable
 
 /**
  * Interface for code highlighter
  * <p>
  * Classes implementing this interface should be thread-safe.     
  */
-public interface Highlighter {
+interface Highlighter {
 
     /**
      * Generates highlighted HTML using source code in given language. 
-     * 
+     *
      * @param code a source code
      * @param language language of a source code
-     * 
+     *
      * @return highlighted code HTML
      */
     String highlight(String code, String language)
 
     /**
      * Returns cache subdirectory of this highlighter.
-     * 
+     *
      * @return cache subdirectory of this highlighter
      */
-    @Nullable String getCacheSubdir()
+    @Nullable
+    String getCacheSubdir()
 }

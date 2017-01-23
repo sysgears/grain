@@ -16,7 +16,8 @@
 
 package com.sysgears.grain.highlight
 
-import javax.annotation.Nullable
+import org.jetbrains.annotations.Nullable
+
 
 /**
  * Highlighter that only wraps the code into <pre> element.

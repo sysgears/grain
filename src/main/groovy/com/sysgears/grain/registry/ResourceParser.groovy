@@ -20,8 +20,8 @@ import com.google.inject.assistedinject.Assisted
 import groovy.transform.CompileStatic
 import groovy.util.logging.Slf4j
 import org.apache.commons.io.IOUtils
+import org.jetbrains.annotations.Nullable
 
-import javax.annotation.Nullable
 
 /**
  * Low-level resource parser. Returns resource header and resource content below.
