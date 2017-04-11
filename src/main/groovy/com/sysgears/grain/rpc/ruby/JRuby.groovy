@@ -100,7 +100,7 @@ public class JRuby implements com.sysgears.grain.rpc.ruby.Ruby {
                     def filename = config.displayedFileName();
 
                     try {
-                        ruby.runFromMain(inp, filename)
+                        ruby.runFromMain(config.getScriptSource(), filename)
                     } catch (RaiseException re) {
                         if (re.exception.toString() != "exit" && re.exception.toString() != "Interrupt") {
                             log.error("Error while running JRuby", re)
