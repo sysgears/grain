@@ -40,8 +40,8 @@ def _write_string(sf, result):
 def mkdir_p(path):
     try:
         os.makedirs(path)
-    except OSError, exc:
-        if exc.errno in [0, 20047, errno.EEXIST] and os.path.isdir(path):
+    except OSError as exc:
+        if exc.errno in [0, 20000, 20047, errno.EEXIST] and os.path.isdir(path):
             pass
         else: raise
 
