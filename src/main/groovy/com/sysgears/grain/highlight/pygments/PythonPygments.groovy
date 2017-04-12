@@ -46,6 +46,7 @@ public class PythonPygments implements Pygments {
         def rpc = python.rpc
         rpc.ipc.install_package("pygments==${VERSION}")
         rpc.ipc.add_lib_path new File(settings.toolsHome, 'pygments-bridge').canonicalPath
+        rpc.ipc.add_lib_path new File(settings.grainHome, "packages/python/lib/jython2.7/site-packages/Pygments-${VERSION}-py2.7.egg").canonicalPath
     }
 
     /**

@@ -54,6 +54,7 @@ def set_user_base(user_base):
     os.environ['PYTHONUSERBASE'] = user_base
     import site
     site.USER_BASE = user_base
+    site.USER_SITE = '{0}/lib/jython2.7/site-packages'.format(site.USER_BASE)
 
 # Installs python package from PyPI and returns package version
 def install_package(pkg_name):
