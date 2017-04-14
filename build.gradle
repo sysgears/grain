@@ -60,10 +60,10 @@ dependencies {
     compile 'com.yahoo.platform.yui:yuicompressor:2.4.7'
     compile 'commons-io:commons-io:2.4'
     compile 'commons-cli:commons-cli:1.2'
-    compile('ch.qos.logback:logback-classic:1.0.13') {
+    compile('ch.qos.logback:logback-classic:1.2.3') {
         exclude group: 'org.slf4j'
     }
-    compile 'org.slf4j:jcl-over-slf4j:1.7.5'
+    compile 'org.slf4j:jcl-over-slf4j:1.7.25'
 
     compile 'com.google.inject:guice:4.0-beta'
     compile 'com.google.inject.extensions:guice-assistedinject:4.0-beta'
