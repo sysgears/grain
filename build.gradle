@@ -50,7 +50,7 @@ repositories {
 dependencies {
     compile 'org.eclipse.jetty:jetty-server:9.2.21.v20170120'
     compile 'org.eclipse.jetty:jetty-servlet:9.2.21.v20170120'
-    compile 'javax.servlet:javax.servlet-api:3.0.1'
+    compile 'javax.servlet:javax.servlet-api:3.1.0'
     compile 'org.yaml:snakeyaml:1.11'
     compile 'org.codehaus.gpars:gpars:1.0.0'
     compile 'com.github.rjeschke:txtmark:0.9'
