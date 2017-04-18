@@ -62,7 +62,7 @@ dependencies {
     compile 'org.jruby:jruby:9.1.8.0'
 
     compile 'com.googlecode.htmlcompressor:htmlcompressor:1.5.2'
-    compile 'com.yahoo.platform.yui:yuicompressor:2.4.7'
+    compile 'com.yahoo.platform.yui:yuicompressor:2.4.8'
 
     compile 'commons-io:commons-io:2.5'
     compile 'commons-cli:commons-cli:1.4'
