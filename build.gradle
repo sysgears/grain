@@ -65,7 +65,7 @@ dependencies {
     compile 'com.yahoo.platform.yui:yuicompressor:2.4.7'
 
     compile 'commons-io:commons-io:2.4'
-    compile 'commons-cli:commons-cli:1.2'
+    compile 'commons-cli:commons-cli:1.4'
 
     compile('ch.qos.logback:logback-classic:1.2.3') {
         exclude group: 'org.slf4j'
