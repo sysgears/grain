@@ -64,7 +64,7 @@ dependencies {
     compile 'com.googlecode.htmlcompressor:htmlcompressor:1.5.2'
     compile 'com.yahoo.platform.yui:yuicompressor:2.4.7'
 
-    compile 'commons-io:commons-io:2.4'
+    compile 'commons-io:commons-io:2.5'
     compile 'commons-cli:commons-cli:1.4'
 
     compile('ch.qos.logback:logback-classic:1.2.3') {
