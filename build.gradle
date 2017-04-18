@@ -54,7 +54,7 @@ dependencies {
 
     compile 'org.yaml:snakeyaml:1.18'
 
-    compile 'org.codehaus.gpars:gpars:1.0.0'
+    compile 'org.codehaus.gpars:gpars:1.2.1'
 
     compile 'com.github.rjeschke:txtmark:0.9'
 
