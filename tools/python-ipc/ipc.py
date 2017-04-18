@@ -162,7 +162,7 @@ def install_package(pkg_name):
         mkdir_p(site.USER_SITE)
         easy_install.main(argv = ['--user', '-U', pkg_name])
 
-        site.addsitedir(sysconfig.get_path('platlib', os.name + '_user'))
+        site.addsitedir(site.USER_SITE)
         reload(pkg_resources)
 
         dist = pkg_resources.get_distribution(pkg_name)
