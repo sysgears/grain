@@ -95,6 +95,7 @@ import os, sys
 sys.path.append(r'${new File(settings.toolsHome, 'python-ipc').canonicalPath}')
 import ipc
 ipc.set_user_base(r'${new File(settings.grainHome, 'packages/python').canonicalPath}')
+ipc.set_user_site(r'${new File(settings.grainHome, 'packages/python/lib/jython2.7/site-packages').canonicalPath}')
 ipc.add_lib_path(r'${setupToolsPath}')
 ipc.main($port)""")
                 } catch (PyException pe) {

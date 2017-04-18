@@ -54,7 +54,10 @@ def set_user_base(user_base):
     os.environ['PYTHONUSERBASE'] = user_base
     import site
     site.USER_BASE = user_base
-    site.USER_SITE = '{0}/lib/jython2.7/site-packages'.format(site.USER_BASE)
+
+def set_user_site(user_site):
+    import site
+    site.USER_SITE = user_site
 
 # Installs python package from PyPI and returns package version
 def install_package(pkg_name):
@@ -137,6 +140,13 @@ def install_package(pkg_name):
 
         urllib2.urlopen = new_urlopen
 
+        old_current_umask = easy_install.current_umask
+        import subprocess
+        def new_current_umask():
+            umask = int(subprocess.check_output("umask", shell=True))
+            return umask
+        easy_install.current_umask = new_current_umask
+
         old_rmtree = easy_install.rmtree
         def new_rmtree(path, ignore_errors=False, onerror=easy_install.auto_chmod):
             try:
@@ -160,6 +170,7 @@ def install_package(pkg_name):
     if sys.platform.startswith('java'):
         urllib2.urlopen = org_urlopen
         easy_install.rmtree = old_rmtree
+        easy_install.current_umask = old_current_umask
     return dist.version
 
 def main(port):
