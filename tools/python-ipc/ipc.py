@@ -219,8 +219,17 @@ def main(port):
             try:
                 result = func(*args)
             except:
-                traceback.print_exc(file=sys.stderr)
-                sys.stderr.flush()
+                # I can reproduce this error (UnsatisfiedLinkError) with Grain
+                # using jython-shaded 2.7.0 and Java 1.8.0_101 on Win10 64bit.
+                # Using Grain on Ubuntu 16.04 64bit does not reproduce it.
+                # When I look at the error messages, the problem can be traced back to to the ctypes module
+                # that does only contain the file __init__.py. There jffi is involved.
+                # Though this error, Jython works well with an external module like Pygments.
+                e = str(sys.exc_info()[1])
+                if "UnsatisfiedLinkError" in e: pass
+                else:
+                    traceback.print_exc(file=sys.stderr)
+                    sys.stderr.flush()
 
             #sys.stderr.write("%s.%s(%s):\n%s\n"%((module, func, args, unicode(result).encode('utf-8'))))
             #sys.stderr.flush()
