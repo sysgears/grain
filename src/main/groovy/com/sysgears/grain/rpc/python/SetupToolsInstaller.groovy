@@ -14,7 +14,7 @@ import javax.inject.Inject
 public class SetupToolsInstaller {
 
     /** SetupTools version to use */
-    private static final String VERSION = '2.1'
+    private static final String VERSION = '8.2'
 
     /** Grain settings */
     @Inject private GrainSettings settings
