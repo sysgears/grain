@@ -6,6 +6,7 @@ import org.pegdown.PegDownProcessor
 /**
  * Markdown processor which uses PegDown implementation.
  */
+@Deprecated
 @javax.inject.Singleton
 @Slf4j
 class PegdownProcessor implements MarkdownProcessor {
