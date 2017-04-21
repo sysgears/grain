@@ -143,7 +143,7 @@ jar {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '1.8'
+    gradleVersion = '3.5'
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
