@@ -63,7 +63,7 @@ class SitePreviewer implements Service {
     public void start() {
         def jettyPort = config.jetty_port ?: 4000
         if (!available(jettyPort)) {
-            log.error("Port ${jettyPort} is not available, exitting...")
+            log.error("Port ${jettyPort} is not available, exiting...")
             Thread.startDaemon {
                 System.exit(1)
             }
