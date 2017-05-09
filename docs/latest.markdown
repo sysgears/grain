@@ -264,7 +264,14 @@ section of the configuration file.
 `markdown` - markdown markup implementation (default: txtmark)
   
   - `txtmark` - TxtMark Markdown 
-  - `pegdown` - PegDown Markdown
+  - `pegdown` - PegDown Markdown (Since this markdown processor has been [deprecated](https://github.com/sirthias/pegdown) by developers, please consider using the `flexmark_pegdown` in case you need to use pegdown for your pages.)
+  - `flexmark_pegdown` PegDown implementation, provided by [Flexmark](https://github.com/vsch/flexmark-java)
+  - `flexmark_kramdown` Kramdown Markdown
+  - `flexmark_commonmark` CommonMark Markdown
+  - `flexmark_multimarkdown` Multimarkdown Markdown
+
+The last options, which names contain "flexmark_" prefix provide markdown processors which are emulated by
+[Flexmark](https://github.com/vsch/flexmark-java).
   
 ####reStructuredText markup feature
 
