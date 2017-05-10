@@ -49,7 +49,7 @@ public class ConfigBinder implements ConfigChangeListener {
                         { parent, property -> parent?."$property" }
                 T impl = implMap.find { it.key.toString() == propertyValue.toString() }?.value as T
 
-                if (impl.getClass().isAnnotationPresent(Deprecated)) {
+                if (impl?.class?.isAnnotationPresent(Deprecated)) {
                     log.warn("Setting  ${propertyName} as ${propertyValue} is deprecated.")
                 }
 
