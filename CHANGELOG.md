@@ -1,3 +1,25 @@
+## 0.7.1 / 2017-04-20
+
+  * Added support for CommonMark/Multimarkdown/Kramdown markdown processors emulated by Flexmark.
+  * Marked pegdown markdown processor as deprecated. Added support for Flexmark emulation of pegdown.
+  * Updated the Groovy version to 2.4.10.
+  * Updated the Gradle wrapper version to 3.5.
+  * Updated the Gpars version to 1.2.1.
+  * Updated the Jetty version to 9.2.21.v20170120.
+  * Updated the jRuby version to 9.1.8.0.
+  * Updated the Jython version to 2.7.0.
+  * Updated the setuptools version to 8.2.
+  * Updated the Pygments version to 2.2.0.
+  * Updated the Google Guice version to 4.1.0.
+  * Updated the yuicompressor version to 2.4.8.
+  * Updated the commons-io version to 2.5.
+  * Updated the commons-cli version to 1.4.
+  * Updated the Spock version to 1.0-groovy-2.4
+  * Updated the snakeyaml version to 1.18
+  * Updated the Logback version to 1.2.3 and jcl-over-slf4j to 1.7.25.
+  * Disabled automatic generation of absolute links by the link tag if the resulting link is not a valid URL.
+
+
 ## 0.7.0 / 2016-09-19
 
 
