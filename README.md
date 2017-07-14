@@ -1,5 +1,7 @@
 ![Banner](https://raw.githubusercontent.com/sysgears/grain/master/banner.png)
 
+[![Twitter Follow](https://img.shields.io/twitter/follow/grainframework.svg?style=social)](https://twitter.com/grainframework) [![Twitter Follow](https://img.shields.io/twitter/follow/sysgears.svg?style=social)](https://twitter.com/sysgears)
+
 Grain is a lightweight and yet powerful static website generator for Groovy which purpose is
 to make demanding site implementation intuitive and enjoyable. Grain framework is equally well-suited
 for any static website, whether it is a complex company site or a neat blog. The framework applies
