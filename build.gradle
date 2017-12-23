@@ -86,8 +86,8 @@ dependencies {
         exclude module: 'groovy-all'
     }
 
-    compile 'org.codehaus.groovy:groovy-ant:2.4.10'
-    compile 'org.codehaus.groovy:groovy:2.4.10'
+    compile 'org.codehaus.groovy:groovy-ant:2.4.12'
+    compile 'org.codehaus.groovy:groovy:2.4.12'
     compile('org.codehaus.groovy.modules.http-builder:http-builder:0.5.2') {
         exclude module: 'groovy'
     }
