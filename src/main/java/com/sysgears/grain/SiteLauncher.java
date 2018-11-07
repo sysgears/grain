@@ -154,8 +154,8 @@ public class SiteLauncher {
     private String downloadFromRepo(String filename) throws Throwable {
         final URL url = new URL(snapshotsRepoUrl + "com/sysgears/grain/grain/" + grainVersion + "/" + filename);
         final HttpURLConnection huc = (HttpURLConnection)url.openConnection();
-        huc.setConnectTimeout(3000);
-        huc.setReadTimeout(3000);
+        huc.setConnectTimeout(10000);
+        huc.setReadTimeout(10000);
         huc.connect();
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         byte[] buf = new byte[4096];
