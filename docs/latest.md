@@ -1,197 +1,159 @@
-## Overview
+# Grain Project Overview
 
-### Description
+The Grain framework is an open source static website generator written Groovy, and it provides an extensible mechanism
+for implementing custom static websites or generating software documentation.
 
-Grain framework is an open source static website generator for Groovy that provides extensible mechanisms for
-implementing custom static sites or generating software documentation.
+If you want to get started with Grain, check out the `README.md` file in the project root:
 
-#### Grain features
+* [Getting Started]
 
-Grain comes with the following high-level features:
+## Table of Contents
 
- - preview mode that allows to make and see changes on the fly
- - support of embedded Groovy code for any content files (including stylesheet and JS files)
- - configurable conventions that allow to process content sources using Groovy code
- - Markdown, reStructuredText and AsciiDoctor markup support
- - code highlighting via Python Pygments
- - built-in SASS/SCSS support
- - compression and minification for sources
-
-#### Grain themes
-
-Grain website project is called *theme*. Theme defines site structure, appearance and content arrangement.
-Typically, Grain theme ships with:
-
- - website and Grain configuration
- - HTML page templates, called *layouts*
- - stylesheets, javascripts and images
- - code sources to process site pages (for instance, apply pagination)
- - samples of raw content files
-
-Grain has ready-made themes that can be found [here](http://sysgears.com/grain/themes/).
-It is not required to know Groovy or any other programming language to use these themes, you still can easily
-manage content and set up your site.
-
-### Requirements
-
-To run Grain framework you need [JDK 7 or later](http://www.oracle.com/technetwork/java/javase/downloads/index.html).
-Download and install the appropriate JDK for your operating system.
-
-### Installation
-
-No installation required. Just download one of the [themes](http://sysgears.com/grain/themes/) and Grain will be
-loaded automatically as a JAR dependency.
-
-If you are new to Grain, we recommend to start with the ready-made [Grain Octopress](http://sysgears.com/grain/themes/octopress/)
-theme, it will give you a good overview on how to efficiently use most of the Grain features. To build a website from
-scratch, download the Grain [Theme Template](http://sysgears.com/grain/themes/template/).
-
-## Getting Started
-
-### Create website
-
-In order to start creating your website, download one of the [themes](http://sysgears.com/grain/themes/) and unpack it
-to the location of your choice.
-
-### Preview website
-Navigate to the location of your newly created website `cd /path/to/your_site` and run the command
-
-``` sh:nl
-./grainw
-```
-
-to launch your website in preview mode.
-
-> Here and further command-line snippets work for Unix-like systems only. In case you are running Grain from
-Windows simply use `grainw` command instead of `./grainw`.
-
-After that you can view your website by pointing a web browser to `http://localhost:4000`. You can add, change or delete
-website files, and see all changes in the web browser immediately after refreshing the page.
-
-### Generate and deploy
-When your site is ready for going live you can generate all the website files by executing
-
-``` sh:nl
-./grainw generate
-```
-
-The files of website will be generated to `/path/to/your_site/target` directory. 
-
-You can deploy the resulting files either manually or with the help of Grain:
-
-``` sh:nl
-./grainw deploy
-```
-
-Check the deployment section for more information.
+* [IDE Integration](#ide-integration)
+    * [IntelliJ IDEA](#intellij-idea)
+    * [Eclipse](#eclipse)
+    * [NetBeans IDE](#netbeans)
+* [Grain website structure](#grain-website-structure)
+    * [Naming convention for directories](#naming-conventions-for-directories)
+    * [Grain configuration](#grain-configuration)
+        * [Interpreters configuration](#interpreters-configuration)
+        * [Python interpreter](#python-interpreter)
+        * [Ruby interpreter](#ruby-interpreter)
+        * [Deployment configuration](#deployment-configuration)
+* [Environments](#environments)
+* [Advanced Grain configuration](#advanced-grain-configuration)
+* [Page structure](#page-structure)
+	* [Page file source](#page-file-source)
+	* [Embedded Groovy code](#embedded-groovy-code)
+* [Layouts](#layouts)
+	* [Concept](#concept)
+	* [Layout nesting](#layout-nesting)
+* [Includes](#includes)
+	* [General idea](#general-idea)
+	* [Passing custom model](#passing-custom-model)
+* [URL and resource mapping](#url-and-resource-mapping)
+	* [Introduction](#introduction)
+	* [Resource representation](#resource-representation)
+	* [Default Resource URL](#default-resource-url)
+	* [Resource processing phases](#resource-processing-phases)
+	* [Mapping customizations](#mapping-customizations)
+	* [Dynamic rendering](#dynamic-rendering)
+* [Tag libraries](#tag-libraries)
+	* [Standard tag library](#standard-tag-library)
 
 ## IDE Integration
 
 ### IntelliJ IDEA
 
-  1. Import project by selecting from menu: `File -> Import Project -> Select your website dir -> Gradle`
-  1. Right click on theme/src/com.example.grain/Launcher and select `Run` to launch Grain in preview mode.
+1. Import your project by selecting from menu: `File -> Import Project -> Select your website dir -> Gradle`
+2. Right-click on the `theme/src/com.example.grain/Launcher` file and select `Run` to launch Grain in preview mode.
 
 ### Eclipse
 
 #### Prerequisites:
 
-  1. Install [Groovy-Eclipse plugin](http://groovy.codehaus.org/Eclipse+Plugin) along with Groovy Compiler 2.1
+1. Install the [Groovy-Eclipse] plugin and Groovy Compiler 2.1.
 
 #### Importing project:
 
-  1. Generate Eclipse project files by executing `./gradlew eclipse` or `gradlew.bat eclipse` in website directory.
-  1. Import project by selecting from menu: `File -> Import... -> Existing Projects Into Workspace -> Select your website dir`
-  1. Right click on theme/src/com.example.grain/Launcher and select `Run As -> Java Application` to launch Grain in preview mode.
+1. Generate Eclipse project files by executing `./gradlew eclipse` or `gradlew.bat eclipse` in the website directory.
+2. Import your project by selecting from Eclipse menu:
 
-### NetBeans IDE
+`File -> Import... -> Existing Projects Into Workspace -> Select your website dir`
+
+3. Right-click on the `theme/src/com.example.grain/Launcher` file and select `Run As -> Java Application` to launch
+Grain in preview mode.
+
+### NetBeans
 
 #### Prerequisites:
 
-  1. Install Groovy And Grails plugin by selecting from the menu: `Tools -> Plugins -> Available Plugins -> Groovy And Grails -> Install`
+1. Install Groovy and Grails plugin by selecting from the NetBeans menu:
 
-#### Importing project:
+`Tools -> Plugins -> Available Plugins -> Groovy And Grails -> Install`
 
-  1. Generate Eclipse project files by executing `./gradlew eclipse` or `gradlew.bat eclipse` in website directory.
-  1. Import Eclipse project by selecting from menu: `File -> Import Project -> Eclipse Project -> Import Project ignoring project dependencies`.
-     Select your website dir in both fields.
-  1. Right click on theme/src/com.example.grain/Launcher and select `Run File` to launch Grain in preview mode.
+#### Importing a project:
 
-## Website structure
+1. Generate the Eclipse project files by executing `./gradlew eclipse` or `gradlew.bat eclipse` in the website
+directory.
+2. Import your Eclipse project by selecting from menu:
 
-### Directories conventions
+`File -> Import Project -> Eclipse Project -> Import Project ignoring project dependencies`.
 
-Grain has the following conventions for website files and directories: 
+3. Select your website directories in both fields.
 
-  - content - website content, organized the same way as in resulting website
-  - theme - top level directory for the site content representation theme
-    - includes - common page parts, included at the layouts side, such as header, footer, etc.
-    - layouts - page layouts (templates)
-    - src - any Groovy classes used for processing content
+4. Right-click on the `theme/src/com.example.grain/Launcher` file and select `Run File` to launch Grain in preview mode.
+
+## Grain website structure
+
+### Naming convention for directories
+
+Grain has the following conventions for creating website files and directories:
+
+- `content`, a directory with the website content, organized the same way as in the resulting website
+- `theme`, a top-level directory for the Grain theme that organized content
+    - `includes`, a directory with the common web page parts &mdash; header or footer &mdash; included in the layouts
+    - `layouts`, a directory with the web page layouts (templates)
+    - `src`, a directory with Groovy classes used for processing the website content
     - ... - other assets, organized the same way as in resulting website
-  - SiteConfig.groovy - website configuration parameters
+- `SiteConfig.groovy` - website configuration parameters
   
-## Configuration
+## Grain configuration
 
-Grain provides `SiteConfig.groovy` file for general configuration, this file is located right in the root folder of any
-Grain theme. Configuration settings are specified with the
-<a href="http://docs.groovy-lang.org/latest/html/gapi/groovy/util/ConfigSlurper.html" target="_blank">ConfigSlurper</a>
-syntax.
+Grain provides the `SiteConfig.groovy` file for general configurations. This file is located in the root folder of a
+Grain theme. The configuration settings are specified with the [ConfigSlurper] syntax.
 
 ### Predefined variables
 
 When working with `SiteConfig.groovy`, you may use a couple of pre-defined variables:
 
-`site` - access point to website resources and configuration
-
-`log` - default logger
+* `site`, this is an access point to website resources and configuration.
+* `log`, this is a default logger
 
 ### Filesystem layout
 
-Though in many situations you wouldn't touch default conventions, in some cases it is still beneficial
-to have the possibility for more fine-grained control over Grain website structure on the filesystem.
+Though in many situations it's best to follow the default conventions, it may still be beneficial to have a fine-grained
+control over the Grain website structure.
 
-> Default configuration settings can be found in the
-<a href="https://github.com/sysgears/grain/blob/master/src/main/resources/DefaultConfig.groovy" target="_blank">
-src/main/resources/DefaultConfig.groovy</a> file.
+> The default Grain configurations can be found in the [`src/main/resources/DefaultConfig.groovy`] file.
 
-You can control website filesystem layout by modifying the following parameters in the `/SiteConfig.groovy`:
+You can control the website filesystem layout by modifying the following parameters in the `/SiteConfig.groovy`:
 
-`destination_dir` - destination directory for generated website files, default: <br />
+* `destination_dir`, the destination directory for generated website files. Defaults to:
 
-``` groovy:nl
+```groovy:nl
 destination_dir = "${base_dir}/target"
 ```
 
-`cache_dir` - directory where cache files of various Grain subsystems are stored, default: <br />
+* `cache_dir`, the directory for storing cached files of various Grain subsystems. Defaults to:
 
-``` groovy:nl
+```groovy:nl
 cache_dir = "${base_dir}/.cache"
 ```
 
-`source_dir` - directory or a list of directories with website sources. The directories are handled sequentially
-by Grain, and if the same files with same relative locations appear in each directory, then the file from the directory
-listed first takes precedence. Default: <br />
+* `source_dir`, the directory or a list of directories with website source files. The directories are handled
+sequentially by Grain, and if the same files with same relative locations appear in each directory, then the file from
+the directory _listed first_ takes precedence. Defaults to:
 
 ``` groovy:nl
 source_dir = ["${base_dir}/content", "${base_dir}/theme", "${cache_dir}/compass"]
 ```
 
-`include_dir` - directory or a list of directories with includes, default: <br />
+* `include_dir`, the directory or a list of directories with includes. Defaults to:
 
-``` groovy:nl
+```groovy:nl
 include_dir = ["${theme_dir}/includes"]
 ```
 
-`layout_dir` - directory or a list of directories with layouts, default: <br />
+* `layout_dir`, the directory or a list of directories with website layouts. Defaults to:
 
-``` groovy:nl
+```groovy:nl
 layout_dir = ["${theme_dir}/layouts"]
 ```
 
-#### Customizing filesystem layout
+#### Customizing the filesystem layout
 
-Custom destination and cache folders can be specified as the following:
+A custom destination and cache folders can be specified as follows:
 
 ``` groovy:nl
 destination_dir = "${base_dir}/site"
@@ -199,9 +161,8 @@ destination_dir = "${base_dir}/site"
 cache_dir = "${base_dir}/.site_cache"
 ```
 
-To redefine the source, include or layout folders, you should provide a list of directories, or,
-if you want to keep the default settings, add your directories to the existing list loaded from
-the default configuration:
+To redefine the source, include, or layout folders, you should provide a list of directories, or, if you want to keep
+the default settings, add your directories to the existing list from the default Grain configuration:
 
 ``` groovy:nl
 // adding a directory to the predefined list
@@ -213,27 +174,28 @@ source_dir = ["${base_dir}/content", "${base_dir}/theme", "${base_dir}/assets"]
 
 ### Source processing configuration
 
-This settings can be used for excluding files or directories located in the source folders, or for
-defining assets that must be copied to the destination folder without additional processing.
+These settings can be used for excluding files or directories located in the source folders, or for defining assets that
+must be copied to the destination folder without additional processing.
 
-`excludes` - a list of regular expressions that match locations of files or directories that must be completely
-excluded from processing. These files are ignored by Grain and won't be copied to the destination directory. Default:
+* `excludes`, a list of regular expressions that match the locations of files or directories that must be completely
+excluded from processing. These files are ignored by Grain and won't be copied to the destination directory. Defaults
+to:
 
 ``` groovy:nl
 excludes = ['/sass/.*', '/src/.*', '/target/.*']
 ```
              
-`binary_files` - a list of regular expressions that match locations of binary files. Binary files are excluded from
-processing, but, contrary to the files from the excludes list, will be copied to the destination directory. Default:
+* `binary_files`, a list of regular expressions that match the locations of binary files. The binary files are excluded
+from processing, but, contrary to the files from the excludes list, they'll be copied to the destination directory.
+Defaults to:
 
 ``` groovy:nl
 binary_files = [/(?i).*\.(png|jpg|jpeg|gif|ico|bmp|swf ... eot|otf|ttf|woff|woff2)$/]
 ```
 
-`non_script_files` - a list of regular expressions that match locations of files which content
-(see [file source](#page-file-source)) must be left unprocessed. The file headers still will be parsed,
-which is useful when you need to pass some configuration options, but do not want Grain to run embedded
-Groovy code. Default:
+* `non_script_files`, a list of regular expressions that match the locations of files with the content
+(see [file source](#page-file-source)) that must not be processed. The file headers are still parsed, which is useful
+when you need to pass some configuration options, but don't want Grain to run embedded Groovy code. Defaults to:
 
 ``` groovy:nl
 non_script_files = [/(?i).*\.(js|css)$/]
@@ -241,8 +203,8 @@ non_script_files = [/(?i).*\.(js|css)$/]
 
 #### Customizing source processing settings
 
-It is generally recommended to add new regular expressions to the default processing configuration and keep
-the default settings, but, if required, you can completely redefine the configuration:
+It's recommended that you add new regular expressions to the default processing configuration and keep the default
+settings. However, you can completely redefine the configuration if required:
 
 ``` groovy:nl
 excludes << '/misc/.*' // additionally excludes the 'misc' directory
@@ -252,11 +214,11 @@ excludes = ['/src/.*', '/target/.*'] // overwrites the default configuration
 
 ### Preview configuration
 
-`jetty_port` - TCP port for serving HTTP request in preview mode (default: 4000)
+* `jetty_port`, sets a TCP port for serving HTTP request in preview mode. Defaults to `4000`.
 
 ### Features configuration
 
-Grain has many features provided by different implementations. Concrete implementations are specified in the `features`
+Grain has many features provided by different implementations. Concrete implementations are specified in the Features
 section of the configuration file.
 
 #### Markdown markup feature
@@ -274,14 +236,14 @@ All options with names starting with "flexmark_" prefix provide markdown process
   
 #### reStructuredText markup feature
 
-There is only one implementation of reStructuredText at this time - via Python docutils. All files having `rst`
-extension will be rendered using this implementation.
+There's only one implementation of reStructuredText that uses Python docutils. All files having the `rst` extension are
+rendered using this implementation.
 
 #### Asciidoctor markup feature
 
-All files having `adoc` or `asciidoctor` extensions will be rendered using latest asciidoc Ruby gem.
+All files having the `adoc` or `asciidoctor` extensions will be rendered using the latest `asciidoc` Ruby gem.
 
-The files are converted to HTML5 with help of the `Asciidoctor.convert` method:
+The files are converted to HTML5 with the help of the `Asciidoctor.convert()` method:
 
 ```ruby:nl
 Asciidoctor.convert(source, :safe => 0, :attributes => attributes)
@@ -312,41 +274,41 @@ features {
 
 #### SASS/Compass feature
 
-Grain supports defining stylesheets using SASS or SCSS files. This is done by launching external Compass process
-which watches for SASS/SCSS files and recompiles them automatically. The settings for Compass should be stored
-in `/config.rb` file, which is rendered to `cache_dir/config.rb` as an ordinary page and hence
-can use website configuration parameters and have embedded Groovy code. The Compass process is launched in the 
-`cache_dir` directory and reads settings from `config.rb`. 
+Grain supports Sass and SCSS stylesheets. The support is done by launching an external Compass process that watches for
+Sass and SCSS files and re-compiles them automatically. The settings for Compass should be stored in the `/config.rb`
+file, which is rendered to `cache_dir/config.rb` as an ordinary page and can use the website configuration parameters
+and have embedded Groovy code. The Compass process is launched in the `cache_dir` directory and reads settings from
+`config.rb`.
 
 #### Minification and compression features
 
-The generated files of website can be minified and compressed in various ways.
+The generated website files can be minified and compressed in various ways.
 
-***Minification***
+**Minification**
  
-`minify_xml` - minify XML files (default: none)
+`minify_xml` - minify XML files (default: `none`)
 
   - `none` - do not minify XML files
   - `true` - minify XML files 
 
-`minify_html` - minify HTML pages (default: none)
+`minify_html` - minify HTML pages (default: `none`)
 
   - `none` - do not minify HTML files
   - `true` - minify HTML files 
 
-`minify_js` - minify JavaScript files (default: none)
+`minify_js` - minify JavaScript files (default: `none`)
 
   - `none` - do not minify JavaScript files
   - `true` - minify JavaScript files 
 
-`minify_css` - minify CSS stylesheets (default: none)
+`minify_css` - minify CSS stylesheets (default: `none`)
 
   - `none` - do not minify CSS files
   - `true` - minify CSS files 
 
-***Compression***
+**Compression**
 
-`compress` - compress all generated files (default: none)
+`compress` - compress all generated files (default: `none`)
 
   - `none` - do not compress generated files
   - `gzip` - compress all generated files using GZIP
@@ -355,61 +317,63 @@ The generated files of website can be minified and compressed in various ways.
 
 #### Python interpreter
 
-Grain uses Python interpreter in your system to execute various Python packages. If Python interpreter is not found
-Grain falls back to Jython. You can specify an ordered list of Python command candidates in config.
+Grain uses the Python interpreter in your system to run various Python packages. If Python interpreter isn't found,
+Grain falls back to Jython. You can specify an ordered list of Python command candidates in configurations:
 
-`python.cmd_candidates` - Python command candidates (default: ['python2', "python", "python2.7"])
+* `python.cmd_candidates`, Python command candidates. Defaults to `['python2', "python", "python2.7"]`.
 
-It is possible to force Grain to use Jython by setting the `python.interpreter` property to `jython`:
+It's possible to force Grain to use Jython by setting the `python.interpreter` property to `jython`:
 
-`python.interpreter` - Python interpreter (default to `auto`)
- - `auto` - use Python if it is installed in the system, otherwise fall back to Jython
- - `python` - use Python (requires Python installed)
- - `jython` - use Jython
+* `python.interpreter`, a Python interpreter. Defaults to `auto`:
+    - `auto` - use Python if it's installed; otherwise fall back to Jython
+    - `python` - use Python (requires Python installed)
+    - `jython` - use Jython
 
-Grain uses *setuptools* to manage Python packages. If required, you can change *setuptools* version
-via `python.setup_tools` option:
+Grain uses *setuptools* to manage Python packages. If required, you can change the *setuptools* version in the following
+option:
 
-`python.setup_tools` - Python *setuptools* version (default to `2.1`)
+* `python.setup_tools`, Python *setuptools* version. Defaults to `2.1`.
 
 #### Ruby interpreter
 
-Grain tries to find Ruby interpreter in your system to execute various Ruby gems. If Ruby interpreter is not found
-Grain falls back to JRuby. You can specify an ordered list of Ruby command candidates in config.
+Grain tries to find the Ruby interpreter in your system to run various Ruby gems. If the Ruby interpreter isn't found,
+Grain falls back to JRuby. You can specify an ordered list of Ruby command candidates in the configuration:
 
-`ruby.cmd_candidates` - Ruby command candidates (default: ["ruby", "ruby1.8.7", "ruby1.9.3", "user.home/.rvm/bin/ruby"])
+* `ruby.cmd_candidates`, Ruby command candidates. Defaults to
+`["ruby", "ruby1.8.7", "ruby1.9.3", "user.home/.rvm/bin/ruby"]`.
 
-It is possible to force Grain to use JRuby by setting the `ruby.interpreter` property to `jruby`:
+It's possible to force Grain to use JRuby by setting the `ruby.interpreter` property to `jruby`:
 
-`ruby.interpreter` - Ruby interpreter (default to `auto`)
- - `auto` - use Ruby if it is installed in the system, otherwise fall back to JRuby
- - `ruby` - use Ruby (requires Ruby installed)
- - `jruby` - use JRuby
+* `ruby.interpreter`, sets the Ruby interpreter. Defaults to `auto`. Possible options:
+    - `auto` - use Ruby if it's installed in the system; otherwise fall back to JRuby
+    - `ruby` - use Ruby (requires Ruby installed)
+    - `jruby` - use JRuby
 
-You can change *RubyGems* package manager version via `ruby.ruby_gems` option:
+You can change the *RubyGems* package manager version in the following option:
 
-`ruby.ruby_gems` - *RubyGems* version (default value depends on Ruby version)
+* `ruby.ruby_gems`, sets the *RubyGems* version. The default value depends on the currently used Ruby version.
 
 ### Deployment configuration
 
-Deployment of final website is implemented as shell command execution.
+Deployment of the final Grain-based website is implemented as a shell command execution.
 
-`deploy` - a shell command or list of shell commands to deploy a website, that are executed sequentially
+* `deploy`, a shell command or list of shell commands to deploy a website, that are executed sequentially.
  
-***Example***
+**Example**
 
-``` groovy:nl
+```groovy:nl
 s3_bucket = "www.example.com"
 deploy = "s3cmd sync --acl-public --reduced-redundancy ${destination_dir}/ s3://${s3_bucket}/"
 ```
 
 ### Environments
-Different modes of Grain operation are associated with different configuration environments. These
-environments can be used to provide environment specific configuration. 
 
-***Example***
+Different modes of Grain operation are associated with different configuration environments. These environments can be
+used to provide environment specific configuration.
 
-``` groovy:nl SiteConfig.groovy
+**Example**
+
+```groovy:nl SiteConfig.groovy
 environments {
     dev {
         log.info "Development environment is used"
@@ -424,22 +388,21 @@ environments {
 
 Grain uses the following environments:
 
-`dev` - environment used when running Grain for website preview and development
+* `dev` - the environment for running a Grain website in preview and development modes
 
-`prod` - site generation and site deployment environment 
+* `prod` - the environment for generating and deploying the website
 
-`cmd` - theme-specific command-mode environment, used when running a custom command
-        defined in SiteConfig.groovy  
+* `cmd` - a theme-specific command-mode environment for running a custom command defined in `SiteConfig.groovy`
    
-### Advanced configuration
+### Advanced Grain configuration
 
-#### Config posthandler hook
+#### `config_posthandler` hook
 
-`config_posthandler` - a closure that is executed right after each execution of `SiteConfig.groovy`
+* `config_posthandler`,  a closure executed right after each execution of `SiteConfig.groovy`.
  
-***Example***
+**Example**
 
-``` groovy:nl
+```groovy:nl
 config_posthandler = { println 'Config has been just rereaded' }
 ```
 
@@ -447,10 +410,10 @@ config_posthandler = { println 'Config has been just rereaded' }
 
 ### Page file source
 
-Typical Grain page consists of page header and page content. Page header contains static page configuration parameters
-formatted using YAML markup.
+A typical Grain page consists of the page header and page content. The page header contains the static page
+configuration parameters formatted using YAML.
 
-``` yaml:nl
+```yaml:nl
 ---
 layout: page
 title: "Page title"
@@ -459,27 +422,27 @@ title: "Page title"
 Page content goes here
 ```
 
-Page content can be written in Markdown, HTML, XML or plain text. Grain determines content markup type based
-on page file extension.
+The page content can be written in Markdown, HTML, XML, or plain text. Grain determines the content markup type based
+on the file extension.
 
 ### Embedded Groovy code
 
-Embedded Groovy code can be included anywhere in a page content, but not in the page header.
-To include a simple Groovy expression one can use this notation:
+Embedded Groovy code can be included anywhere in the page content except the header. To include a simple Groovy
+expression, you can use these notations:
 
-``` groovy:nl
+```groovy:nl
 ${2 + 2}
 ```
 
-Or this
+Or:
 
 ``` groovy:nl
 <%= 2 + 2 %>
 ```
 
-In both cases 4 will be inserted into the content of the page as the result of evaluation of these Groovy expressions.
+In both cases, the value `4` is inserted into the page content as the result of evaluation.
 
-To include large blocks of Groovy code one can use notation below:
+To include large blocks of Groovy code, use the notation below:
 
 ``` jsp:nl
 <%
@@ -491,12 +454,13 @@ To include large blocks of Groovy code one can use notation below:
 <% } %>
 ``` 
 
-The `if` above will work as expected, e.g. the span will be rendered into page contents only when the criteria is met.
-Also note that variables declared in one piece of embedded code will be available anywhere on the page.
+The `if` above will work as expected, e.g., a `span` tag will be rendered into the page only when the expression is
+evaluated to `true`. Also note that variables declared in one piece of embedded code will be available everywhere on the
+page.
 
 #### Disabling Groovy code interpolation
 
-To render embedded Groovy code as is, you need to disable Groovy code interpolation by using the following form of
+To render embedded Groovy code _as is_, you need to disable Groovy code interpolation by using the following form of
 escaping:
 
 ```
@@ -504,55 +468,53 @@ escaping:
 ```
 
 ### Variables on a page
+
 Grain has several variables reserved, others can be freely introduced on a page.
 
-These variables are reserved:
+The following variables are reserved in Grain:
 
-  - `page` - current page model
-  - `site` - a facade to accessing website resources and configuration
-  - `content` - HTML content of the page, accessible in layout
-  - `out` - internal string buffer used to accumulate page contents during rendering
+  - `page` - the current page model
+  - `site` - a facade for accessing website resources and configurations
+  - `content` - the HTML content of the page, accessible in layout
+  - `out` - an internal string buffer necessary to accumulate the content during rendering
 
 #### Page variable
 
-`page` variable provides access to all the keys of pages YAML headers.
+The `page` variable provides access to all the keys of YAML headers in pages.
 
-For example to get page title one can use the following code snippet:
+For example, to get the page title, you can use the following code snippet:
 
 ``` jsp:nl
 ${page.title}
 ```
 
-Grain generates the following header keys on initial loading of resource from source file:
+Grain generates the following header keys on initial loading of a resource from the source file:
 
-  - `location` - relative page location on the filesystem, for example `/index.html`
-                 or `/contacts/index.markdown`
+  - `location` - a relative page location on the filesystem, for example, `/index.html` or `/contacts/index.markdown`
   - `url` - URL of the page
-  - `type` - resource type, either 'page' for resources that render into HTML or `asset` for all the other
-             resources
-  - `dateCreated` - resource file creation time in milliseconds
-  - `lastUpdated` - resource file last update time in milliseconds
-  - `text` - text contents of resource file
-  - `bytes` - byte contents of resource file
-  - `script` - indicates whether the embedded Groovy code processing is enabled for the file (false if the file location
-  matches an expression from the `non_script_files` configuration list, true otherwise)
+  - `type` - a resource type, either `page` for resources that render into HTML or `asset` for all the other resources
+  - `dateCreated` - the resource file creation time in milliseconds
+  - `lastUpdated` - the resource file last update time in milliseconds
+  - `text` - the text contents of the resource file
+  - `bytes` - the byte contents of the resource file
+  - `script` - indicates whether processing of the embedded Groovy code is enabled for the file. Defaults to `false` if
+  a file location matches an expression from the `non_script_files` configuration list. Defaults to `true` otherwise.
 
-`page` variable is just a Groovy map. You can add keys to this map in the page code
-or make other changes, but these changes are only visible to the page itself,
-they will not be visible to other pages.
+The `page` variable is a Groovy map. You can add keys to this map in the page code or make other changes, but these
+changes are only visible to the page itself, they aren't visible on other pages.
 
 #### Site variable
 
-`site` variable provides access to all the properties declared in SiteConfig.groovy. For example, in order to get
-configured URL of the site one can use this code:
+The `site` variable provides access to all the properties declared in `SiteConfig.groovy`. For example, in order to get
+a configured URL of the website, you can use this code:
 
 ``` jsp:nl
 <a href="${site.url}">Home</a>
 ```
 
-`site` also exposes all the pages of the site in `site.pages`, all the asset files of the site
-in `site.assets` and both assets and pages in `site.resources`. For example to dump the value of title
-defined in every site page one could do:
+`site` also exposes all the website pages in the `site.pages` property. All the website assets are set in the
+`site.assets`, and both assets and pages are set in `site.resources`. For example, to dump the value of title defined in
+every website page, you can run use the following code:
 
 ``` jsp:nl
 <%= site.pages.collect { it.title } %>
@@ -560,13 +522,13 @@ defined in every site page one could do:
 
 ### Disabling code processing
 
-Besides defining whether the page content will be processed using the `non_script_files` configuration setting:
+You can define whether to process the page content using the `non_script_files` configuration:
 
 ``` groovy:nl
 non_script_files = [/(?i).*\.(js|css)$/]
 ```
 
-You can overwrite the configuration for a single file by changing the value of the `script` key in the header:
+You can also overwrite the configuration for a single file by changing the value of the `script` key in the header:
 
 ``` yaml:nl
 ---
@@ -575,11 +537,12 @@ script: true # true - evaluate embedded Groovy expressions, false - render the p
 ---
 ```
 
-This usually comes in handy when you need to pass variables to stylesheet or javascript files.
+This usually comes in handy when you need to pass variables to stylesheet or JavaScript files.
 
 ## Layouts
 
 ### Concept
+
 Rendered page content usually wrapped up by layout, where most of the presentation logic is held.
 
 Here is an example of a layout:
@@ -603,7 +566,8 @@ Here is an example of a layout:
 
 Please note that rendered page contents is passed in `content` variable to the layout.
 
-### Layout nesting 
+### Layout nesting
+
 One layout can be based on another layout. For example, here is some page layout, based on default layout above:
 
 ``` jsp /theme/layout/page.html
@@ -621,6 +585,7 @@ Layout nesting can be unlimited.
 ## Includes
 
 ### General idea
+
 Common page presentation parts can be kept in separate files and then included into layouts.
 
 For example in the code below sidebar.html is included into layout:
@@ -635,6 +600,7 @@ ${include 'sidebar.html'}
 ```
 
 ### Passing custom model
+
 In some cases you would want to pass some variables to the included parts:
 
 ``` jsp /theme/layout/blog.html
@@ -654,21 +620,23 @@ After that, inside tags.html, you will have `page.tags` set to the value of `pag
 
 ### Introduction
 
-It is obvious that in order to implement some complex tasks for your website, you may need to have full control over
-your website resources. For example, you may want to customize website urls, add custom pages, like pagination pages or
-pages that gathers posts related to certain tags, etc.
-All sorts of this transformations can be made by using resource mapping mechanism. In order to start working with it,
-it is important to be familiar with how website resources are represented in Grain.
+It's obvious that to implement complex tasks for your website, you may need to have full control over your website
+resources. For example, you may want to customize website URLs, add custom pages, and so on.
+
+These transformations can be done by using the resource mapping mechanism. To use this mechanism, it's important to be
+familiar with how the website resources are represented in Grain.
 
 ### Resource representation
+
 In Grain each resource is represented as a plain Groovy map. Each resource should have at least three keys in its map:
 
--  either `location` which points to the resource file in filesystem, or `source` which contains resource content
-- `markup` - resource markup, one of 'html', 'md', 'rst', 'adoc', 'text' or 'binary' (it is optional if `location` is defined)
-- `url` - the URL of the resource (it is not strictly tied to the resource location, and can be modified)
+- `location`, which points to the resource file in filesystem, or `source`, which contains resource content
+- `markup` - resource markup, one of `'html'`, `'md'`, `'rst'`, `'adoc'`, `'text'`, or `'binary'` (it's optional if
+`location` is defined)
+- `url` - the URL of the resource (it's not strictly tied to the resource location and can be modified)
 
-Both `source` and `markup` have higher priority over `location` when Grain decides what contents should be rendered and
-what markup should be used for rendering
+Both `source` and `markup` have higher priority over `location` when Grain decides what content should be rendered and
+what markup should be used for rendering.
 
 Along with these keys, resource representation holds all the properties specified in content files' headers.
 
@@ -688,7 +656,7 @@ file location    -> file url
 /test/test.rst   -> /test/test.html
 ```
 
-### Resource processing phases
+    ### Resource processing phases
 
 Grain processes all the resources located in the source directories in the following way:
 
@@ -767,6 +735,7 @@ resource_mapper = { resources ->
 ```
 
 ### Dynamic rendering
+
 Resource in Grain can be rendered dynamically anywhere, to do this one should assemble resource map and call
 method render() on it.
 
@@ -787,6 +756,7 @@ Example of using dynamic rendering inside page:
 ## Tag libraries
 
 ### Standard tag library
+
 Grain provides standard tags for most vital tasks, additional tags are recommended to be added to custom theme tag lib.
 
 The standard tags are:
@@ -795,12 +765,17 @@ The standard tags are:
  in the `SiteConfig.groovy`, or, alternatively, generates the resource url using the `link` tag.
 
     ###### Parameters:
+
        1. Resource location
  
     ###### Example:
+
     ``` jsp:nl
-    <link href="${r '/favicon.png'}" rel="icon">``` 
-  - **`link`** - generates an url from a relative link to a resource (for example, */path/to/resource.ext*). 
+    <link href="${r '/favicon.png'}" rel="icon">
+    ```
+
+  - **`link`** - generates an url from a relative link to a resource (for example, */path/to/resource.ext*).
+
   This tag allows you to insert absolute or relative links depending on a value of the `site.generate_absolute_links` 
   boolean variable. If `site.generate_absolute_links` variable is set to **true**, then Grain just concatenates the 
   `site.url` property (*http://domain.com/your-app*) and a resource link (for example, setting the `'.'` value as a 
@@ -809,17 +784,23 @@ The standard tags are:
   path from the `site.url` and prepend it to the resource link (*/your-app/path/to/resource.ext*). 
  
     ###### Parameters:
+
        1. Relative link
   
     ###### Example:
+
     ``` jsp:nl
-    <link href="${link '/blog/post'}">```
+    <link href="${link '/blog/post'}">
+    ```
+
  - **`rs`** - looks up multiple resource URLs by their locations
 
     ###### Parameters:
+
       1. Resource location list
 
     ###### Example:
+
     ``` jsp:nl
     <% rs(['/javascripts/libs/jquery.min.js',
     '/javascripts/modernizr-2.0.js',
@@ -827,26 +808,36 @@ The standard tags are:
     '/javascripts/github.js',
     '/javascripts/jquery.tweet.js',
     '/javascripts/twitter-options.js']).each { script -> %>
-    <script src="${script}" type="text/javascript"></script><% } %>```
+    <script src="${script}" type="text/javascript"></script><% } %>
+    ```
+
  - **`include`** - inserts rendered resource contents
 
     ###### Parameters:
+
       1. Template location
       1. *(Optional)* Additional model variables added to `page` map
 
     ###### Example:
+
     ``` jsp:nl
-    ${include 'tags.html', [tags: post.categories]}```
+    ${include 'tags.html', [tags: post.categories]}
+    ```
+
  - **`md5`** - calculates md5 hash of a byte array
 
     ###### Parameters:
+
       1. Byte array
 
     ###### Example:
+
     ``` jsp:nl
-    md5(resource.render().bytes)```
+    md5(resource.render().bytes)
+    ```
 
 ### Custom tag libraries
+
 You can add your own tags in your website theme. This can be made by implementing your tags as Groovy closures.
 
 Class with tag closures should be added into the list of tag libs in `SiteConfig.groovy -> tag_libs`.
@@ -893,6 +884,7 @@ class MyTagLib {
 ## Custom command-line commands
 
 ### Creating your own commands
+
 It can be beneficial to add support for new custom commands to Grain command-line for pre-populating new pages, posts,
 etc.
 
@@ -917,3 +909,7 @@ title: "${postTitle}"
 ]
 ```
 
+[getting started]: https://github.com/sysgears/grain#getting-started
+[configslurper]: http://docs.groovy-lang.org/latest/html/gapi/groovy/util/ConfigSlurper.html
+[groovy-eclipse]: http://groovy.codehaus.org/Eclipse+Plugin
+[src/main/resources/DefaultConfig.groovy]: https://github.com/sysgears/grain/blob/master/src/main/resources/DefaultConfig.groovy
