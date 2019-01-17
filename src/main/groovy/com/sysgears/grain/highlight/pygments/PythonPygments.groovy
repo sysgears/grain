@@ -31,7 +31,7 @@ import javax.inject.Inject
 public class PythonPygments implements Pygments {
 
     /** Pygments version used */
-    private static final String VERSION = '2.2.0'
+    private static final String VERSION = '2.3.1'
 
     /** Grain settings */
     @Inject private GrainSettings settings
