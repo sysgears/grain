@@ -270,9 +270,9 @@ Grain is licensed under the [Apache License], Version 2.0.
 [environments]: https://github.com/sysgears/grain/blob/master/docs/General%20Docs.md#environments
 [advanced grain configuration]: https://github.com/sysgears/grain/blob/master/docs/General%20Docs.md#advanced-grain-configuration
 [page structure]: https://github.com/sysgears/grain/blob/master/docs/General%20Docs.md#page-structure
-[layouts](#layouts)
-[includes](#includes)
-[url and resource mapping](#url-and-resource-mapping)
+[layouts]: https://github.com/sysgears/grain/blob/master/docs/General%20Docs.md#layouts
+[includes]: https://github.com/sysgears/grain/blob/master/docs/General%20Docs.md#includes
+[url and resource mapping]: https://github.com/sysgears/grain/blob/master/docs/General%20Docs.md#url-and-resource-mapping
 [tag libraries]: https://github.com/sysgears/grain/blob/master/docs/General%20Docs.md#tag-libraries
 [https://github.com/sysgears/grain-theme-new-age]: https://github.com/sysgears/grain-theme-new-age
 [https://github.com/sysgears/grain-theme-clean-blog]: https://github.com/sysgears/grain-theme-clean-blog
