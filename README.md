@@ -4,8 +4,23 @@
 
 Grain is a lightweight framework and a very powerful static website generator written in Groovy to help make website
 creation intuitive and enjoyable. Grain suits development of complex, static websites for companies and neat blogging
-websites for personal use. The framework builds upon simple concepts and provides live reload to help you rapidly
-develop custom Grain [themes](#available-grain-themes).
+websites for personal use. The framework builds on [simple ideas](#documentation) and provides live reload to help you
+rapidly develop custom [themes](#available-grain-themes).
+
+## Documentation
+
+All the Grain documentation is located in teh [`docs/General Docs.md`] file. You may learn more about using Grain in the
+following sections:
+
+* [IDE Integration](#ide-integration)
+* [Grain website structure](#grain-website-structure)
+* [Environments](#environments)
+* [Advanced Grain configuration](#advanced-grain-configuration)
+* [Page structure](#page-structure)
+* [Layouts](#layouts)
+* [Includes](#includes)
+* [URL and resource mapping](#url-and-resource-mapping)
+* [Tag libraries](#tag-libraries)
 
 ## Key features
 
@@ -249,6 +264,16 @@ Grain is licensed under the [Apache License], Version 2.0.
 [Issue Tracker]: https://github.com/sysgears/grain/issues
 [Twitter]: http://twitter.com/grainframework
 [deployment configuration]: https://github.com/sysgears/grain/blob/master/docs/latest.md#deployment-configuration
+[`docs/General Docs.md`]: https://github.com/sysgears/grain/blob/master/docs/General%20Docs.md
+[ide integration]: https://github.com/sysgears/grain/blob/master/docs/General%20Docs.md#ide-integration
+[grain website structure]: https://github.com/sysgears/grain/blob/master/docs/General%20Docs.md#grain-website-structure
+[environments]: https://github.com/sysgears/grain/blob/master/docs/General%20Docs.md#environments
+[advanced grain configuration]: https://github.com/sysgears/grain/blob/master/docs/General%20Docs.md#advanced-grain-configuration
+[page structure]: https://github.com/sysgears/grain/blob/master/docs/General%20Docs.md#page-structure
+[layouts](#layouts)
+[includes](#includes)
+[url and resource mapping](#url-and-resource-mapping)
+[tag libraries]: https://github.com/sysgears/grain/blob/master/docs/General%20Docs.md#tag-libraries
 [https://github.com/sysgears/grain-theme-new-age]: https://github.com/sysgears/grain-theme-new-age
 [https://github.com/sysgears/grain-theme-clean-blog]: https://github.com/sysgears/grain-theme-clean-blog
 [https://github.com/sysgears/grain-theme-octopress]: https://github.com/sysgears/grain-theme-octopress
