@@ -12,15 +12,15 @@ rapidly develop custom [themes](#available-grain-themes).
 All the Grain documentation is located in teh [`docs/General Docs.md`] file. You may learn more about using Grain in the
 following sections:
 
-* [IDE Integration](#ide-integration)
-* [Grain website structure](#grain-website-structure)
-* [Environments](#environments)
-* [Advanced Grain configuration](#advanced-grain-configuration)
-* [Page structure](#page-structure)
-* [Layouts](#layouts)
-* [Includes](#includes)
-* [URL and resource mapping](#url-and-resource-mapping)
-* [Tag libraries](#tag-libraries)
+* [IDE Integration]
+* [Grain website structure]
+* [Environments]
+* [Advanced Grain configuration]
+* [Page structure]
+* [Layouts]
+* [Includes]
+* [URL and resource mapping]
+* [Tag libraries]
 
 ## Key features
 
