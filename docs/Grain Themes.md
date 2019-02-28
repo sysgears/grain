@@ -22,56 +22,58 @@ Consult the sections below to know what Grain themes you can use.
 
 ### Agency
 
-Link: [https://github.com/sysgears/grain-theme-agency]
+Link: https://github.com/sysgears/grain-theme-agency
 
 The Agency theme is a single-page portfolio theme which provides a responsive portfolio grid layout with popup previews,
 a PHP-based Contact Us form, and an unusual About Us section with a timeline.
 
 ### Business Casual
 
-Link: [https://github.com/sysgears/grain-theme-business]
+Link: https://github.com/sysgears/grain-theme-business
 
 The Business Casual theme is a responsive four-page website designed for companies that want to use a simple blog. The
 theme also features customizable Home and About Us sections and a Contact Us page with the Google Maps API.
 
 ### Clean Blog
 
-Link: [https://github.com/sysgears/grain-theme-clean-blog]
+Link: https://github.com/sysgears/grain-theme-clean-blog
 
 Clean Blog is a blogging theme with easily managed posts, customizable Home and About Us pages, and a PHP-driven Contact
 Us form.
 
 ### Freelancer
 
-Link: [https://github.com/sysgears/grain-theme-freelancer]
+Link: https://github.com/sysgears/grain-theme-freelancer
 
 Freelancer is a single-page portfolio theme that provides a responsive portfolio grid layout with hovering effects and
 full-screen modal windows featuring project details.
 
 ### Grain Stylish Portfolio
 
-Link: [https://github.com/sysgears/grain-theme-portfolio]
+Link: https://github.com/sysgears/grain-theme-portfolio
 
 Stylish Portfolio is a single-page theme which provides a portfolio grid layout with with pop-up previews,
 call-to-action sections, and an integrated Google Maps API.
 
 ### Grain Theme Template
 
-Link: [https://github.com/sysgears/grain-theme-template]
+Link: https://github.com/sysgears/grain-theme-template
 
 The Grain Theme Template is a starting point for creating your custom Grain website or new themes. The template provides
 all the necessary source and configuration files to help Groovy and Java developers build a Grain project from scratch.
 
 ### New Age
 
-Link: [https://github.com/sysgears/grain-theme-new-age]
+Link: https://github.com/sysgears/grain-theme-new-age
 
 New Age is a landing page theme for showcasing web and mobile applications. It includes sections for displaying mockups
 outlining major application features and providing links for contacting developers and downloading the application.
 
 ### Octopress
 
-Link: [https://github.com/sysgears/grain-theme-octopress]
+Link: https://github.com/sysgears/grain-theme-octopress
 
 The Octopress Grain theme is a minimalistic, responsive theme based on [Octopress]. This theme is best for the computer
 geeks who want to create a simple and neat blogging website.
+
+[octopress]: http://octopress.org/
