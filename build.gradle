@@ -52,14 +52,14 @@ dependencies {
     compile 'org.eclipse.jetty:jetty-servlet:9.2.21.v20170120'
     compile 'javax.servlet:javax.servlet-api:3.1.0'
 
-    compile 'org.yaml:snakeyaml:1.18'
+    compile 'org.yaml:snakeyaml:1.33'
 
     compile 'org.codehaus.gpars:gpars:1.2.1'
 
     compile 'com.github.rjeschke:txtmark:0.9'
 
     compile 'org.scijava:jython-shaded:2.7.0'
-    compile 'org.jruby:jruby:9.1.8.0'
+    compile 'org.jruby:jruby:9.2.21.0'
 
     compile 'com.googlecode.htmlcompressor:htmlcompressor:1.5.2'
     compile 'com.yahoo.platform.yui:yuicompressor:2.4.8'
