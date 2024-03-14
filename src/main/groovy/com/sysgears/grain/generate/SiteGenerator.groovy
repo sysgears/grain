@@ -90,8 +90,9 @@ class SiteGenerator {
                 if (!parentDir.exists() && !parentDir.mkdirs()) {
                     throw new RuntimeException("Failed to create dirs for file: ${file}")
                 }
+                def bytes = resource.render().bytes
                 file.withOutputStream { os ->
-                    os.write(compressor.compress(resource.location, resource.render().bytes))
+                    os.write(resource.compress == null || resource.compress == true ? compressor.compress(resource.location, bytes) : bytes)
                 }
             } catch (Throwable t) {
                 throw new RuntimeException("While generating ${resource.location}", t)

@@ -40,7 +40,7 @@ public class ScriptTranslator {
     public String translate(String scriptSource) {
         def script = scriptPrototype.get()
         while (scriptSource.length() > 0) {
-            def m = scriptSource =~ /`!`|\$\{|<%=|<%/
+            def m = scriptSource =~ /`!`|\$\{|<%=|<%|\+\+\(/
 
             def found = m.find()
 
@@ -80,10 +80,16 @@ public class ScriptTranslator {
                                 .replaceAll('[\r\n]', '').trim() + '}', StatementType.GSTRING_WRITE, true)
                         scriptSource = scriptSource.substring(m2.end())
                     }
+                } else if (op == '++(') {
+                    def m2 = scriptSource =~ /\)[\r\n]/
+                    if (m2.find()) {
+                        script.write('${' + scriptSource.substring(0, m2.start())
+                                .replaceAll('[\r\n]', '').trim() + '}', StatementType.GSTRING_WRITE, true)
+                        scriptSource = scriptSource.substring(m2.end())
+                    }
                 }
             }
         }
         script.toString()
     }
-    
 }
