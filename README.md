@@ -12,40 +12,40 @@ rapidly develop custom [themes](#available-grain-themes).
 All the Grain documentation is located in teh [`docs/General Docs.md`] file. You may learn more about using Grain in the
 following sections:
 
-* [IDE Integration]
-* [Grain website structure]
-* [Environments]
-* [Advanced Grain configuration]
-* [Page structure]
-* [Layouts]
-* [Includes]
-* [URL and resource mapping]
-* [Tag libraries]
+- [IDE Integration]
+- [Grain website structure]
+- [Environments]
+- [Advanced Grain configuration]
+- [Page structure]
+- [Layouts]
+- [Includes]
+- [URL and resource mapping]
+- [Tag libraries]
 
 ## Key features
 
 Grain comes with the following key features:
 
- - A preview mode that allows you to make changes and see them applied on the fly
- - Support for embedded Groovy code for any content files (stylesheets and JavaScript files)
- - Configurable conventions that allow you to process content sources using Groovy
- - Support for Markdown, reStructuredText, and AsciiDoctor
- - Compression and minification of source files
- - Code highlighting with Python Pygments
- - Built-in Sass and SCSS support
- 
+- A preview mode that allows you to make changes and see them applied on the fly
+- Support for embedded Groovy code for any content files (stylesheets and JavaScript files)
+- Configurable conventions that allow you to process content sources using Groovy
+- Support for Markdown, reStructuredText, and AsciiDoctor
+- Compression and minification of source files
+- Code highlighting with Python Pygments
+- Built-in Sass and SCSS support
+
 ## Themes & templates
 
 A Grain website project is called a _theme_, and Grain has a few developed responsive themes that you can use. Consult the list of pre-built Grain themes below:
 
-* [Agency]
-* [Business Casual]
-* [Clean Blog]
-* [Freelancer]
-* [Grain Stylish Portfolio]
-* [Grain Theme Template]
-* [New Age]
-* [Octopress]
+- [Agency]
+- [Business Casual]
+- [Clean Blog]
+- [Freelancer]
+- [Grain Stylish Portfolio]
+- [Grain Theme Template]
+- [New Age]
+- [Octopress]
 
 ## Getting started
 
@@ -74,7 +74,7 @@ cd /path/to/your_site
 ```
 
 > Here and further the command-line snippets are provided only for the Unix-like operation systems. If you're running
-Grain on Windows, use the `grainw` command instead of `./grainw`.
+> Grain on Windows, use the `grainw` command instead of `./grainw`.
 
 Once the project is built, you can visit your favorite browser at `http://localhost:4000` to view the website. You can
 add, change, or delete website files and see all the changes in the browser immediately after refreshing the page.
@@ -102,91 +102,8 @@ Check the [Deployment Configuration] section for more information.
 
 There are many ways to get involved with the project:
 
-- [Mailing List] - reach us or ask the community for help
 - [Issue Tracker] - make Grain better by suggesting improvements
 - [Twitter] - keep up with the latest Grain news and announcements
-
-## Contributing
-
-Any person or company wanting to contribute to Grain Framework should follow
-the following rules in order to their contribution being accepted.
-
-## Sign your work
-
-We require that all contributors "sign-off" on their commits.  This certifies that the contribution is your original
-work, or you have rights to submit it under the same license, or a compatible license.
-
-Any contribution which contains commits that are not Signed-Off will not be accepted.
-
-To sign off on a commit you simply use the `--signoff` or `-s` option when committing your changes to Git:
-
-```
-git commit -s -m "Adding a new widget driver for cogs."
-```
-
-This will automatically append the following data to your commit message:
-
-```
-Signed-off-by: Your Name <your@email.com>
-```
-
-By doing this, you certify the below:
-
-```
-Developer's Certificate of Origin 1.1
-```
-
-If you wish to sign-off commit messages for each commit without specifying `-s` or `--signoff` all the time, rename
-`.git/hooks/commit-msg.sample` to `.git/hooks/commit-msg` and uncomment the following lines:
-
-```sh
-SOB=$(git var GIT_AUTHOR_IDENT | sed -n 's/^\(.*>\).*$/Signed-off-by: \1/p')
-grep -qs "^$SOB" "$1" || echo "$SOB" >> "$1"
-```
-
-## Developer's Certificate of Origin
-
-To help track the author of a patch as well as the submission chain,
-and be clear that the developer has authority to submit a patch for
-inclusion into this project please sign off your work.  The sign off
-certifies the following:
-
-    Developer's Certificate of Origin 1.1
-
-    By making a contribution to the project, I certify that:
-
-    (a) The contribution was created in whole or in part by me and I
-        have the right to submit it under the open source license
-        indicated in the file; or
-
-    (b) The contribution is based upon previous work that, to the best
-        of my knowledge, is covered under an appropriate open source
-        license and I have the right under that license to submit that
-        work with modifications, whether created in whole or in part
-        by me, under the same open source license (unless I am
-        permitted to submit under a different license), as indicated
-        in the file; or
-
-    (c) The contribution was provided directly to me by some other
-        person who certified (a), (b) or (c) and I have not modified
-        it.
-
-    (d) I understand and agree that this project and the contribution
-        are public and that a record of the contribution (including all
-        personal information I submit with it, including my sign-off) is
-        maintained indefinitely and may be redistributed consistent with
-        this project or the open source license(s) involved.
-
-    (e) I hereby grant to the project, SysGears, LLC and its successors; 
-        and recipients of software distributed by the Project a perpetual,
-        worldwide, non-exclusive, no-charge, royalty-free, irrevocable
-        copyright license to reproduce, modify, prepare derivative works of,
-        publicly display, publicly perform, sublicense, and distribute this
-        contribution and such modifications and derivative works consistent
-        with this Project, the open source license indicated in the previous
-        work or other appropriate open source license specified by the Project
-        and approved by the Open Source Initiative(OSI)
-        at http://www.opensource.org.
 
 ## License
 
