@@ -98,21 +98,26 @@ You can deploy the website files either manually or with the help of Grain:
 
 Check the [Deployment Configuration] section for more information.
 
-## The Grain Community
+## Community Support
 
 There are many ways to get involved with the project:
 
 - [Issue Tracker] - make Grain better by suggesting improvements
 - [Twitter] - keep up with the latest Grain news and announcements
 
+### Commercial Support
+
+The [SysGears] team provides comprehensive support for commercial partners. Our team can guide you when you're using
+Grain framework and need professional support.
+
+You can leave your contacts to us via email [info@sysgears.com](mailto:info@sysgears.com) and we will contact you back within one working day.
+
 ## License
 
 Grain is licensed under the [Apache License], Version 2.0.
 
-[mailing list]: https://groups.google.com/forum/#!forum/grain-user
 [Grain]: http://sysgears.com/grain/
 [Apache License]: http://www.apache.org/licenses/LICENSE-2.0.html
-[Developer's Certificate of Origin]: https://raw.github.com/sysgears/grain/master/DCO
 [Issue Tracker]: https://github.com/sysgears/grain/issues
 [Twitter]: http://twitter.com/grainframework
 [deployment configuration]: https://github.com/sysgears/grain/blob/master/docs/latest.md#deployment-configuration
